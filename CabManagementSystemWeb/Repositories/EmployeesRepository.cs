@@ -25,6 +25,7 @@ public class EmployeesRepository : IRepository<Employee>
 
     public async Task<Employee> Create(Employee employee)
     {
+        employee.Created = DateTime.UtcNow;
         _dbContext.Add(employee);
         await _dbContext.SaveChangesAsync();
 
@@ -34,6 +35,8 @@ public class EmployeesRepository : IRepository<Employee>
     public async Task<Employee> Update(Employee employee)
     {
         _dbContext.ChangeTracker.Clear();
+
+        employee.Updated = DateTime.UtcNow;
         _dbContext.Employees.Update(employee);
         await _dbContext.SaveChangesAsync();
 
