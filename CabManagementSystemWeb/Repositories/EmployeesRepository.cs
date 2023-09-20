@@ -20,7 +20,10 @@ public class EmployeesRepository : IRepository<Employee>
 
     public async Task<Employee?> GetById(int id)
     {
-        return await _dbContext.FindAsync<Employee>(id);
+        Employee? employees = await _dbContext.Employees.FindAsync(id);
+        _dbContext.ChangeTracker.Clear();
+
+        return employees;
     }
 
     public async Task<Employee> Create(Employee employee)
@@ -43,15 +46,8 @@ public class EmployeesRepository : IRepository<Employee>
         return employee;
     }
 
-    public async Task<Employee?> Delete(int id)
+    public async Task<Employee> Delete(Employee employee)
     {
-        Employee? employee = await _dbContext.Employees.FindAsync(id);
-
-        if (employee == null)
-        {
-            return employee;
-        }
-
         _dbContext.Employees.Remove(employee);
         await _dbContext.SaveChangesAsync();
 

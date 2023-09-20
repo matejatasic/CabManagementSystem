@@ -9,5 +9,14 @@ public sealed class ApplicationDbContext : DbContext
     {
     }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Branch>()
+            .HasOne(b => b.Manager)
+            .WithOne()
+            .HasForeignKey<Branch>(b => b.ManagerId);
+    }
+
     public DbSet<Employee> Employees { get; set; }
+    public DbSet<Branch> Branches { get; set; }
 }

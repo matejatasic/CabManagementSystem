@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using CabManagementSystemWeb.Entities;
 using CabManagementSystemWeb.Contracts;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using CabManagementSystemWeb.Exceptions;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CabManagementSystemWeb.Controllers;
 
@@ -10,64 +10,77 @@ namespace CabManagementSystemWeb.Controllers;
 [ApiController]
 public class EmployeesController : ControllerBase
 {
-    private readonly IEmployeesService _employeeService;
+    private readonly IEmployeesService _employeesService;
 
-    public EmployeesController(IEmployeesService employeeService)
+    public EmployeesController(IEmployeesService employeesService)
     {
-        _employeeService = employeeService;
+        _employeesService = employeesService;
     }
 
     [HttpGet("")]
     public async Task<ActionResult<IEnumerable<Employee>>> GetAll()
     {
-        IEnumerable<Employee> employees = await _employeeService.GetAll();
+        IEnumerable<Employee> employees = await _employeesService.GetAll();
+
         return new JsonResult(employees);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Employee>> GetById(int id)
     {
-        Employee? employee = await _employeeService.GetById(id);
+        try
+        {
+            Employee? employee = await _employeesService.GetById(id);
 
-        if (employee == null)
+            return new JsonResult(employee);
+        }
+        catch(NotFoundException)
         {
             return NotFound();
         }
-
-        return new JsonResult(employee);
     }
 
     [HttpPost("")]
     public async Task<ActionResult<Employee>> Create(Employee employee)
     {
-        employee = await _employeeService.Create(employee);
+        try {
+            employee = await _employeesService.Create(employee);
 
-        return CreatedAtAction(nameof(GetAll), new { id = employee.Id }, employee);
+            return CreatedAtAction(nameof(GetAll), new { id = employee.Id }, employee);
+        }
+        catch(NotFoundException exception)
+        {
+            return BadRequest(exception.Message);
+        }
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, Employee employee)
     {
-        Employee? response = await _employeeService.Update(id, employee);
-
-        if (response == null)
+        try
         {
-            return BadRequest("The employee with that id does not exist");
-        }
+            await _employeesService.Update(id, employee);
 
-        return NoContent();
+            return NoContent();
+        }
+        catch(NotFoundException exception)
+        {
+            return BadRequest(exception.Message);
+        }
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        Employee? response = await _employeeService.Delete(id);
-
-        if (response == null)
+        try
         {
-            return BadRequest("The employee with that id does not exist");
-        }
+            await _employeesService.Delete(id);
 
-        return NoContent();
+            return NoContent();
+        }
+        catch(NotFoundException exception)
+        {
+            return BadRequest(exception.Message);
+        }
     }
 }
