@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using CabManagementSystemWeb.Entities;
 using CabManagementSystemWeb.Contracts;
 using CabManagementSystemWeb.Exceptions;
+using CabManagementSystemWeb.Dtos;
 
 namespace CabManagementSystemWeb.Controllers;
 
@@ -17,32 +18,32 @@ public class BranchesController : ControllerBase
     }
 
     [HttpGet("")]
-    public async Task<ActionResult<IEnumerable<Branch>>> GetAll()
+    public async Task<ActionResult<IEnumerable<BranchDetailDto>>> GetAll()
     {
-        IEnumerable<Branch> branches = await _branchesService.GetAll();
+        IEnumerable<BranchDetailDto> branches = await _branchesService.GetAll();
         return new JsonResult(branches);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Branch>> GetById(int id)
+    public async Task<ActionResult<BranchDetailDto>> GetById(int id)
     {
-        Branch? branch = await _branchesService.GetById(id);
+        BranchDetailDto? branchDetailDto = await _branchesService.GetById(id);
 
-        if (branch == null)
+        if (branchDetailDto == null)
         {
             return NotFound();
         }
 
-        return new JsonResult(branch);
+        return new JsonResult(branchDetailDto);
     }
 
     [HttpPost("")]
-    public async Task<ActionResult<Branch>> Create(Branch branch)
+    public async Task<ActionResult<Branch>> Create(BranchCreateDto branchCreateDto)
     {
         try {
-            branch = await _branchesService.Create(branch);
+            BranchDetailDto branchDetailDto = await _branchesService.Create(branchCreateDto);
 
-            return CreatedAtAction(nameof(GetAll), new { id = branch.Id }, branch);
+            return CreatedAtAction(nameof(GetAll), new { id = branchDetailDto.Id }, branchDetailDto);
         }
         catch(NotFoundException exception)
         {
@@ -51,11 +52,11 @@ public class BranchesController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, Branch branch)
+    public async Task<IActionResult> Update(int id, BranchUpdateDto branchUpdateDto)
     {
         try
         {
-            await _branchesService.Update(id, branch);
+            await _branchesService.Update(id, branchUpdateDto);
 
             return NoContent();
         }

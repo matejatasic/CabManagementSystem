@@ -6,6 +6,7 @@ using CabManagementSystemWeb.Data;
 using CabManagementSystemWeb.Repositories;
 using CabManagementSystemWeb.Entities;
 using CabManagementSystemWeb.Contracts;
+using CabManagementSystemWeb.Dtos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +20,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 }, ServiceLifetime.Transient);
-builder.Services.AddScoped<IRepository<Employee>, EmployeesRepository>();
-builder.Services.AddScoped<IRepository<Branch>, BranchesRepository>();
+builder.Services.AddScoped<IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto>, EmployeesRepository>();
+builder.Services.AddScoped<IRepository<Branch, BranchCreateDto, BranchDetailDto>, BranchesRepository>();
 builder.Services.AddScoped<IEmployeesService, EmployeesService>();
 builder.Services.AddScoped<IBranchesService, BranchesService>();
 

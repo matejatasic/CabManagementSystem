@@ -2,72 +2,71 @@ using CabManagementSystemWeb.Entities;
 using CabManagementSystemWeb.Data;
 using CabManagementSystemWeb.Contracts;
 using CabManagementSystemWeb.Exceptions;
+using CabManagementSystemWeb.Dtos;
 
 namespace CabManagementSystemWeb.Services;
 
 public class BranchesService : IBranchesService
 {
-    private readonly IRepository<Branch> _repository;
-    private readonly IRepository<Employee> _employeesRepository;
+    private readonly IRepository<Branch, BranchCreateDto, BranchDetailDto> _repository;
+    private readonly IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> _employeesRepository;
 
     public BranchesService(
-        IRepository<Branch> repository,
-        IRepository<Employee> employeesRepository
+        IRepository<Branch, BranchCreateDto, BranchDetailDto> repository,
+        IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> employeesRepository
     )
     {
         _repository = repository;
         _employeesRepository = employeesRepository;
     }
 
-    public async Task<IEnumerable<Branch>> GetAll()
+    public async Task<IEnumerable<BranchDetailDto>> GetAll()
     {
         return await _repository.GetAll();
     }
 
-    public async Task<Branch?> GetById(int id)
+    public async Task<BranchDetailDto?> GetById(int id)
     {
-        Branch? branch = await _repository.GetById(id);
+        BranchDetailDto? branchDetailDto = await _repository.GetById(id);
 
-        if (branch == null)
+        if (branchDetailDto == null)
         {
             throw new NotFoundException();
         }
 
-        return branch;
+        return branchDetailDto;
     }
 
-    public async Task<Branch> Create(Branch branch)
+    public async Task<BranchDetailDto> Create(BranchCreateDto branchCreateDto)
     {
-        return await _repository.Create(branch);
+        return await _repository.Create(branchCreateDto);
     }
 
-    public async Task<Branch> Update(int id, Branch newBranch)
+    public async Task<BranchDetailDto> Update(int id, BranchUpdateDto branchUpdateDto)
     {
-        Branch? branch = await _repository.GetById(id);
+        BranchDetailDto? branchDetailDto = await _repository.GetById(id);
 
-        if (branch == null)
+        if (branchDetailDto == null)
         {
             throw new NotFoundException($"The branch with id {id} does not exist");
         }
 
-        newBranch.Id = id;
+        branchDetailDto = await _repository.Update(branchUpdateDto.ConvertToEntity(id));
 
-        await _repository.Update(newBranch);
-
-        return branch;
+        return branchDetailDto;
     }
 
-    public async Task<Branch> Delete(int id)
+    public async Task<BranchDetailDto> Delete(int id)
     {
-        Branch? branch = await _repository.GetById(id);
+        BranchDetailDto? branchDetailDto = await _repository.GetById(id);
 
-        if (branch == null)
+        if (branchDetailDto == null)
         {
             throw new NotFoundException($"The branch with id {id} does not exist");
         }
 
-        await _repository.Delete(branch);
+        await _repository.Delete(branchDetailDto.ConvertToEntity());
 
-        return branch;
+        return branchDetailDto;
     }
 }

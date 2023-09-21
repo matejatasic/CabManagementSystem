@@ -2,79 +2,78 @@ using CabManagementSystemWeb.Entities;
 using CabManagementSystemWeb.Data;
 using CabManagementSystemWeb.Contracts;
 using CabManagementSystemWeb.Exceptions;
+using CabManagementSystemWeb.Dtos;
 
 namespace CabManagementSystemWeb.Services;
 
 public class EmployeesService : IEmployeesService
 {
-    private readonly IRepository<Employee> _repository;
-    private readonly IRepository<Branch> _branchRepository;
+    private readonly IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> _repository;
+    private readonly IRepository<Branch, BranchCreateDto, BranchDetailDto> _branchRepository;
 
     public EmployeesService(
-        IRepository<Employee> repository,
-        IRepository<Branch> branchRepository
+        IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> repository,
+        IRepository<Branch, BranchCreateDto, BranchDetailDto> branchRepository
     )
     {
         _repository = repository;
         _branchRepository = branchRepository;
     }
 
-    public async Task<IEnumerable<Employee>> GetAll()
+    public async Task<IEnumerable<EmployeeDetailDto>> GetAll()
     {
         return await _repository.GetAll();
     }
 
-    public async Task<Employee?> GetById(int id)
+    public async Task<EmployeeDetailDto?> GetById(int id)
     {
-        Employee? employee = await _repository.GetById(id);
+        EmployeeDetailDto? employeeDetailDto = await _repository.GetById(id);
 
-        if (employee == null)
+        if (employeeDetailDto == null)
         {
             throw new NotFoundException();
         }
 
-        return employee;
+        return employeeDetailDto;
     }
 
-    public async Task<Employee> Create(Employee employee)
+    public async Task<EmployeeDetailDto> Create(EmployeeCreateDto employeeCreateDto)
     {
-        Branch? branch = await _branchRepository.GetById(employee.BranchId);
+        BranchDetailDto? branchDetailDto = await _branchRepository.GetById(employeeCreateDto.BranchId);
 
-        if (branch == null)
+        if (branchDetailDto == null)
         {
-            throw new NotFoundException($"The branch with the id {employee.BranchId} does not exist");
+            throw new NotFoundException($"The branch with the id {employeeCreateDto.BranchId} does not exist");
         }
 
-        return await _repository.Create(employee);
+        return await _repository.Create(employeeCreateDto);
     }
 
-    public async Task<Employee> Update(int id, Employee newEmployee)
+    public async Task<EmployeeDetailDto> Update(int id, EmployeeUpdateDto employeeUpdateDto)
     {
-        Employee? employee = await _repository.GetById(id);
+        EmployeeDetailDto? employeeDetailDto = await _repository.GetById(id);
 
-        if (employee == null)
-        {
-            throw new NotFoundException($"The employee with id {id} does not exist");
-        }
-
-        newEmployee.Id = id;
-
-        await _repository.Update(newEmployee);
-
-        return employee;
-    }
-
-    public async Task<Employee> Delete(int id)
-    {
-        Employee? employee = await _repository.GetById(id);
-
-        if (employee == null)
+        if (employeeDetailDto == null)
         {
             throw new NotFoundException($"The employee with id {id} does not exist");
         }
 
-        await _repository.Delete(employee);
+        employeeDetailDto = await _repository.Update(employeeUpdateDto.ConvertToEntity(id));
 
-        return employee;
+        return employeeDetailDto;
+    }
+
+    public async Task<EmployeeDetailDto> Delete(int id)
+    {
+        EmployeeDetailDto? employeeDetailDto = await _repository.GetById(id);
+
+        if (employeeDetailDto == null)
+        {
+            throw new NotFoundException($"The employee with id {id} does not exist");
+        }
+
+        await _repository.Delete(employeeDetailDto.ConvertToEntity());
+
+        return employeeDetailDto;
     }
 }

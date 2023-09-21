@@ -1,16 +1,17 @@
+using CabManagementSystemWeb.Dtos;
 using CabManagementSystemWeb.Entities;
 
 namespace CabManagementSystemWeb.Contracts;
 
 public interface IBranchesService
 {
-    public Task<IEnumerable<Branch>> GetAll();
+    public Task<IEnumerable<BranchDetailDto>> GetAll();
 
-    public Task<Branch?> GetById(int id);
+    public Task<BranchDetailDto?> GetById(int id);
 
-    public Task<Branch> Create(Branch branch);
+    public Task<BranchDetailDto> Create(BranchCreateDto branchCreateDto);
 
-    public Task<Branch> Update(int id, Branch branch);
+    public Task<BranchDetailDto> Update(int id, BranchUpdateDto branchUpdateDto);
 
-    public Task<Branch> Delete(int id);
+    public Task<BranchDetailDto> Delete(int id);
 }

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using CabManagementSystemWeb.Entities;
 using CabManagementSystemWeb.Contracts;
 using CabManagementSystemWeb.Exceptions;
-using Microsoft.AspNetCore.Http.HttpResults;
+using CabManagementSystemWeb.Dtos;
 
 namespace CabManagementSystemWeb.Controllers;
 
@@ -18,21 +18,21 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpGet("")]
-    public async Task<ActionResult<IEnumerable<Employee>>> GetAll()
+    public async Task<ActionResult<IEnumerable<EmployeeDetailDto>>> GetAll()
     {
-        IEnumerable<Employee> employees = await _employeesService.GetAll();
+        IEnumerable<EmployeeDetailDto> employees = await _employeesService.GetAll();
 
         return new JsonResult(employees);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Employee>> GetById(int id)
+    public async Task<ActionResult<EmployeeDetailDto>> GetById(int id)
     {
         try
         {
-            Employee? employee = await _employeesService.GetById(id);
+            EmployeeDetailDto? employeeDetailDto = await _employeesService.GetById(id);
 
-            return new JsonResult(employee);
+            return new JsonResult(employeeDetailDto);
         }
         catch(NotFoundException)
         {
@@ -41,12 +41,12 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpPost("")]
-    public async Task<ActionResult<Employee>> Create(Employee employee)
+    public async Task<ActionResult<EmployeeDetailDto>> Create(EmployeeCreateDto employeeCreateDto)
     {
         try {
-            employee = await _employeesService.Create(employee);
+            EmployeeDetailDto employeeDetailDto = await _employeesService.Create(employeeCreateDto);
 
-            return CreatedAtAction(nameof(GetAll), new { id = employee.Id }, employee);
+            return CreatedAtAction(nameof(GetAll), new { id = employeeDetailDto.Id }, employeeDetailDto);
         }
         catch(NotFoundException exception)
         {
@@ -55,11 +55,11 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, Employee employee)
+    public async Task<IActionResult> Update(int id, EmployeeUpdateDto employeeUpdateDto)
     {
         try
         {
-            await _employeesService.Update(id, employee);
+            await _employeesService.Update(id, employeeUpdateDto);
 
             return NoContent();
         }

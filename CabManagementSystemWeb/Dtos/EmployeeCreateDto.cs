@@ -1,32 +1,25 @@
-using System.ComponentModel.DataAnnotations.Schema;
-using CabManagementSystemWeb.Data;
-using CabManagementSystemWeb.Dtos;
+using CabManagementSystemWeb.Dtos.Interfaces;
+using CabManagementSystemWeb.Entities;
 
-namespace CabManagementSystemWeb.Entities;
+namespace CabManagementSystemWeb.Dtos;
 
-[Table("Employees")]
-public class Employee : IEntity
+public class EmployeeCreateDto : IEntityCreateDto<Employee>
 {
-    public int Id { get; set; }
     public required string Username { get; set; }
     public required string Password { get; set; }
     public required string Email { get; set; }
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
-    public Branch? Branch { get; set; }
     public required int BranchId { get; set; }
-    public DateTime Created { get; set; }
-    public DateTime? Updated { get; set; } = null;
 
-    public EmployeeDetailDto ConvertToDetailDto()
+    public Employee ConvertToEntity()
     {
-        return new EmployeeDetailDto() {
-            Id = Id,
+        return new Employee() {
             Username = Username,
             Password = Password,
             Email = Email,
-            FirstName =  FirstName,
+            FirstName = FirstName,
             LastName = LastName,
             Address = Address,
             BranchId = BranchId
