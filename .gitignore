@@ -1,3 +1,8 @@
+# Api files
 /CabManagementSystemWeb/obj
 /CabManagementSystemWeb/bin
 /CabManagementSystemWeb/Migrations
+
+# Api test files
+/CabManagementSystemWeb.Tests/obj
+/CabManagementSystemWeb.Tests/bin

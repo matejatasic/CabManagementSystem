@@ -9,15 +9,15 @@ namespace CabManagementSystemWeb.Services;
 public class EmployeesService : IEmployeesService
 {
     private readonly IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> _repository;
-    private readonly IRepository<Branch, BranchCreateDto, BranchDetailDto> _branchRepository;
+    private readonly IRepository<Branch, BranchCreateDto, BranchDetailDto> _branchesRepository;
 
     public EmployeesService(
         IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> repository,
-        IRepository<Branch, BranchCreateDto, BranchDetailDto> branchRepository
+        IRepository<Branch, BranchCreateDto, BranchDetailDto> branchesRepository
     )
     {
         _repository = repository;
-        _branchRepository = branchRepository;
+        _branchesRepository = branchesRepository;
     }
 
     public async Task<IEnumerable<EmployeeDetailDto>> GetAll()
@@ -39,9 +39,7 @@ public class EmployeesService : IEmployeesService
 
     public async Task<EmployeeDetailDto> Create(EmployeeCreateDto employeeCreateDto)
     {
-        BranchDetailDto? branchDetailDto = await _branchRepository.GetById(employeeCreateDto.BranchId);
-
-        if (branchDetailDto == null)
+        if (await GetBranchById(employeeCreateDto.BranchId) == null)
         {
             throw new NotFoundException($"The branch with the id {employeeCreateDto.BranchId} does not exist");
         }
@@ -58,9 +56,19 @@ public class EmployeesService : IEmployeesService
             throw new NotFoundException($"The employee with id {id} does not exist");
         }
 
+        if (employeeUpdateDto.BranchId != null && await GetBranchById(employeeDetailDto.BranchId) == null)
+        {
+            throw new NotFoundException($"The branch with id {employeeUpdateDto.BranchId} does not exist");
+        }
+
         employeeDetailDto = await _repository.Update(employeeUpdateDto.ConvertToEntity(id));
 
         return employeeDetailDto;
+    }
+
+    private async Task<BranchDetailDto?> GetBranchById(int id)
+    {
+        return await _branchesRepository.GetById(id);
     }
 
     public async Task<EmployeeDetailDto> Delete(int id)

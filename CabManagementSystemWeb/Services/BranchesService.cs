@@ -39,6 +39,14 @@ public class BranchesService : IBranchesService
 
     public async Task<BranchDetailDto> Create(BranchCreateDto branchCreateDto)
     {
+        if (
+            branchCreateDto.ManagerId != null
+            && await GetEmployeeById((int)branchCreateDto.ManagerId) == null
+        )
+        {
+            throw new NotFoundException($"The employee with the id {branchCreateDto.ManagerId} does not exist");
+        }
+
         return await _repository.Create(branchCreateDto);
     }
 
@@ -51,9 +59,22 @@ public class BranchesService : IBranchesService
             throw new NotFoundException($"The branch with id {id} does not exist");
         }
 
+        if (
+            branchUpdateDto.ManagerId != null
+            && await GetEmployeeById((int)branchUpdateDto.ManagerId) == null
+        )
+        {
+            throw new NotFoundException($"The employee with the id {branchUpdateDto.ManagerId} does not exist");
+        }
+
         branchDetailDto = await _repository.Update(branchUpdateDto.ConvertToEntity(id));
 
         return branchDetailDto;
+    }
+
+    private async Task<EmployeeDetailDto?> GetEmployeeById(int id)
+    {
+        return await _employeesRepository.GetById(id);
     }
 
     public async Task<BranchDetailDto> Delete(int id)
