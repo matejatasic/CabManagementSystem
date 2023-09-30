@@ -1,13 +1,12 @@
+using Moq;
+using AutoFixture;
+
 using CabManagementSystemWeb.Exceptions;
 using CabManagementSystemWeb.Entities;
 using CabManagementSystemWeb.Data;
 using CabManagementSystemWeb.Dtos;
-using CabManagementSystemWeb.Dtos.Interfaces;
 using CabManagementSystemWeb.Contracts;
 using CabManagementSystemWeb.Services;
-using Xunit;
-using Moq;
-using AutoFixture;
 
 namespace CabManagementSystemWeb.Tests.Services;
 

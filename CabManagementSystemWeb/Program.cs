@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+
 using CabManagementSystemWeb;
 using CabManagementSystemWeb.Services;
 using CabManagementSystemWeb.Data;
@@ -41,3 +42,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

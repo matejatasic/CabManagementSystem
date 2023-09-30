@@ -14,9 +14,10 @@ public class EmployeeDetailDto : IEntityDetailDto<Employee>
     public string Address { get; set; } = string.Empty;
     public required int BranchId { get; set; }
 
-    public Employee ConvertToEntity()
+    public Employee ConvertToEntity(int id)
     {
         return new Employee() {
+            Id = id,
             Username = Username,
             Password = Password,
             Email = Email,

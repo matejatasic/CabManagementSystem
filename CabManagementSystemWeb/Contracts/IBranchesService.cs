@@ -1,5 +1,4 @@
 using CabManagementSystemWeb.Dtos;
-using CabManagementSystemWeb.Entities;
 
 namespace CabManagementSystemWeb.Contracts;
 

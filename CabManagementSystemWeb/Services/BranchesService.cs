@@ -86,7 +86,7 @@ public class BranchesService : IBranchesService
             throw new NotFoundException($"The branch with id {id} does not exist");
         }
 
-        await _repository.Delete(branchDetailDto.ConvertToEntity());
+        await _repository.Delete(branchDetailDto.ConvertToEntity(id));
 
         return branchDetailDto;
     }

@@ -80,7 +80,7 @@ public class EmployeesService : IEmployeesService
             throw new NotFoundException($"The employee with id {id} does not exist");
         }
 
-        await _repository.Delete(employeeDetailDto.ConvertToEntity());
+        await _repository.Delete(employeeDetailDto.ConvertToEntity(id));
 
         return employeeDetailDto;
     }
