@@ -18,6 +18,7 @@ public class EmployeesServiceTest
 
     private readonly Mock<IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto>> _employeesRepositoryMock;
     private readonly Mock<IRepository<Branch, BranchCreateDto, BranchDetailDto>> _branchesRepositoryMock;
+    private readonly Mock<IHashService> _hashServiceMock;
 
     private readonly IFixture _fixture;
 
@@ -29,7 +30,8 @@ public class EmployeesServiceTest
 
         _employeesRepositoryMock = new Mock<IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto>>();
         _branchesRepositoryMock = new Mock<IRepository<Branch, BranchCreateDto, BranchDetailDto>>();
-        _employeesService = new EmployeesService(_employeesRepositoryMock.Object, _branchesRepositoryMock.Object);
+        _hashServiceMock = new Mock<IHashService>();
+        _employeesService = new EmployeesService(_employeesRepositoryMock.Object, _branchesRepositoryMock.Object, _hashServiceMock.Object);
     }
 
     [Fact]

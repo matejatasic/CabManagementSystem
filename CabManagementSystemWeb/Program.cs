@@ -25,6 +25,7 @@ builder.Services.AddScoped<IRepository<Employee, EmployeeCreateDto, EmployeeDeta
 builder.Services.AddScoped<IRepository<Branch, BranchCreateDto, BranchDetailDto>, BranchesRepository>();
 builder.Services.AddScoped<IEmployeesService, EmployeesService>();
 builder.Services.AddScoped<IBranchesService, BranchesService>();
+builder.Services.AddScoped<IHashService, HashService>();
 
 var app = builder.Build();
 

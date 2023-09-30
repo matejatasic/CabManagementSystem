@@ -10,14 +10,17 @@ public class EmployeesService : IEmployeesService
 {
     private readonly IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> _repository;
     private readonly IRepository<Branch, BranchCreateDto, BranchDetailDto> _branchesRepository;
+    private readonly IHashService _hashService;
 
     public EmployeesService(
         IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> repository,
-        IRepository<Branch, BranchCreateDto, BranchDetailDto> branchesRepository
+        IRepository<Branch, BranchCreateDto, BranchDetailDto> branchesRepository,
+        IHashService hashService
     )
     {
         _repository = repository;
         _branchesRepository = branchesRepository;
+        _hashService = hashService;
     }
 
     public async Task<IEnumerable<EmployeeDetailDto>> GetAll()
@@ -44,6 +47,8 @@ public class EmployeesService : IEmployeesService
             throw new NotFoundException($"The branch with the id {employeeCreateDto.BranchId} does not exist");
         }
 
+        employeeCreateDto.Password = _hashService.HashPassword(employeeCreateDto.Password);
+
         return await _repository.Create(employeeCreateDto);
     }
 
@@ -60,6 +65,8 @@ public class EmployeesService : IEmployeesService
         {
             throw new NotFoundException($"The branch with id {employeeUpdateDto.BranchId} does not exist");
         }
+
+        employeeUpdateDto.Password = _hashService.HashPassword(employeeUpdateDto.Password);
 
         employeeDetailDto = await _repository.Update(employeeUpdateDto.ConvertToEntity(id));
 
