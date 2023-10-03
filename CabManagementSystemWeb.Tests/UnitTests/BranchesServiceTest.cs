@@ -59,7 +59,7 @@ public class BranchesServiceTest
     }
 
     [Fact]
-    public async void TestGetByIdThrowingExceptionWhenSuccessfullyRetrievedBranch()
+    public async void TestGetByIdThrowingExceptionWhenNotRetrievedBranch()
     {
         Func<Task> act = () => _branchesService.GetById(It.IsAny<int>());
 
@@ -85,7 +85,7 @@ public class BranchesServiceTest
     }
 
     [Fact]
-    public async void TestCreateThrowingExceptionWhenCreateNotSuccessful()
+    public async void TestCreateThrowingExceptionWhenManagerNotFound()
     {
         BranchCreateDto branchCreateDto = _fixture.Create<BranchCreateDto>();
 
@@ -112,7 +112,7 @@ public class BranchesServiceTest
     }
 
     [Fact]
-    public async void TestUpdateThrowingExceptionBranchNotFound()
+    public async void TestUpdateThrowingExceptionWhenBranchNotFound()
     {
         BranchUpdateDto branchUpdateDto = _fixture.Create<BranchUpdateDto>();
 
@@ -122,7 +122,7 @@ public class BranchesServiceTest
     }
 
     [Fact]
-    public async void TestUpdateThrowingExceptionWhenBranchNotFound()
+    public async void TestUpdateThrowingExceptionWhenEmployeeNotFound()
     {
         BranchDetailDto branchDetailDto = _fixture.Create<BranchDetailDto>();
         BranchUpdateDto branchUpdateDto = _fixture.Create<BranchUpdateDto>();

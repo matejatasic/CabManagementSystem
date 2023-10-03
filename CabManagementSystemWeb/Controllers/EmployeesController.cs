@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using CabManagementSystemWeb.Entities;
 using CabManagementSystemWeb.Contracts;
 using CabManagementSystemWeb.Exceptions;
 using CabManagementSystemWeb.Dtos;

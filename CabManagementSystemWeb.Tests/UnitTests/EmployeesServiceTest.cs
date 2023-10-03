@@ -61,7 +61,7 @@ public class EmployeesServiceTest
     }
 
     [Fact]
-    public async void TestGetByIdThrowingExceptionWhenSuccessfullyRetrievedEmployee()
+    public async void TestGetByIdThrowingExceptionWhenNotRetrievedEmployee()
     {
         Func<Task> act = () => _employeesService.GetById(It.IsAny<int>());
 
@@ -86,7 +86,7 @@ public class EmployeesServiceTest
     }
 
     [Fact]
-    public async void TestCreateThrowingExceptionWhenCreateNotSuccessful()
+    public async void TestCreateThrowingExceptionWhenBranchNotFound()
     {
         EmployeeCreateDto employeeCreateDto = _fixture.Create<EmployeeCreateDto>();
 
@@ -112,7 +112,7 @@ public class EmployeesServiceTest
     }
 
     [Fact]
-    public async void TestUpdateThrowingExceptionEmployeeNotFound()
+    public async void TestUpdateThrowingExceptionWhenEmployeeNotFound()
     {
         EmployeeUpdateDto employeeUpdateDto = _fixture.Create<EmployeeUpdateDto>();
 
