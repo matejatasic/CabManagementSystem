@@ -18,7 +18,6 @@ public class CarsServiceTest
 
     private readonly Mock<IRepository<Car, CarCreateDto, CarDetailDto>> _carsRepositoryMock;
     private readonly Mock<IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto>> _employeesRepositoryMock;
-    private readonly Mock<IHashService> _hashServiceMock;
 
     private readonly IFixture _fixture;
 

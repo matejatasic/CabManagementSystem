@@ -20,4 +20,5 @@ public sealed class ApplicationDbContext : DbContext
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Branch> Branches { get; set; }
     public DbSet<Car> Cars { get; set; }
+    public DbSet<Route> Routes { get; set; }
 }

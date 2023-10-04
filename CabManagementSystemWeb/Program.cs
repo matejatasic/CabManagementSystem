@@ -24,11 +24,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => {
 builder.Services.AddScoped<IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto>, EmployeesRepository>();
 builder.Services.AddScoped<IRepository<Branch, BranchCreateDto, BranchDetailDto>, BranchesRepository>();
 builder.Services.AddScoped<IRepository<Car, CarCreateDto, CarDetailDto>, CarsRepository>();
+builder.Services.AddScoped<IRepository<Route, RouteCreateDto, RouteDetailDto>, RoutesRepository>();
 
 builder.Services.AddScoped<IEmployeesService, EmployeesService>();
 builder.Services.AddScoped<IBranchesService, BranchesService>();
 builder.Services.AddScoped<ICarsService, CarsService>();
 builder.Services.AddScoped<IHashService, HashService>();
+builder.Services.AddScoped<IRoutesService, RoutesService>();
 
 var app = builder.Build();
 

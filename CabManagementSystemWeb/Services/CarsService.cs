@@ -42,7 +42,7 @@ public class CarsService : ICarsService
     {
         if (await GetDriverById(carCreateDto.DriverId) == null)
         {
-            throw new NotFoundException($"The branch with the id {carCreateDto.DriverId} does not exist");
+            throw new NotFoundException($"The driver with the id {carCreateDto.DriverId} does not exist");
         }
 
         return await _repository.Create(carCreateDto);
@@ -59,7 +59,7 @@ public class CarsService : ICarsService
 
         if (await GetDriverById(carDetailDto.DriverId) == null)
         {
-            throw new NotFoundException($"The branch with id {carUpdateDto.DriverId} does not exist");
+            throw new NotFoundException($"The driver with id {carUpdateDto.DriverId} does not exist");
         }
 
         carDetailDto = await _repository.Update(carUpdateDto.ConvertToEntity(id));

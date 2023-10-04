@@ -7,25 +7,25 @@ using CabManagementSystemWeb.Dtos;
 
 namespace CabManagementSystemWeb.Tests.Controllers;
 
-public class CarsControllerTest : BaseIntegrationTest
+public class RoutesControllerTest : BaseIntegrationTest
 {
-    private string _carRoute = "/cars";
+    private string _routeRoute = "/routes";
     private string _employeeRoute = "/employees";
     private string _branchRoute = "/branches";
 
-    private string _carRouteUrl;
+    private string _routeRouteUrl;
     private string _employeeRouteUrl;
     private string _branchRouteUrl;
 
-    public CarsControllerTest() : base()
+    public RoutesControllerTest() : base()
     {
-        _carRouteUrl = _routePrefix + _carRoute;
+        _routeRouteUrl = _routePrefix + _routeRoute;
         _employeeRouteUrl = _routePrefix + _employeeRoute;
         _branchRouteUrl = _routePrefix + _branchRoute;
     }
 
     [Fact]
-    public async Task TestCreateSuccessfullyCreatesACar()
+    public async Task TestCreateSuccessfullyCreatesARoute()
     {
         await InitializeClient();
 
@@ -33,96 +33,95 @@ public class CarsControllerTest : BaseIntegrationTest
             .Without(b => b.ManagerId).Create();
         EmployeeCreateDto employeeCreateDto = _fixture.Build<EmployeeCreateDto>()
             .With(e => e.BranchId, 1).Create();
-        CarCreateDto carCreateDto = _fixture.Build<CarCreateDto>()
-            .With(c => c.DriverId, 1)
-            .Without(c => c.RegisteredUntil)
+        RouteCreateDto routeCreateDto = _fixture.Build<RouteCreateDto>()
+            .With(r => r.DriverId, 1)
             .Create();
 
         JsonContent branchPostContent = JsonContent.Create(branchCreateDto);
         JsonContent employeePostContent = JsonContent.Create(employeeCreateDto);
-        JsonContent carPostContent = JsonContent.Create(carCreateDto);
+        JsonContent routePostContent = JsonContent.Create(routeCreateDto);
 
         var response1 = await _client.PostAsync($"{_branchRouteUrl}", branchPostContent);
         var response2 = await _client.PostAsync($"{_employeeRouteUrl}", employeePostContent);
 
-        var response = await _client.PostAsync($"{_carRouteUrl}", carPostContent);
+        var response = await _client.PostAsync($"{_routeRouteUrl}", routePostContent);
 
         var content = await response.Content.ReadAsStringAsync();
 
-        CarDetailDto deserializedContent = JsonSerializer.Deserialize<CarDetailDto>(content, _jsonSerializerOptions);
+        RouteDetailDto deserializedContent = JsonSerializer.Deserialize<RouteDetailDto>(content, _jsonSerializerOptions);
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-        Assert.IsType<CarDetailDto>(deserializedContent);
+        Assert.IsType<RouteDetailDto>(deserializedContent);
     }
 
     [Fact]
-    public async Task TestGetAllReturnsAListOfCars()
+    public async Task TestGetAllReturnsAListOfRoutes()
     {
         await InitializeClient();
 
         await CreateNeededEntities();
 
-        var response = _client.GetAsync($"{_carRouteUrl}").Result;
+        var response = _client.GetAsync($"{_routeRouteUrl}").Result;
         var content = await response.Content.ReadAsStringAsync();
 
-        List<CarDetailDto> deserializedContent = JsonSerializer.Deserialize<List<CarDetailDto>>(content, _jsonSerializerOptions);
+        List<RouteDetailDto> deserializedContent = JsonSerializer.Deserialize<List<RouteDetailDto>>(content, _jsonSerializerOptions);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Single(deserializedContent);
     }
 
     [Fact]
-    public async Task TestGetByIdReturnsACar()
+    public async Task TestGetByIdReturnsARoute()
     {
         await InitializeClient();
 
         await CreateNeededEntities();
 
-        var response = _client.GetAsync($"{_carRouteUrl}/1").Result;
+        var response = _client.GetAsync($"{_routeRouteUrl}/1").Result;
         var content = await response.Content.ReadAsStringAsync();
-        CarDetailDto deserializedContent = JsonSerializer.Deserialize<CarDetailDto>(content, _jsonSerializerOptions);
+        RouteDetailDto deserializedContent = JsonSerializer.Deserialize<RouteDetailDto>(content, _jsonSerializerOptions);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.IsType<CarDetailDto>(deserializedContent);
+        Assert.IsType<RouteDetailDto>(deserializedContent);
     }
 
     [Fact]
-    public async Task TestUpdateSuccessfullyUpdatesACar()
+    public async Task TestUpdateSuccessfullyUpdatesARoute()
     {
         await InitializeClient();
 
         await CreateNeededEntities();
-        string updatedName = "UpdatedName";
-        CarUpdateDto carUpdateDto = _fixture.Build<CarUpdateDto>()
-            .With(c => c.Name, updatedName)
-            .With(c => c.DriverId, 1)
-            .With(c => c.RegisteredUntil, DateTime.UtcNow)
-            .Create();
-        JsonContent carPutContent = JsonContent.Create(carUpdateDto);
 
-        var response = await _client.PutAsync($"{_carRouteUrl}/1", carPutContent);
-        var getByIdResponse = _client.GetAsync($"{_carRouteUrl}/1").Result;
+        string updatedFromAddress = "UpdatedFromAddress";
+        RouteUpdateDto routeUpdateDto = _fixture.Build<RouteUpdateDto>()
+            .With(r => r.FromAddress, updatedFromAddress)
+            .With(r => r.DriverId, 1)
+            .Create();
+        JsonContent routePutContent = JsonContent.Create(routeUpdateDto);
+
+        var response = await _client.PutAsync($"{_routeRouteUrl}/1", routePutContent);
+        var getByIdResponse = _client.GetAsync($"{_routeRouteUrl}/1").Result;
         string getByIdContent = await getByIdResponse.Content.ReadAsStringAsync();
-        CarDetailDto getByIdDeserializedContent = JsonSerializer
-            .Deserialize<CarDetailDto>(getByIdContent, _jsonSerializerOptions);
+        RouteDetailDto getByIdDeserializedContent = JsonSerializer
+            .Deserialize<RouteDetailDto>(getByIdContent, _jsonSerializerOptions);
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
-        Assert.Equal(updatedName, getByIdDeserializedContent.Name);
+        Assert.Equal(updatedFromAddress, getByIdDeserializedContent.FromAddress);
     }
 
     [Fact]
-    public async Task TestDeleteSuccessfullyDeletesACar()
+    public async Task TestDeleteSuccessfullyDeletesARoute()
     {
         await InitializeClient();
 
         await CreateNeededEntities();
 
-        var response = _client.DeleteAsync($"{_carRouteUrl}/1").Result;
-        var getAllResponse = _client.GetAsync($"{_carRouteUrl}").Result;
+        var response = _client.DeleteAsync($"{_routeRouteUrl}/1").Result;
+        var getAllResponse = _client.GetAsync($"{_routeRouteUrl}").Result;
         string getAllContent = await getAllResponse.Content.ReadAsStringAsync();
 
-        List<CarDetailDto> getAllDeserializedContent = JsonSerializer
-            .Deserialize<List<CarDetailDto>>(getAllContent, _jsonSerializerOptions);
+        List<RouteDetailDto> getAllDeserializedContent = JsonSerializer
+            .Deserialize<List<RouteDetailDto>>(getAllContent, _jsonSerializerOptions);
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         Assert.Empty(getAllDeserializedContent);
@@ -130,11 +129,11 @@ public class CarsControllerTest : BaseIntegrationTest
 
     private async Task CreateNeededEntities()
     {
-        var (branchPostContent, employeePostContent, carPostContent) = GetPostContent();
+        var (branchPostContent, employeePostContent, routePostContent) = GetPostContent();
 
         await _client.PostAsync($"{_branchRouteUrl}", branchPostContent);
         await _client.PostAsync($"{_employeeRouteUrl}", employeePostContent);
-        await _client.PostAsync($"{_carRouteUrl}", carPostContent);
+        await _client.PostAsync($"{_routeRouteUrl}", routePostContent);
     }
 
     private Tuple<JsonContent, JsonContent, JsonContent> GetPostContent()
@@ -143,15 +142,14 @@ public class CarsControllerTest : BaseIntegrationTest
             .Without(b => b.ManagerId).Create();
         EmployeeCreateDto employeeCreateDto = _fixture.Build<EmployeeCreateDto>()
             .With(e => e.BranchId, 1).Create();
-        CarCreateDto carCreateDto = _fixture.Build<CarCreateDto>()
-            .With(c => c.DriverId, 1)
-            .With(c => c.RegisteredUntil, DateTime.UtcNow)
+        RouteCreateDto routeCreateDto = _fixture.Build<RouteCreateDto>()
+            .With(r => r.DriverId, 1)
             .Create();
 
-        JsonContent carPostContent = JsonContent.Create(carCreateDto);
+        JsonContent routePostContent = JsonContent.Create(routeCreateDto);
         JsonContent branchPostContent = JsonContent.Create(branchCreateDto);
         JsonContent employeePostContent = JsonContent.Create(employeeCreateDto);
 
-        return new Tuple<JsonContent, JsonContent, JsonContent>(branchPostContent, employeePostContent, carPostContent);
+        return new Tuple<JsonContent, JsonContent, JsonContent>(branchPostContent, employeePostContent, routePostContent);
     }
 }
