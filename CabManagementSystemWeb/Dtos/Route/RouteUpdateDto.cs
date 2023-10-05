@@ -4,8 +4,8 @@ namespace CabManagementSystemWeb.Dtos;
 
 public class RouteUpdateDto : IEntityUpdateDto<Route>
 {
-    public required string FromAddress { get; set; }
-    public required string ToAddress { get; set; }
+    public string FromAddress { get; set; } = string.Empty;
+    public string ToAddress { get; set; } = string.Empty;
     public float? TravelCost {get; set; }
     public required int DriverId { get; set; }
 

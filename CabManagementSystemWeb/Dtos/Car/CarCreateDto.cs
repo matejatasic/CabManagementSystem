@@ -12,7 +12,8 @@ public class CarCreateDto : IEntityCreateDto<Car>
 
     public Car ConvertToEntity()
     {
-        return new Car() {
+        return new Car()
+        {
             Name = Name,
             FuelType = FuelType,
             RegisteredUntil = RegisteredUntil,

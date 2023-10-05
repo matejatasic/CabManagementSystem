@@ -25,12 +25,14 @@ builder.Services.AddScoped<IRepository<Employee, EmployeeCreateDto, EmployeeDeta
 builder.Services.AddScoped<IRepository<Branch, BranchCreateDto, BranchDetailDto>, BranchesRepository>();
 builder.Services.AddScoped<IRepository<Car, CarCreateDto, CarDetailDto>, CarsRepository>();
 builder.Services.AddScoped<IRepository<Route, RouteCreateDto, RouteDetailDto>, RoutesRepository>();
+builder.Services.AddScoped<IRepository<Client, ClientCreateDto, ClientDetailDto>, ClientsRepository>();
 
 builder.Services.AddScoped<IEmployeesService, EmployeesService>();
 builder.Services.AddScoped<IBranchesService, BranchesService>();
 builder.Services.AddScoped<ICarsService, CarsService>();
-builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<IRoutesService, RoutesService>();
+builder.Services.AddScoped<IClientsService, ClientsService>();
+builder.Services.AddScoped<IHashService, HashService>();
 
 var app = builder.Build();
 

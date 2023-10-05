@@ -16,7 +16,8 @@ public class EmployeeDetailDto : IEntityDetailDto<Employee>
 
     public Employee ConvertToEntity(int id)
     {
-        return new Employee() {
+        return new Employee()
+        {
             Id = id,
             Username = Username,
             Password = Password,

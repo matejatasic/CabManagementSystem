@@ -10,7 +10,8 @@ public class BranchUpdateDto : IEntityUpdateDto<Branch>
 
     public Branch ConvertToEntity(int id)
     {
-        return new Branch() {
+        return new Branch()
+        {
             Id = id,
             Name = Name,
             ManagerId = ManagerId

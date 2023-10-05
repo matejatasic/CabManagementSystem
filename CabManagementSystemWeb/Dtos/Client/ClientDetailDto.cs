@@ -3,27 +3,25 @@ using CabManagementSystemWeb.Entities;
 
 namespace CabManagementSystemWeb.Dtos;
 
-public class EmployeeCreateDto : IEntityCreateDto<Employee>
+public class ClientDetailDto : IEntityDetailDto<Client>
 {
+    public required int Id { get; set; }
     public required string Username { get; set; }
     public required string Password { get; set; }
     public required string Email { get; set; }
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
-    public string Address { get; set; } = string.Empty;
-    public required int BranchId { get; set; }
 
-    public Employee ConvertToEntity()
+    public Client ConvertToEntity(int id)
     {
-        return new Employee()
+        return new Client()
         {
+            Id = id,
             Username = Username,
             Password = Password,
             Email = Email,
             FirstName = FirstName,
-            LastName = LastName,
-            Address = Address,
-            BranchId = BranchId
+            LastName = LastName
         };
     }
 }

@@ -127,6 +127,6 @@ public class EmployeesControllerTest : BaseIntegrationTest
         JsonContent branchPostContent = JsonContent.Create(branchCreateDto);
         JsonContent employeePostContent = JsonContent.Create(employeeCreateDto);
 
-        return new Tuple<JsonContent, JsonContent>(branchPostContent, employeePostContent);;
+        return new Tuple<JsonContent, JsonContent>(branchPostContent, employeePostContent);
     }
 }

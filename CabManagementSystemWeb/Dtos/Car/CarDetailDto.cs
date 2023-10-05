@@ -13,7 +13,8 @@ public class CarDetailDto : IEntityDetailDto<Car>
 
     public Car ConvertToEntity(int id)
     {
-        return new Car() {
+        return new Car()
+        {
             Id = id,
             Name = Name,
             FuelType = FuelType,

@@ -10,7 +10,8 @@ public class BranchCreateDto : IEntityCreateDto<Branch>
 
     public Branch ConvertToEntity()
     {
-        return new Branch() {
+        return new Branch()
+        {
             Name = Name,
             ManagerId = ManagerId
         };
