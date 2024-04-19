@@ -1,0 +1,17 @@
+#header {
+    height: 50vh;
+    width: 100vw;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    background-image: url('../assets/images/home-hero.jpg');
+}
+
+#header-text h1 {
+    position: absolute;
+    top: 50%;
+    color: white;
+    font-size: calc(2rem + 1.5vw);
+
+}
