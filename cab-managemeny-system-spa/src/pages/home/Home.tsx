@@ -1,10 +1,12 @@
 import "./Home.scss";
-import Hero from "./Hero";
+import Hero from "../../common/hero/Hero";
+import image from "../../assets/images/home-hero.jpg"
+import Footer from "../../common/Footer";
 
 export default function Home() {
     return (
         <div>
-            <Hero />
+            <Hero image={image} heading="Cab Management System" />
             <main className="container">
                 <div id="content-card" className="mx-auto my-5 p-2">
                     <h2 id="content-card-heading" className="text-center">Welcome to the Cab management system</h2>
@@ -44,9 +46,7 @@ export default function Home() {
                     </div>
                 </div>
             </main>
-            <footer id="footer" className="bg-dark text-white d-flex justify-content-center">
-                <p id="footer-text" className="text-center my-auto">Copyright &#169; Cab management system by matejatasic 2024</p>
-            </footer>
+            <Footer />
         </div>
     );
 }
