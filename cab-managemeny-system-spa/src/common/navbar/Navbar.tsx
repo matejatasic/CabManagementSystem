@@ -23,7 +23,7 @@ export default function Navbar() {
                                 <a className="nav-link" href="#">Login</a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="#">Register</a>
+                                <Link to="/register" className="nav-link">Register</Link>
                             </li>
                         </ul>
                     </div>

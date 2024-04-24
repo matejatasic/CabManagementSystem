@@ -1,16 +1,14 @@
-import "./Home.scss";
 import Hero from "../../common/hero/Hero";
 import image from "../../assets/images/home-hero.jpg"
-import Footer from "../../common/Footer";
+import Footer from "../../common/footer/Footer";
+import ContentCard from "../../common/content-card/ContentCard";
 
 export default function Home() {
     return (
         <div>
             <Hero image={image} heading="Cab Management System" />
-            <main className="container">
-                <div id="content-card" className="mx-auto my-5 p-2">
-                    <h2 id="content-card-heading" className="text-center">Welcome to the Cab management system</h2>
-                    <hr />
+            <main className="container py-5">
+                <ContentCard heading="Welcome to the Cab management system">
                     <div className="text-start">
                         <p>
                             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eos numquam minima
@@ -44,7 +42,7 @@ export default function Home() {
                             auctor non ante.
                         </p>
                     </div>
-                </div>
+                </ContentCard>
             </main>
             <Footer />
         </div>
