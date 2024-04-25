@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 
+import "./Login.scss"
 import ContentCard from "../../common/content-card/ContentCard";
 
 export default function Login() {
     return (
-        <div className="background">
+        <div id="login-background">
             <main className="container d-flex justify-content-center align-items-center">
                 <ContentCard heading="Login">
                     <>

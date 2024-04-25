@@ -4,7 +4,7 @@ import "./Register.scss"
 
 export default function Register() {
     return (
-        <div className="background">
+        <div id="register-background">
             <main className="container d-flex justify-content-center align-items-center">
                 <ContentCard heading="Register">
                     <>
