@@ -1,11 +1,12 @@
-import "./ChangeAccountDetails.scss"
-import ContentCard from "../../common/content-card/ContentCard";
+import { Link } from "react-router-dom";
+import ContentCard from "../../../common/content-card/ContentCard";
+import "./Register.scss"
 
-export default function ChangeAccountDetails() {
+export default function Register() {
     return (
-        <div id="change-account-details-background">
+        <div id="register-background">
             <main className="container d-flex justify-content-center align-items-center">
-                <ContentCard heading="Change Account Details">
+                <ContentCard heading="Register">
                     <>
                         <div className="mb-3">
                             <label className="form-label">Email</label>
@@ -40,7 +41,10 @@ export default function ChangeAccountDetails() {
                             <input type="text" className="form-control" />
                         </div>
 
-                        <button className="btn btn-primary">Update</button>
+                        <div className="my-3">
+                            <Link to="/login">Already have an account? Click Here</Link>
+                        </div>
+                        <button className="btn btn-primary">Register</button>
                     </>
                 </ContentCard>
             </main>

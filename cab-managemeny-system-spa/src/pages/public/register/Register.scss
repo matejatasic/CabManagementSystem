@@ -1,13 +1,13 @@
-#login-background {
+#register-background {
     min-height: 100vh;
     min-width: 100vw;
-    background-image: url("../../assets/images/login.jpg");
+    background-image: url("../../../assets/images/register.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     object-fit: cover;
 }
 
-#login-background main {
+#register-background main {
     min-height: 100vh;
 }

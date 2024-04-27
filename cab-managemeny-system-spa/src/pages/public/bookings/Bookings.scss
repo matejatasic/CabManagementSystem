@@ -1,13 +1,13 @@
-#register-background {
+#bookings-background {
     min-height: 100vh;
     min-width: 100vw;
-    background-image: url("../../assets/images/register.jpg");
+    background-image: url("../../../assets/images/bookings.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     object-fit: cover;
 }
 
-#register-background main {
+#bookings-background main {
     min-height: 100vh;
 }
