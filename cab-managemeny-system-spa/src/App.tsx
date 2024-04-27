@@ -7,6 +7,7 @@ import RentCab from "./pages/cab/RentCab";
 import Register from "./pages/register/Register";
 import Login from "./pages/login/Login";
 import Bookings from "./pages/bookings/Bookings";
+import ChangeAccountDetails from "./pages/change-account-details/ChangeAccountDetails";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/bookings" element={<Bookings />} />
+        <Route path="/change-account-details" element={<ChangeAccountDetails />} />
       </Routes>
     </BrowserRouter>
   );
