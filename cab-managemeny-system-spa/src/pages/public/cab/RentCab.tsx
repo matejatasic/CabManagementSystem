@@ -3,7 +3,7 @@ import { CarFrontFill, Search } from "react-bootstrap-icons";
 import Hero from "../../../common/hero/Hero";
 import image from "../../../assets/images/rent-cab-hero.jpg";
 import Footer from "../../../common/footer/Footer";
-import ContentCard from "../../../common/content-card/ContentCard";
+import ContentCard from "../common/content-card/ContentCard";
 
 export default function RentCab() {
     return (

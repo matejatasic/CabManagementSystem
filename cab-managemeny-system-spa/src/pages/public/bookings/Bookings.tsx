@@ -1,7 +1,7 @@
 import { ArrowUp } from "react-bootstrap-icons";
 
 import "./Bookings.scss"
-import ContentCard from "../../../common/content-card/ContentCard";
+import ContentCard from "../common/content-card/ContentCard";
 
 export default function Bookings() {
     return (

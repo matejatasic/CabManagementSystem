@@ -8,7 +8,7 @@ import ChangeAccountDetails from "./change-account-details/ChangeAccountDetails"
 
 export default function PublicRoutes() {
     return (
-    <Routes>
+      <Routes>
         <Route path="/" element={<Home />}/>
         <Route path="cabs" element={<RentCab />} />
         <Route path="/register" element={<Register />} />

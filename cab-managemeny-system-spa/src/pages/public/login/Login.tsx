@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 import "./Login.scss"
-import ContentCard from "../../../common/content-card/ContentCard";
+import ContentCard from "../common/content-card/ContentCard";
 
 export default function Login() {
     return (

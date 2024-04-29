@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./Sidebar.scss"
 
 export default function Sidebar() {
@@ -6,6 +7,10 @@ export default function Sidebar() {
             label: "Statistics",
             to: ""
         },
+        {
+            label: "Users",
+            to: "users"
+        }
     ];
 
     return (
@@ -17,10 +22,10 @@ export default function Sidebar() {
                 <ul className="nav nav-pills flex-row flex-md-column mb-0 align-items-center align-items-start" id="menu">
                     {sidebarNavItems.map(item => {
                         return (
-                            <li className="nav-item me-2 me-md-0">
-                                <a href={`/admin/${item.to}`} className="nav-link align-middle px-0">
+                            <li className="nav-item me-2 me-md-0" key={item.label}>
+                                <Link to={`/admin/${item.to}`} className="nav-link align-middle px-0">
                                     <span className="ms-1 d-inline">{item.label}</span>
-                                </a>
+                                </Link>
                             </li>
                         );
                     })}

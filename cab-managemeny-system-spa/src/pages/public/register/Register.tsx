@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import ContentCard from "../../../common/content-card/ContentCard";
+import ContentCard from "../common/content-card/ContentCard";
 import "./Register.scss"
 
 export default function Register() {
