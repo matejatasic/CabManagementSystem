@@ -19,7 +19,7 @@ export default function Employees() {
             "Josiah Howell",
             "Ap #516-2320 Non, Road, New Brunswick, USA",
             "(672) 350-7355",
-            "Finance",
+            "Travel",
             "2023-01-22"
         ],
     ];

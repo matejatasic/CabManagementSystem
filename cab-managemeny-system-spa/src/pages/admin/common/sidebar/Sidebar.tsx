@@ -10,7 +10,15 @@ export default function Sidebar() {
         {
             label: "Users",
             to: "users"
-        }
+        },
+        {
+            label: "Employees",
+            to: "employees"
+        },
+        {
+            label: "Cars",
+            to: "cars"
+        },
     ];
 
     return (
