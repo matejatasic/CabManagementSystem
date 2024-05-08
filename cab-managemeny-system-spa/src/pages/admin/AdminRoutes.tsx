@@ -5,6 +5,7 @@ import Users from "./users/Users";
 import Dashboard from "./common/dashboard/Dashboard";
 import Employees from "./employees/Employees";
 import Cars from "./cars/Cars";
+import Bookings from "../bookings/Bookings";
 
 export default function AdminRoutes() {
     return (
@@ -13,6 +14,7 @@ export default function AdminRoutes() {
             <Route path="/users" element={<Dashboard heading="Users"><Users /></Dashboard>} />
             <Route path="/employees" element={<Dashboard heading="Employees"><Employees /></Dashboard>} />
             <Route path="/cars" element={<Dashboard heading="Cars"><Cars /></Dashboard>} />
+            <Route path="/bookings" element={<Dashboard heading="Bookings"><Bookings /></Dashboard>} />
         </Routes>
     );
 }

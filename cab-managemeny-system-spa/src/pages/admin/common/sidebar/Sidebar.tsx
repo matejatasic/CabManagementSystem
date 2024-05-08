@@ -19,6 +19,10 @@ export default function Sidebar() {
             label: "Cars",
             to: "cars"
         },
+        {
+            label: "Bookings",
+            to: "bookings"
+        }
     ];
 
     return (
