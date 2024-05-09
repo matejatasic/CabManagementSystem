@@ -17,6 +17,7 @@ public sealed class ApplicationDbContext : DbContext
             .HasForeignKey<Branch>(b => b.ManagerId);
     }
 
+    public DbSet<User> Users { get; set; }
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Branch> Branches { get; set; }
     public DbSet<Car> Cars { get; set; }

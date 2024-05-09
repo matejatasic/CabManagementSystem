@@ -11,6 +11,7 @@ public class EmployeeUpdateDto : IEntityUpdateDto<Employee>
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
+    public int? UserId { get; set; }
     public int? BranchId { get; set; }
 
     public Employee ConvertToEntity(int id)
@@ -18,12 +19,7 @@ public class EmployeeUpdateDto : IEntityUpdateDto<Employee>
         return new Employee()
         {
             Id = id,
-            Username = Username,
-            Password = Password,
-            Email = Email,
-            FirstName = FirstName,
-            LastName = LastName,
-            Address = Address,
+            UserId = UserId ?? 0,
             BranchId = BranchId ?? 0
         };
     }

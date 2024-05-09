@@ -8,12 +8,8 @@ namespace CabManagementSystemWeb.Entities;
 public class Employee : IEntity
 {
     public int Id { get; set; }
-    public required string Username { get; set; }
-    public required string Password { get; set; }
-    public required string Email { get; set; }
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
-    public string Address { get; set; } = string.Empty;
+    public User? User { get; set; }
+    public required int UserId { get; set; }
     public Branch? Branch { get; set; }
     public required int BranchId { get; set; }
     public DateTime Created { get; set; }
@@ -23,12 +19,13 @@ public class Employee : IEntity
     {
         return new EmployeeDetailDto() {
             Id = Id,
-            Username = Username,
-            Password = Password,
-            Email = Email,
-            FirstName =  FirstName,
-            LastName = LastName,
-            Address = Address,
+            Username = User.Username,
+            Password = User.Password,
+            Email = User.Email,
+            FirstName =  User.FirstName,
+            LastName = User.LastName,
+            Address = User.Address,
+            UserId = UserId,
             BranchId = BranchId
         };
     }

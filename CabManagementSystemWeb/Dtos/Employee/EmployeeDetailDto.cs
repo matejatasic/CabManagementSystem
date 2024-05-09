@@ -12,6 +12,7 @@ public class EmployeeDetailDto : IEntityDetailDto<Employee>
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
+    public required int UserId { get; set; }
     public required int BranchId { get; set; }
 
     public Employee ConvertToEntity(int id)
@@ -19,12 +20,7 @@ public class EmployeeDetailDto : IEntityDetailDto<Employee>
         return new Employee()
         {
             Id = id,
-            Username = Username,
-            Password = Password,
-            Email = Email,
-            FirstName = FirstName,
-            LastName = LastName,
-            Address = Address,
+            UserId = UserId,
             BranchId = BranchId
         };
     }

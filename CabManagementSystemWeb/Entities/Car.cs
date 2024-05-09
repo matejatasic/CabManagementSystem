@@ -9,6 +9,7 @@ public class Car : IEntity
 {
     public int Id { get; set; }
     public required string Name { get; set; }
+    public required int NumberOfSeats { get; set; }
     public required string FuelType { get; set; }
     public DateTime? RegisteredUntil { get; set; }
     public string RegistrationPlates { get; set; } = string.Empty;
@@ -22,6 +23,7 @@ public class Car : IEntity
         return new CarDetailDto() {
             Id = Id,
             Name = Name,
+            NumberOfSeats = NumberOfSeats,
             FuelType = FuelType,
             RegisteredUntil = RegisteredUntil,
             RegistrationPlates = RegistrationPlates,
