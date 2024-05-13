@@ -11,6 +11,20 @@ using CabManagementSystemWeb.Dtos;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string AllowedOrigin = "Localhost origin";
+builder.Services.AddCors(options => {
+    options.AddPolicy(
+        name: AllowedOrigin,
+        builder =>
+        {
+            builder
+                .WithOrigins("http://localhost:8081")
+                .WithMethods("GET", "POST", "PUT", "DELETE")
+                .AllowAnyHeader();
+        }
+    );
+});
+
 // Add services to the container.
 
 builder.Services.AddControllers()
@@ -18,9 +32,11 @@ builder.Services.AddControllers()
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddDbContext<ApplicationDbContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 }, ServiceLifetime.Transient);
+
 builder.Services.AddScoped<IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto>, EmployeesRepository>();
 builder.Services.AddScoped<IRepository<Branch, BranchCreateDto, BranchDetailDto>, BranchesRepository>();
 builder.Services.AddScoped<IRepository<Car, CarCreateDto, CarDetailDto>, CarsRepository>();
@@ -41,6 +57,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.UseCors(AllowedOrigin);
 }
 
 app.UseHttpsRedirection();
