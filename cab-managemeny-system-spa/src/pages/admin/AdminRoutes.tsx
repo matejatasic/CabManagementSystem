@@ -5,7 +5,7 @@ import Users from "./users/Users";
 import Dashboard from "./common/dashboard/Dashboard";
 import Employees from "./employees/Employees";
 import Cars from "./cars/Cars";
-import Bookings from "../bookings/Bookings";
+import Bookings from "./bookings/Bookings";
 
 export default function AdminRoutes() {
     return (

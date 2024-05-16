@@ -1,5 +1,5 @@
-import ContentCard from "../admin/common/content-card/ContentCard";
-import TableContent from "../admin/common/table-content/TableContent";
+import ContentCard from "../common/content-card/ContentCard";
+import TableContent from "../common/table-content/TableContent";
 
 export default function Bookings() {
     const headers = ["Date Booked", "From", "To", "Status"];
