@@ -1,6 +1,6 @@
-import Hero from "../../../common/hero/Hero";
+import Hero from "../../common/hero/Hero";
 import image from "../../../assets/images/home-hero.jpg"
-import Footer from "../../../common/footer/Footer";
+import Footer from "../../common/footer/Footer";
 import ContentCard from "../common/content-card/ContentCard";
 
 export default function Home() {

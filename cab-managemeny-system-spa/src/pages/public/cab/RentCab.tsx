@@ -1,11 +1,35 @@
-import { CarFrontFill, Search } from "react-bootstrap-icons";
+import { useEffect, useState } from "react";
 
-import Hero from "../../../common/hero/Hero";
+import Hero from "../../common/hero/Hero";
 import image from "../../../assets/images/rent-cab-hero.jpg";
-import Footer from "../../../common/footer/Footer";
+import Footer from "../../common/footer/Footer";
 import ContentCard from "../common/content-card/ContentCard";
+import Cab from "../../../modules/cab/Cab";
+import CabCard from "../../../modules/cab/cab-card/CabCard";
+import RentCabProps from "./RentCabProps";
+import CabResponseData from "../../../modules/cab/CabResponseDataType";
 
-export default function RentCab() {
+export default function RentCab(props: RentCabProps) {
+    const { repository } = props;
+    const [cabs, setCabs] = useState<Cab[]>();
+
+    useEffect(() => {
+        repository.getAll()
+            .then((data: CabResponseData[]) => {
+                setCabs(data.map((cab) => new Cab(
+                    cab.id,
+                    cab.name,
+                    cab.numberOfSeats,
+                    cab.fuelType,
+                    cab.registeredUntil,
+                    cab.registrationPlates
+                )));
+            })
+            .catch((error: Error) => {
+                console.log(error);
+            });
+    }, []);
+
     return (
         <div>
             <Hero image={image} heading="Rent a cab" />
@@ -25,66 +49,11 @@ export default function RentCab() {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-12 col-md-4 col-lg-3">
-                                <a href="#" className="text-decoration-none">
-                                    <div className="card mb-3">
-                                        <div className="row g-0">
-                                            <div className="col-12">
-                                                <div className="card-body">
-                                                    <CarFrontFill className="d-inline-block me-2 " />
-                                                    <h5 className="card-title d-inline-block">Skoda Fabia</h5>
-                                                    <p className="card-text">5 Seater</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div className="col-12 col-md-4 col-lg-3">
-                                <a href="#" className="text-decoration-none">
-                                    <div className="card mb-3">
-                                        <div className="row g-0">
-                                            <div className="col-12">
-                                                <div className="card-body">
-                                                    <CarFrontFill className="d-inline-block me-2 " />
-                                                    <h5 className="card-title d-inline-block">Dacia Logan</h5>
-                                                    <p className="card-text">5 Seater</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div className="col-12 col-md-4 col-lg-3">
-                                <a href="#" className="text-decoration-none">
-                                    <div className="card mb-3">
-                                        <div className="row g-0">
-                                            <div className="col-12">
-                                                <div className="card-body">
-                                                    <CarFrontFill className="d-inline-block me-2 " />
-                                                    <h5 className="card-title d-inline-block">Hyundai i10</h5>
-                                                    <p className="card-text">6 Seater</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div className="col-12 col-md-4 col-lg-3">
-                                <a href="#" className="text-decoration-none">
-                                    <div className="card mb-3">
-                                        <div className="row g-0">
-                                            <div className="col-12">
-                                                <div className="card-body">
-                                                    <CarFrontFill className="d-inline-block me-2 " />
-                                                    <h5 className="card-title d-inline-block">Citroen C1</h5>
-                                                    <p className="card-text">6 Seater</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
+                            {cabs?.map(cab => (
+                                <div className="col-12 col-md-4 col-lg-3">
+                                    <CabCard name={cab.name} numberOfSeats={cab.numberOfSeats} />
+                                </div>
+                            ))}
                         </div>
                     </>
                 </ContentCard>
