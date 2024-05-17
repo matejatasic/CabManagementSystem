@@ -1,9 +1,34 @@
+import { useEffect, useState } from "react";
+
 import { ArrowUp } from "react-bootstrap-icons";
 
 import "./Bookings.scss"
 import ContentCard from "../common/content-card/ContentCard";
+import PublicPageProps from "../common/PublicPageProps";
+import IBookingRepository from "../../../modules/bookings/booking-repository/IBookingRepository";
+import Booking from "../../../modules/bookings/Booking";
 
-export default function Bookings() {
+export default function Bookings(props: PublicPageProps<IBookingRepository>) {
+    const { repository } = props;
+    const [bookings, setBookings] = useState<Booking[]>();
+
+    useEffect(() => {
+        repository.getAll()
+            .then(data => {
+                setBookings(data.map(booking => new Booking(
+                    booking.id,
+                    booking.fromAddress,
+                    booking.toAddress,
+                    booking.travelCost
+                )));
+            })
+            .catch((error: Error) => {
+                console.log(error);
+            })
+    }, []);
+
+    const headers = ["Date Booked", "From Address", "To Address", "Status"];
+
     return (
         <div id="bookings-background">
             <main className="container d-flex justify-content-center align-items-center">
@@ -14,42 +39,22 @@ export default function Bookings() {
                                 <table className="table mt-5 mb-4">
                                     <thead>
                                         <tr>
-                                            <th>Date Booked <span className="sort-arrow"><ArrowUp /></span></th>
-                                            <th>From Address <span className="sort-arrow"><ArrowUp /></span></th>
-                                            <th>To Address <span className="sort-arrow"><ArrowUp /></span></th>
-                                            <th>Status <span className="sort-arrow"><ArrowUp /></span></th>
+                                            {headers.map((header, index) => (
+                                                <th key={index}>{ header } <span className="sort-arrow"><ArrowUp /></span></th>
+                                            ))}
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>2023-04-03</td>
-                                            <td>107th St, Chicago</td>
-                                            <td>99th St, Chicago</td>
-                                            <td><span className="badge bg-primary">Pending</span></td>
-                                            <td><button className="btn btn-dark">View Details</button></td>
-                                        </tr>
-                                        <tr>
-                                            <td>2023-04-03</td>
-                                            <td>107th St, Chicago</td>
-                                            <td>99th St, Chicago</td>
-                                            <td><span className="badge bg-primary">Pending</span></td>
-                                            <td><button className="btn btn-dark">View Details</button></td>
-                                        </tr>
-                                        <tr>
-                                            <td>2023-04-03</td>
-                                            <td>107th St, Chicago</td>
-                                            <td>99th St, Chicago</td>
-                                            <td><span className="badge bg-primary">Pending</span></td>
-                                            <td><button className="btn btn-dark">View Details</button></td>
-                                        </tr>
-                                        <tr>
-                                            <td>2023-04-03</td>
-                                            <td>107th St, Chicago</td>
-                                            <td>99th St, Chicago</td>
-                                            <td><span className="badge bg-primary">Pending</span></td>
-                                            <td><button className="btn btn-dark">View Details</button></td>
-                                        </tr>
+                                        {bookings?.map(booking => (
+                                            <tr key={booking.id}>
+                                                <td>2023-04-03</td>
+                                                <td>{booking.fromAddress}</td>
+                                                <td>{booking.toAddress}</td>
+                                                <td><span className="badge bg-primary">Pending</span></td>
+                                                <td><button className="btn btn-dark">View Details</button></td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>

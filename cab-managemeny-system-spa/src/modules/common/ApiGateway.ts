@@ -1,4 +1,4 @@
-export default class ApiGateway<T> {
+export default class ApiGateway {
     private readonly apiDomain: string = process.env.API_DOMAIN ?? '';
     private readonly basePath: string = `${this.apiDomain}`;
 
