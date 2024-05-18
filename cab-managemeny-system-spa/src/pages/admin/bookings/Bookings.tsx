@@ -1,35 +1,36 @@
+import { useEffect, useState } from "react";
+
+import PageProps from "../../common/props/PageProps";
 import ContentCard from "../common/content-card/ContentCard";
 import TableContent from "../common/table-content/TableContent";
+import Booking from "../../../modules/bookings/Booking";
+import IBookingRepository from "../../../modules/bookings/booking-repository/IBookingRepository";
 
-export default function Bookings() {
+export default function Bookings(props: PageProps<IBookingRepository>) {
+    const { repository } = props;
+    const [bookings, setBookings] = useState<Booking[]>();
+
+    useEffect(() => {
+        repository.getAll()
+            .then(data => {
+                setBookings(data.map(booking => new Booking(
+                    booking.id,
+                    booking.fromAddress,
+                    booking.toAddress,
+                    booking.travelCost
+                )));
+            });
+    }, []);
+
     const headers = ["Date Booked", "From", "To", "Status"];
-    const rows = [
-        [
+    const rows = bookings ? bookings.map(booking => {
+        return [
             "2023-04-03",
-            "107th St, Chicago",
-            "99th St, Chicago",
+            booking.fromAddress,
+            booking.toAddress,
             "Pending"
-        ],
-        [
-            "2023-04-03",
-            "107th St, Chicago",
-            "99th St, Chicago",
-            "Pending"
-        ],
-        [
-            "2023-04-03",
-            "107th St, Chicago",
-            "99th St, Chicago",
-            "Pending"
-        ],
-        [
-            "2023-04-03",
-            "107th St, Chicago",
-            "99th St, Chicago",
-            "Pending"
-        ],
-    ];
-
+        ];
+    }) : [];
 
     return (
         <ContentCard>

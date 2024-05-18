@@ -6,11 +6,10 @@ import Footer from "../../common/footer/Footer";
 import ContentCard from "../common/content-card/ContentCard";
 import Cab from "../../../modules/cab/Cab";
 import CabCard from "../../../modules/cab/cab-card/CabCard";
-import CabResponseData from "../../../modules/cab/CabResponseDataType";
-import PublicPageProps from "../common/PublicPageProps";
+import PageProps from "../../common/props/PageProps";
 import ICabRepository from "../../../modules/cab/cab-repository/ICabRepository";
 
-export default function RentCab(props: PublicPageProps<ICabRepository>) {
+export default function RentCab(props: PageProps<ICabRepository>) {
     const { repository } = props;
     const [cabs, setCabs] = useState<Cab[]>();
 

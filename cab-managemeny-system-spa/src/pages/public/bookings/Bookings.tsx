@@ -4,11 +4,11 @@ import { ArrowUp } from "react-bootstrap-icons";
 
 import "./Bookings.scss"
 import ContentCard from "../common/content-card/ContentCard";
-import PublicPageProps from "../common/PublicPageProps";
+import PageProps from "../../common/props/PageProps";
 import IBookingRepository from "../../../modules/bookings/booking-repository/IBookingRepository";
 import Booking from "../../../modules/bookings/Booking";
 
-export default function Bookings(props: PublicPageProps<IBookingRepository>) {
+export default function Bookings(props: PageProps<IBookingRepository>) {
     const { repository } = props;
     const [bookings, setBookings] = useState<Booking[]>();
 
