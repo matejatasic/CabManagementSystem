@@ -1,6 +1,5 @@
 using CabManagementSystemWeb.Data;
 using CabManagementSystemWeb.Dtos;
-using CabManagementSystemWeb.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CabManagementSystemWeb.Repositories;
