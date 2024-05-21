@@ -22,5 +22,4 @@ public sealed class ApplicationDbContext : DbContext
     public DbSet<Branch> Branches { get; set; }
     public DbSet<Car> Cars { get; set; }
     public DbSet<Route> Routes { get; set; }
-    public DbSet<Client> Clients { get; set; }
 }
