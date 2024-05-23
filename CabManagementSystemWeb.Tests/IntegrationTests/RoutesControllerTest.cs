@@ -32,21 +32,6 @@ public class RoutesControllerTest : BaseIntegrationTest
     {
         await InitializeClient();
 
-        // BranchCreateDto branchCreateDto = _fixture.Build<BranchCreateDto>()
-        //     .Without(b => b.ManagerId).Create();
-        // EmployeeCreateDto employeeCreateDto = _fixture.Build<EmployeeCreateDto>()
-        //     .With(e => e.BranchId, 1).Create();
-        // RouteCreateDto routeCreateDto = _fixture.Build<RouteCreateDto>()
-        //     .With(r => r.DriverId, 1)
-        //     .Create();
-
-        // JsonContent branchPostContent = JsonContent.Create(branchCreateDto);
-        // JsonContent employeePostContent = JsonContent.Create(employeeCreateDto);
-        // JsonContent routePostContent = JsonContent.Create(routeCreateDto);
-
-        // var response1 = await _client.PostAsync($"{_branchRouteUrl}", branchPostContent);
-        // var response2 = await _client.PostAsync($"{_employeeRouteUrl}", employeePostContent);
-
         var response = await CreateNeededEntities();
 
         var content = await response.Content.ReadAsStringAsync();
