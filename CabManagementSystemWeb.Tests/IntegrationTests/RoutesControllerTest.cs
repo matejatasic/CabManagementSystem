@@ -12,16 +12,19 @@ public class RoutesControllerTest : BaseIntegrationTest
     private string _routeRoute = "/routes";
     private string _employeeRoute = "/employees";
     private string _branchRoute = "/branches";
+    private string _userRoute = "/users";
 
     private string _routeRouteUrl;
     private string _employeeRouteUrl;
     private string _branchRouteUrl;
+    private string _userRouteUrl;
 
     public RoutesControllerTest() : base()
     {
         _routeRouteUrl = _routePrefix + _routeRoute;
         _employeeRouteUrl = _routePrefix + _employeeRoute;
         _branchRouteUrl = _routePrefix + _branchRoute;
+        _userRouteUrl = _routePrefix + _userRoute;
     }
 
     [Fact]
@@ -29,22 +32,22 @@ public class RoutesControllerTest : BaseIntegrationTest
     {
         await InitializeClient();
 
-        BranchCreateDto branchCreateDto = _fixture.Build<BranchCreateDto>()
-            .Without(b => b.ManagerId).Create();
-        EmployeeCreateDto employeeCreateDto = _fixture.Build<EmployeeCreateDto>()
-            .With(e => e.BranchId, 1).Create();
-        RouteCreateDto routeCreateDto = _fixture.Build<RouteCreateDto>()
-            .With(r => r.DriverId, 1)
-            .Create();
+        // BranchCreateDto branchCreateDto = _fixture.Build<BranchCreateDto>()
+        //     .Without(b => b.ManagerId).Create();
+        // EmployeeCreateDto employeeCreateDto = _fixture.Build<EmployeeCreateDto>()
+        //     .With(e => e.BranchId, 1).Create();
+        // RouteCreateDto routeCreateDto = _fixture.Build<RouteCreateDto>()
+        //     .With(r => r.DriverId, 1)
+        //     .Create();
 
-        JsonContent branchPostContent = JsonContent.Create(branchCreateDto);
-        JsonContent employeePostContent = JsonContent.Create(employeeCreateDto);
-        JsonContent routePostContent = JsonContent.Create(routeCreateDto);
+        // JsonContent branchPostContent = JsonContent.Create(branchCreateDto);
+        // JsonContent employeePostContent = JsonContent.Create(employeeCreateDto);
+        // JsonContent routePostContent = JsonContent.Create(routeCreateDto);
 
-        var response1 = await _client.PostAsync($"{_branchRouteUrl}", branchPostContent);
-        var response2 = await _client.PostAsync($"{_employeeRouteUrl}", employeePostContent);
+        // var response1 = await _client.PostAsync($"{_branchRouteUrl}", branchPostContent);
+        // var response2 = await _client.PostAsync($"{_employeeRouteUrl}", employeePostContent);
 
-        var response = await _client.PostAsync($"{_routeRouteUrl}", routePostContent);
+        var response = await CreateNeededEntities();
 
         var content = await response.Content.ReadAsStringAsync();
 
@@ -127,29 +130,36 @@ public class RoutesControllerTest : BaseIntegrationTest
         Assert.Empty(getAllDeserializedContent);
     }
 
-    private async Task CreateNeededEntities()
+    private async Task<HttpResponseMessage> CreateNeededEntities()
     {
-        var (branchPostContent, employeePostContent, routePostContent) = GetPostContent();
+        var (branchPostContent, userPostContent, employeePostContent, routePostContent) = GetPostContent();
 
         await _client.PostAsync($"{_branchRouteUrl}", branchPostContent);
+        await _client.PostAsync($"{_userRouteUrl}", userPostContent);
         await _client.PostAsync($"{_employeeRouteUrl}", employeePostContent);
-        await _client.PostAsync($"{_routeRouteUrl}", routePostContent);
+        var response = await _client.PostAsync($"{_routeRouteUrl}", routePostContent);
+
+        return response;
     }
 
-    private Tuple<JsonContent, JsonContent, JsonContent> GetPostContent()
+    private Tuple<JsonContent, JsonContent, JsonContent, JsonContent> GetPostContent()
     {
         BranchCreateDto branchCreateDto = _fixture.Build<BranchCreateDto>()
             .Without(b => b.ManagerId).Create();
+        UserCreateDto userCreateDto = _fixture.Build<UserCreateDto>().Create();
         EmployeeCreateDto employeeCreateDto = _fixture.Build<EmployeeCreateDto>()
-            .With(e => e.BranchId, 1).Create();
+            .With(e => e.BranchId, 1)
+            .With(e => e.UserId, 1)
+            .Create();
         RouteCreateDto routeCreateDto = _fixture.Build<RouteCreateDto>()
             .With(r => r.DriverId, 1)
             .Create();
 
         JsonContent routePostContent = JsonContent.Create(routeCreateDto);
         JsonContent branchPostContent = JsonContent.Create(branchCreateDto);
+        JsonContent userPostContent = JsonContent.Create(userCreateDto);
         JsonContent employeePostContent = JsonContent.Create(employeeCreateDto);
 
-        return new Tuple<JsonContent, JsonContent, JsonContent>(branchPostContent, employeePostContent, routePostContent);
+        return new Tuple<JsonContent, JsonContent, JsonContent, JsonContent>(branchPostContent, userPostContent, employeePostContent, routePostContent);
     }
 }

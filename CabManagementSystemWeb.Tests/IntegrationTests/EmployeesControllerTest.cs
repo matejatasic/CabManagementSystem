@@ -11,13 +11,16 @@ public class EmployeesControllerTest : BaseIntegrationTest
 {
     private string _employeeRoute = "/employees";
     private string _branchRoute = "/branches";
+    private string _userRoute = "/users";
     private string _employeeRouteUrl;
     private string _branchRouteUrl;
+    private string _userRouteUrl;
 
     public EmployeesControllerTest() : base()
     {
         _employeeRouteUrl = _routePrefix + _employeeRoute;
         _branchRouteUrl = _routePrefix + _branchRoute;
+        _userRouteUrl = _routePrefix + _userRoute;
     }
 
     [Fact]
@@ -25,9 +28,10 @@ public class EmployeesControllerTest : BaseIntegrationTest
     {
         await InitializeClient();
 
-        var (branchPostContent, employeePostContent) = GetPostContent();
+        var (branchPostContent, userPostContent, employeePostContent) = GetPostContent();
 
         await _client.PostAsync($"{_branchRouteUrl}", branchPostContent);
+        await _client.PostAsync($"{_userRouteUrl}", userPostContent);
 
         var response = await _client.PostAsync($"{_employeeRouteUrl}", employeePostContent);
         var content = await response.Content.ReadAsStringAsync();
@@ -75,9 +79,13 @@ public class EmployeesControllerTest : BaseIntegrationTest
         await InitializeClient();
 
         await CreateNeededEntities();
-        string updatedUsername = "UpdatedUsername";
+
+        UserCreateDto userCreateDto2 = _fixture.Build<UserCreateDto>().Create();
+        JsonContent userPostContent2 = JsonContent.Create(userCreateDto2);
+        await _client.PostAsync($"{_userRouteUrl}", userPostContent2);
+
         EmployeeUpdateDto employeeUpdateDto = _fixture.Build<EmployeeUpdateDto>()
-            .With(e => e.Username, updatedUsername)
+            .With(e => e.UserId, 2)
             .With(e => e.BranchId, 1)
             .Create();
         JsonContent employeePutContent = JsonContent.Create(employeeUpdateDto);
@@ -89,7 +97,7 @@ public class EmployeesControllerTest : BaseIntegrationTest
             .Deserialize<EmployeeDetailDto>(getByIdContent, _jsonSerializerOptions);
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
-        Assert.Equal(updatedUsername, getByIdDeserializedContent.Username);
+        Assert.Equal(2, getByIdDeserializedContent.UserId);
     }
 
     [Fact]
@@ -112,21 +120,26 @@ public class EmployeesControllerTest : BaseIntegrationTest
 
     private async Task CreateNeededEntities()
     {
-        var (branchPostContent, employeePostContent) = GetPostContent();
+        var (branchPostContent, userPostContent, employeePostContent) = GetPostContent();
 
         await _client.PostAsync($"{_branchRouteUrl}", branchPostContent);
+        await _client.PostAsync($"{_userRouteUrl}", userPostContent);
         await _client.PostAsync($"{_employeeRouteUrl}", employeePostContent);
     }
 
-    private Tuple<JsonContent, JsonContent> GetPostContent()
+    private Tuple<JsonContent, JsonContent, JsonContent> GetPostContent()
     {
         BranchCreateDto branchCreateDto = _fixture.Build<BranchCreateDto>()
             .Without(b => b.ManagerId).Create();
+        UserCreateDto userCreateDto = _fixture.Build<UserCreateDto>().Create();
         EmployeeCreateDto employeeCreateDto = _fixture.Build<EmployeeCreateDto>()
-            .With(e => e.BranchId, 1).Create();
+            .With(e => e.BranchId, 1)
+            .With(e => e.UserId, 1)
+            .Create();
         JsonContent branchPostContent = JsonContent.Create(branchCreateDto);
+        JsonContent userPostContent = JsonContent.Create(userCreateDto);
         JsonContent employeePostContent = JsonContent.Create(employeeCreateDto);
 
-        return new Tuple<JsonContent, JsonContent>(branchPostContent, employeePostContent);
+        return new Tuple<JsonContent, JsonContent, JsonContent>(branchPostContent, userPostContent, employeePostContent);
     }
 }

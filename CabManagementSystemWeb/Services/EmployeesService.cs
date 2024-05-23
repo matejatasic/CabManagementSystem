@@ -10,17 +10,17 @@ public class EmployeesService : IEmployeesService
 {
     private readonly IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> _repository;
     private readonly IRepository<Branch, BranchCreateDto, BranchDetailDto> _branchesRepository;
-    private readonly IHashService _hashService;
+    private readonly IRepository<User, UserCreateDto, UserDetailDto> _usersRepository;
 
     public EmployeesService(
         IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> repository,
         IRepository<Branch, BranchCreateDto, BranchDetailDto> branchesRepository,
-        IHashService hashService
+        IRepository<User, UserCreateDto, UserDetailDto> usersRepository
     )
     {
         _repository = repository;
         _branchesRepository = branchesRepository;
-        _hashService = hashService;
+        _usersRepository = usersRepository;
     }
 
     public async Task<IEnumerable<EmployeeDetailDto>> GetAll()
@@ -42,12 +42,16 @@ public class EmployeesService : IEmployeesService
 
     public async Task<EmployeeDetailDto> Create(EmployeeCreateDto employeeCreateDto)
     {
-        if (await GetBranchById(employeeCreateDto.BranchId) == null)
+        if (
+            await GetBranchById(employeeCreateDto.BranchId) == null
+        )
         {
             throw new NotFoundException($"The branch with the id {employeeCreateDto.BranchId} does not exist");
         }
 
-        employeeCreateDto.Password = _hashService.HashPassword(employeeCreateDto.Password);
+        if (await GetUserById(employeeCreateDto.UserId) == null) {
+            throw new NotFoundException($"The user with the id {employeeCreateDto.UserId} does not exist");
+        }
 
         return await _repository.Create(employeeCreateDto);
     }
@@ -66,7 +70,9 @@ public class EmployeesService : IEmployeesService
             throw new NotFoundException($"The branch with id {employeeUpdateDto.BranchId} does not exist");
         }
 
-        employeeUpdateDto.Password = _hashService.HashPassword(employeeUpdateDto.Password);
+        if (employeeUpdateDto.UserId != null && await GetUserById(employeeDetailDto.UserId) == null) {
+            throw new NotFoundException($"The user with the id {employeeUpdateDto.UserId} does not exist");
+        }
 
         employeeDetailDto = await _repository.Update(employeeUpdateDto.ConvertToEntity(id));
 
@@ -76,6 +82,11 @@ public class EmployeesService : IEmployeesService
     private async Task<BranchDetailDto?> GetBranchById(int id)
     {
         return await _branchesRepository.GetById(id);
+    }
+
+    private async Task<UserDetailDto?> GetUserById(int id)
+    {
+        return await _usersRepository.GetById(id);
     }
 
     public async Task<EmployeeDetailDto> Delete(int id)

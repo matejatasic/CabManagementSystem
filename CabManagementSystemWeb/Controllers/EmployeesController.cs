@@ -44,7 +44,6 @@ public class EmployeesController : ControllerBase
     {
         try {
             EmployeeDetailDto employeeDetailDto = await _employeesService.Create(employeeCreateDto);
-
             return CreatedAtAction(nameof(GetAll), new { id = employeeDetailDto.Id }, employeeDetailDto);
         }
         catch(NotFoundException exception)

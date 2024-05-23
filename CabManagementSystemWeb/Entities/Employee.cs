@@ -19,12 +19,6 @@ public class Employee : IEntity
     {
         return new EmployeeDetailDto() {
             Id = Id,
-            Username = User.Username,
-            Password = User.Password,
-            Email = User.Email,
-            FirstName =  User.FirstName,
-            LastName = User.LastName,
-            Address = User.Address,
             UserId = UserId,
             BranchId = BranchId
         };

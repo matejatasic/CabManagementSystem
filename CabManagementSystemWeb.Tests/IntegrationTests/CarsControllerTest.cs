@@ -4,6 +4,7 @@ using System.Text.Json;
 using AutoFixture;
 
 using CabManagementSystemWeb.Dtos;
+using CabManagementSystemWeb.Entities;
 
 namespace CabManagementSystemWeb.Tests.Controllers;
 
@@ -12,16 +13,19 @@ public class CarsControllerTest : BaseIntegrationTest
     private string _carRoute = "/cars";
     private string _employeeRoute = "/employees";
     private string _branchRoute = "/branches";
+    private string _userRoute = "/users";
 
     private string _carRouteUrl;
     private string _employeeRouteUrl;
     private string _branchRouteUrl;
+    private string _userRouteUrl;
 
     public CarsControllerTest() : base()
     {
         _carRouteUrl = _routePrefix + _carRoute;
         _employeeRouteUrl = _routePrefix + _employeeRoute;
         _branchRouteUrl = _routePrefix + _branchRoute;
+        _userRouteUrl = _routePrefix + _userRoute;
     }
 
     [Fact]
@@ -29,24 +33,7 @@ public class CarsControllerTest : BaseIntegrationTest
     {
         await InitializeClient();
 
-        BranchCreateDto branchCreateDto = _fixture.Build<BranchCreateDto>()
-            .Without(b => b.ManagerId).Create();
-        EmployeeCreateDto employeeCreateDto = _fixture.Build<EmployeeCreateDto>()
-            .With(e => e.BranchId, 1).Create();
-        CarCreateDto carCreateDto = _fixture.Build<CarCreateDto>()
-            .With(c => c.DriverId, 1)
-            .Without(c => c.RegisteredUntil)
-            .Create();
-
-        JsonContent branchPostContent = JsonContent.Create(branchCreateDto);
-        JsonContent employeePostContent = JsonContent.Create(employeeCreateDto);
-        JsonContent carPostContent = JsonContent.Create(carCreateDto);
-
-        var response1 = await _client.PostAsync($"{_branchRouteUrl}", branchPostContent);
-        var response2 = await _client.PostAsync($"{_employeeRouteUrl}", employeePostContent);
-
-        var response = await _client.PostAsync($"{_carRouteUrl}", carPostContent);
-
+        var response = await CreateNeededEntities();
         var content = await response.Content.ReadAsStringAsync();
 
         CarDetailDto deserializedContent = JsonSerializer.Deserialize<CarDetailDto>(content, _jsonSerializerOptions);
@@ -128,21 +115,27 @@ public class CarsControllerTest : BaseIntegrationTest
         Assert.Empty(getAllDeserializedContent);
     }
 
-    private async Task CreateNeededEntities()
+    private async Task<HttpResponseMessage> CreateNeededEntities()
     {
-        var (branchPostContent, employeePostContent, carPostContent) = GetPostContent();
+        var (branchPostContent, userPostContent, employeePostContent, carPostContent) = GetPostContent();
 
         await _client.PostAsync($"{_branchRouteUrl}", branchPostContent);
+        await _client.PostAsync($"{_userRouteUrl}", userPostContent);
         await _client.PostAsync($"{_employeeRouteUrl}", employeePostContent);
-        await _client.PostAsync($"{_carRouteUrl}", carPostContent);
+        var response = await _client.PostAsync($"{_carRouteUrl}", carPostContent);
+
+        return response;
     }
 
-    private Tuple<JsonContent, JsonContent, JsonContent> GetPostContent()
+    private Tuple<JsonContent, JsonContent, JsonContent, JsonContent> GetPostContent()
     {
         BranchCreateDto branchCreateDto = _fixture.Build<BranchCreateDto>()
             .Without(b => b.ManagerId).Create();
+        UserCreateDto userCreateDto = _fixture.Build<UserCreateDto>().Create();
         EmployeeCreateDto employeeCreateDto = _fixture.Build<EmployeeCreateDto>()
-            .With(e => e.BranchId, 1).Create();
+            .With(e => e.BranchId, 1)
+            .With(e => e.UserId, 1)
+            .Create();
         CarCreateDto carCreateDto = _fixture.Build<CarCreateDto>()
             .With(c => c.DriverId, 1)
             .With(c => c.RegisteredUntil, DateTime.UtcNow)
@@ -150,8 +143,9 @@ public class CarsControllerTest : BaseIntegrationTest
 
         JsonContent carPostContent = JsonContent.Create(carCreateDto);
         JsonContent branchPostContent = JsonContent.Create(branchCreateDto);
+        JsonContent userPostContent = JsonContent.Create(userCreateDto);
         JsonContent employeePostContent = JsonContent.Create(employeeCreateDto);
 
-        return new Tuple<JsonContent, JsonContent, JsonContent>(branchPostContent, employeePostContent, carPostContent);
+        return new Tuple<JsonContent, JsonContent, JsonContent, JsonContent>(branchPostContent, userPostContent, employeePostContent, carPostContent);
     }
 }
