@@ -9,8 +9,8 @@ import ChangeAccountDetails from "./change-account-details/ChangeAccountDetails"
 import CabRepository from "../../modules/cab/cab-repository/CabRepository";
 import CabGateway from "../../modules/cab/cab-gateway/CabGateway";
 import ApiGateway from "../../modules/common/ApiGateway";
-import BookingRepository from "../../modules/bookings/booking-repository/BookingRepository";
-import BookingGateway from "../../modules/bookings/booking-gateway/BookingGateway";
+import BookingRepository from "../../modules/booking/booking-repository/BookingRepository";
+import BookingGateway from "../../modules/booking/booking-gateway/BookingGateway";
 
 export default function PublicRoutes() {
     return (
