@@ -16,6 +16,10 @@ export default function Sidebar() {
             to: "employees"
         },
         {
+            label: "Branches",
+            to: "branches"
+        },
+        {
             label: "Cars",
             to: "cars"
         },

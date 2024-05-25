@@ -15,6 +15,7 @@ import EmployeeRepository from "../../modules/employee/employee-repository/Emplo
 import EmployeeGateway from "../../modules/employee/employee-gateway/EmployeeGateway";
 import BranchRepository from "../../modules/branch/branch-repository/BranchRepository";
 import BranchGateway from "../../modules/branch/branch-gateway/BranchGateway";
+import Branches from "./branches/Branches";
 
 export default function AdminRoutes() {
     return (
@@ -30,6 +31,14 @@ export default function AdminRoutes() {
                     />
                 </Dashboard>
             } />
+            <Route path="/branches" element={
+                <Dashboard heading="Branches">
+                    <Branches
+                        repository={new BranchRepository(new BranchGateway(new ApiGateway()))}
+                        userRepository={new UserRepository(new UserGateway(new ApiGateway()))}
+                        employeeRepository={new EmployeeRepository(new EmployeeGateway(new ApiGateway()))}
+                    />
+                </Dashboard>} />
             <Route path="/cars" element={<Dashboard heading="Cars"><Cars /></Dashboard>} />
             <Route path="/bookings" element={<Dashboard heading="Bookings"><Bookings repository={new BookingRepository(new BookingGateway(new ApiGateway()))} /></Dashboard>} />
         </Routes>
