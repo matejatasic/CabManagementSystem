@@ -1,5 +1,5 @@
 export default class User {
-    id: number;
+    public id: number;
     public username: string;
     public email: string;
     public firstName: string;
