@@ -5,6 +5,7 @@ export default class Cab {
     public fuelType: string;
     public registeredUntil: string;
     public registrationPlates: string;
+    public driverId: number;
 
     constructor(
         id: number,
@@ -13,6 +14,7 @@ export default class Cab {
         fuelType: string,
         registeredUntil: string,
         registrationPlates: string,
+        driverId: number
     ) {
         this.id = id;
         this.name = name;
@@ -20,5 +22,6 @@ export default class Cab {
         this.fuelType = fuelType;
         this.registeredUntil = registeredUntil;
         this.registrationPlates = registrationPlates;
+        this.driverId = driverId;
     }
 }

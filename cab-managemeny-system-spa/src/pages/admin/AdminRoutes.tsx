@@ -16,6 +16,8 @@ import EmployeeGateway from "../../modules/employee/employee-gateway/EmployeeGat
 import BranchRepository from "../../modules/branch/branch-repository/BranchRepository";
 import BranchGateway from "../../modules/branch/branch-gateway/BranchGateway";
 import Branches from "./branches/Branches";
+import CabRepository from "../../modules/cab/cab-repository/CabRepository";
+import CabGateway from "../../modules/cab/cab-gateway/CabGateway";
 
 export default function AdminRoutes() {
     return (
@@ -38,8 +40,17 @@ export default function AdminRoutes() {
                         userRepository={new UserRepository(new UserGateway(new ApiGateway()))}
                         employeeRepository={new EmployeeRepository(new EmployeeGateway(new ApiGateway()))}
                     />
-                </Dashboard>} />
-            <Route path="/cars" element={<Dashboard heading="Cars"><Cars /></Dashboard>} />
+                </Dashboard>
+            } />
+            <Route path="/cars" element={
+                <Dashboard heading="Cars">
+                    <Cars
+                        repository={new CabRepository(new CabGateway(new ApiGateway()))}
+                        employeeRepository={new EmployeeRepository(new EmployeeGateway(new ApiGateway()))}
+                        userRepository={new UserRepository(new UserGateway(new ApiGateway()))}
+                    />
+                </Dashboard>
+            } />
             <Route path="/bookings" element={<Dashboard heading="Bookings"><Bookings repository={new BookingRepository(new BookingGateway(new ApiGateway()))} /></Dashboard>} />
         </Routes>
     );

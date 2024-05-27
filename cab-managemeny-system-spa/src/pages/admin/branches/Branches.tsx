@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import ContentCard from "../common/content-card/ContentCard";
 import TableContent from "../common/table-content/TableContent";
 import BranchesProps from "./BranchesProps";
@@ -69,10 +70,6 @@ export default function Branches(props: BranchesProps) {
     const rows = branches ? branches.map(branch => {
         const employee = employees?.find(employee => branch.managerId === employee.id);
         const user = employee ? users?.find(user => user.id === employee.branchId) : null;
-
-        const result = [
-            branch.name,
-        ];
 
         return [
             branch.name,

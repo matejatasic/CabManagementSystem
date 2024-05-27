@@ -22,7 +22,8 @@ export default function RentCab(props: PageProps<ICabRepository>) {
                     cab.numberOfSeats,
                     cab.fuelType,
                     cab.registeredUntil,
-                    cab.registrationPlates
+                    cab.registrationPlates,
+                    cab.driverId
                 )));
             })
             .catch((error: Error) => {
