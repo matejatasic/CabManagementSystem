@@ -19,7 +19,8 @@ public class Branch : IEntity
 
     public BranchDetailDto ConvertToDetailDto()
     {
-        return new BranchDetailDto() {
+        return new BranchDetailDto()
+        {
             Id = Id,
             Name = Name,
             ManagerId = ManagerId,

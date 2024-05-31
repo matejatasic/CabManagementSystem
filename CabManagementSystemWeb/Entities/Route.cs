@@ -18,7 +18,8 @@ public class Route : IEntity
 
     public RouteDetailDto ConvertToDetailDto()
     {
-        return new RouteDetailDto() {
+        return new RouteDetailDto()
+        {
             Id = Id,
             FromAddress = FromAddress,
             ToAddress = ToAddress,

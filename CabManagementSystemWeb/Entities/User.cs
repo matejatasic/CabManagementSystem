@@ -21,7 +21,8 @@ public class User: IEntity
 
     public UserDetailDto ConvertToDetailDto()
     {
-        return new UserDetailDto() {
+        return new UserDetailDto()
+        {
             Id = Id,
             Username = Username,
             Password = Password,

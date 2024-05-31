@@ -17,7 +17,8 @@ public class Employee : IEntity
 
     public EmployeeDetailDto ConvertToDetailDto()
     {
-        return new EmployeeDetailDto() {
+        return new EmployeeDetailDto()
+        {
             Id = Id,
             UserId = UserId,
             BranchId = BranchId

@@ -64,11 +64,13 @@ where TDbContext : DbContext
         return services;
     }
 
-    public async Task InitializeAsync() {
+    public async Task InitializeAsync()
+    {
        await _container.StartAsync();
     }
 
-    public new async Task DisposeAsync() {
+    public new async Task DisposeAsync()
+    {
         await _container.DisposeAsync();
     }
 }

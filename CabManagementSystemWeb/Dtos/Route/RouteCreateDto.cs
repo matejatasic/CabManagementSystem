@@ -11,7 +11,8 @@ public class RouteCreateDto : IEntityCreateDto<Route>
 
     public Route ConvertToEntity()
     {
-        return new Route() {
+        return new Route()
+        {
             FromAddress = FromAddress,
             ToAddress = ToAddress,
             TravelCost = TravelCost,

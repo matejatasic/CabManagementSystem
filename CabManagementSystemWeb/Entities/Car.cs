@@ -20,7 +20,8 @@ public class Car : IEntity
 
     public CarDetailDto ConvertToDetailDto()
     {
-        return new CarDetailDto() {
+        return new CarDetailDto()
+        {
             Id = Id,
             Name = Name,
             NumberOfSeats = NumberOfSeats,

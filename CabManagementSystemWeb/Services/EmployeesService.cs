@@ -49,7 +49,8 @@ public class EmployeesService : IEmployeesService
             throw new NotFoundException($"The branch with the id {employeeCreateDto.BranchId} does not exist");
         }
 
-        if (await GetUserById(employeeCreateDto.UserId) == null) {
+        if (await GetUserById(employeeCreateDto.UserId) == null)
+        {
             throw new NotFoundException($"The user with the id {employeeCreateDto.UserId} does not exist");
         }
 
@@ -70,7 +71,8 @@ public class EmployeesService : IEmployeesService
             throw new NotFoundException($"The branch with id {employeeUpdateDto.BranchId} does not exist");
         }
 
-        if (employeeUpdateDto.UserId != null && await GetUserById(employeeDetailDto.UserId) == null) {
+        if (employeeUpdateDto.UserId != null && await GetUserById(employeeDetailDto.UserId) == null)
+        {
             throw new NotFoundException($"The user with the id {employeeUpdateDto.UserId} does not exist");
         }
 
