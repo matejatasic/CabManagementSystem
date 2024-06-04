@@ -8,6 +8,8 @@ using CabManagementSystemWeb.Repositories;
 using CabManagementSystemWeb.Entities;
 using CabManagementSystemWeb.Contracts;
 using CabManagementSystemWeb.Dtos;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using CabManagementSystemWeb.OptionsSetup;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +52,12 @@ builder.Services.AddScoped<IRoutesService, RoutesService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IHashService, HashService>();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer();
+
+builder.Services.ConfigureOptions<JwtOptionsSetup>();
+builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -62,6 +70,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
