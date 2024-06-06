@@ -29,6 +29,11 @@ public class RoutesRepository : IRepository<Route, RouteCreateDto, RouteDetailDt
         return route?.ConvertToDetailDto();
     }
 
+    public async Task<RouteDetailDto?> GetBy(string property, object value)
+    {
+        return null;
+    }
+
     public async Task<RouteDetailDto> Create(RouteCreateDto routeDto)
     {
         Route route = routeDto.ConvertToEntity();

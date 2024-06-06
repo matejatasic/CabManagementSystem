@@ -16,11 +16,6 @@ public class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOptions>
         _jwtOptions = jwtOptions.Value;
     }
 
-    public void Configure(string? name, JwtBearerOptions options)
-    {
-
-    }
-
     public void Configure(JwtBearerOptions options)
     {
         options.TokenValidationParameters = new()
@@ -35,5 +30,10 @@ public class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOptions>
                 Encoding.UTF8.GetBytes(_jwtOptions.SecretKey)
             )
         };
+    }
+
+    public void Configure(string? name, JwtBearerOptions options)
+    {
+        Configure(options);
     }
 }

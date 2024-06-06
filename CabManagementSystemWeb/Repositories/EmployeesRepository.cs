@@ -29,6 +29,11 @@ public class EmployeesRepository : IRepository<Employee, EmployeeCreateDto, Empl
         return employees?.ConvertToDetailDto();
     }
 
+    public async Task<EmployeeDetailDto?> GetBy(string property, object value)
+    {
+        return null;
+    }
+
     public async Task<EmployeeDetailDto> Create(EmployeeCreateDto employeeDto)
     {
         Employee employee = employeeDto.ConvertToEntity();

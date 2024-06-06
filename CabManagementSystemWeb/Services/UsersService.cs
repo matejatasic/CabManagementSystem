@@ -39,6 +39,19 @@ public class UsersService : IUsersService
 
     public async Task<UserDetailDto> Create(UserCreateDto userCreateDto)
     {
+        bool usernameExists = await _repository.GetBy("username", userCreateDto.Username) == null;
+        bool emailExists = await _repository.GetBy("email", userCreateDto.Email) == null;
+
+        if (usernameExists)
+        {
+            throw new ArgumentException($"The user with the username {userCreateDto.Username} already exists.");
+        }
+
+        if (emailExists)
+        {
+            throw new ArgumentException($"The user with the email {userCreateDto.Email} already exists");
+        }
+
         userCreateDto.Password = _hashService.HashPassword(userCreateDto.Password);
 
         return await _repository.Create(userCreateDto);
@@ -69,7 +82,7 @@ public class UsersService : IUsersService
             throw new NotFoundException($"The user with id {id} does not exist");
         }
 
-        await _repository.Delete(userDetailDto.ConvertToEntity(id));
+        await _repository.Delete(userDetailDto.ConvertToEntity());
 
         return userDetailDto;
     }

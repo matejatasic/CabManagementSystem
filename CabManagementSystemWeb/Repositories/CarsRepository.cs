@@ -27,6 +27,10 @@ public class CarsRepository : IRepository<Car, CarCreateDto, CarDetailDto>
 
         return car?.ConvertToDetailDto();
     }
+    public async Task<CarDetailDto?> GetBy(string property, object value)
+    {
+        return null;
+    }
 
     public async Task<CarDetailDto> Create(CarCreateDto carDto)
     {

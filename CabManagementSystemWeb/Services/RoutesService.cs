@@ -81,7 +81,7 @@ public class RoutesService : IRoutesService
             throw new NotFoundException($"The route with id {id} does not exist");
         }
 
-        await _repository.Delete(routeDetailDto.ConvertToEntity(id));
+        await _repository.Delete(routeDetailDto.ConvertToEntity());
 
         return routeDetailDto;
     }

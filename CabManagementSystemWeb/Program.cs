@@ -10,6 +10,7 @@ using CabManagementSystemWeb.Contracts;
 using CabManagementSystemWeb.Dtos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using CabManagementSystemWeb.OptionsSetup;
+using AuthenticationApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,8 @@ builder.Services.AddScoped<ICarsService, CarsService>();
 builder.Services.AddScoped<IRoutesService, RoutesService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IHashService, HashService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IJwtProviderService, JwtProviderService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer();

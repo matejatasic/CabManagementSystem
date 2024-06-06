@@ -12,11 +12,11 @@ public class CarDetailDto : IEntityDetailDto<Car>
     public string? RegistrationPlates { get; set; } = string.Empty;
     public required int DriverId { get; set; }
 
-    public Car ConvertToEntity(int id)
+    public Car ConvertToEntity()
     {
         return new Car()
         {
-            Id = id,
+            Id = Id,
             NumberOfSeats = NumberOfSeats,
             Name = Name,
             FuelType = FuelType,

@@ -10,11 +10,11 @@ public class RouteDetailDto : IEntityDetailDto<Route>
     public float? TravelCost {get; set; }
     public required int DriverId { get; set; }
 
-    public Route ConvertToEntity(int id)
+    public Route ConvertToEntity()
     {
         return new Route()
         {
-            Id = id,
+            Id = Id,
             FromAddress = FromAddress,
             ToAddress = ToAddress,
             TravelCost = TravelCost,

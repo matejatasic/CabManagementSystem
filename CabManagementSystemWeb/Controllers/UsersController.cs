@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using CabManagementSystemWeb.Contracts;
 using CabManagementSystemWeb.Exceptions;
 using CabManagementSystemWeb.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CabManagementSystemWeb.Controllers;
 
@@ -16,6 +17,7 @@ public class UsersController : ControllerBase
         _usersService = usersService;
     }
 
+    [Authorize]
     [HttpGet("")]
     public async Task<ActionResult<IEnumerable<UserDetailDto>>> GetAll()
     {

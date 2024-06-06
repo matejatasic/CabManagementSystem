@@ -29,6 +29,25 @@ public class UsersRepository : IRepository<User, UserCreateDto, UserDetailDto>
         return users?.ConvertToDetailDto();
     }
 
+    public async Task<UserDetailDto?> GetBy(string property, object value)
+    {
+        DbSet<User> users = _dbContext.Users;
+        IQueryable<User> query = users;
+
+        if (property == "username")
+        {
+            query = users.Where(u => u.Username == value);
+        }
+        else if (property == "email")
+        {
+            query = users.Where(u => u.Email == value);
+        }
+
+        User? user = await query.FirstOrDefaultAsync();
+
+        return user?.ConvertToDetailDto();
+    }
+
     public async Task<UserDetailDto> Create(UserCreateDto userDto)
     {
         User user = userDto.ConvertToEntity();

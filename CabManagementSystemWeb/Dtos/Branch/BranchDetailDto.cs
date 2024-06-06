@@ -10,11 +10,11 @@ public class BranchDetailDto : IEntityDetailDto<Branch>
     public int? ManagerId { get; set; }
     public ICollection<int>? EmployeesIds { get; set; }
 
-    public Branch ConvertToEntity(int id)
+    public Branch ConvertToEntity()
     {
         return new Branch()
         {
-            Id = id,
+            Id = Id,
             Name = Name,
             ManagerId = ManagerId
         };

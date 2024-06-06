@@ -24,6 +24,7 @@ public class JwtProviderService : IJwtProviderService
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email)
         };
+
         SigningCredentials signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_jwtOptions.SecretKey)
@@ -37,7 +38,7 @@ public class JwtProviderService : IJwtProviderService
             claims,
             null,
             DateTime.UtcNow.AddHours(1),
-            null
+            signingCredentials
         );
 
         string tokenValue = new JwtSecurityTokenHandler().WriteToken(token);

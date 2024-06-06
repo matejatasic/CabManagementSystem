@@ -9,11 +9,11 @@ public class EmployeeDetailDto : IEntityDetailDto<Employee>
     public required int UserId { get; set; }
     public required int BranchId { get; set; }
 
-    public Employee ConvertToEntity(int id)
+    public Employee ConvertToEntity()
     {
         return new Employee()
         {
-            Id = id,
+            Id = Id,
             UserId = UserId,
             BranchId = BranchId
         };

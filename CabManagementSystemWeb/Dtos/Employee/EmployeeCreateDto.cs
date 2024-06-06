@@ -1,6 +1,5 @@
 using CabManagementSystemWeb.Dtos.Interfaces;
 using CabManagementSystemWeb.Entities;
-using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace CabManagementSystemWeb.Dtos;
 

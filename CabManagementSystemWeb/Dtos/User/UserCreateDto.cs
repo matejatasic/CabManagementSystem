@@ -10,6 +10,8 @@ public class UserCreateDto : IEntityCreateDto<User>
     public required string Email { get; set; }
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
+    public string PhoneNumber { get; set; } = string.Empty;
 
     public User ConvertToEntity()
     {
@@ -19,7 +21,9 @@ public class UserCreateDto : IEntityCreateDto<User>
             Password = Password,
             Email = Email,
             FirstName = FirstName,
-            LastName = LastName
+            LastName = LastName,
+            Address = Address,
+            PhoneNumber = PhoneNumber,
         };
     }
 }

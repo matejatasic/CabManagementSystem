@@ -12,11 +12,11 @@ public class UserDetailDto : IEntityDetailDto<User>
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
 
-    public User ConvertToEntity(int id)
+    public User ConvertToEntity()
     {
         return new User()
         {
-            Id = id,
+            Id = Id,
             Username = Username,
             Password = Password,
             Email = Email,

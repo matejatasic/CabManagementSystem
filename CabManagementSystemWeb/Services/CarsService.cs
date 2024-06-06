@@ -81,7 +81,7 @@ public class CarsService : ICarsService
             throw new NotFoundException($"The car with id {id} does not exist");
         }
 
-        await _repository.Delete(carDetailDto.ConvertToEntity(id));
+        await _repository.Delete(carDetailDto.ConvertToEntity());
 
         return carDetailDto;
     }

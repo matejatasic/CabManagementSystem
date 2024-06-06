@@ -29,6 +29,11 @@ public class BranchesRepository : IRepository<Branch, BranchCreateDto, BranchDet
         return branch?.ConvertToDetailDto();
     }
 
+    public async Task<BranchDetailDto?> GetBy(string property, object value)
+    {
+        return null;
+    }
+
     public async Task<BranchDetailDto> Create(BranchCreateDto branchDto)
     {
         Branch branch = branchDto.ConvertToEntity();
