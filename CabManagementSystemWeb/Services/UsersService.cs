@@ -39,8 +39,8 @@ public class UsersService : IUsersService
 
     public async Task<UserDetailDto> Create(UserCreateDto userCreateDto)
     {
-        bool usernameExists = await _repository.GetBy("username", userCreateDto.Username) == null;
-        bool emailExists = await _repository.GetBy("email", userCreateDto.Email) == null;
+        bool usernameExists = await _repository.GetBy("username", userCreateDto.Username) != null;
+        bool emailExists = await _repository.GetBy("email", userCreateDto.Email) != null;
 
         if (usernameExists)
         {

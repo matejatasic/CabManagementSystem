@@ -1,5 +1,6 @@
 using AuthenticationApi.Services;
 using CabManagementSystemWeb.Dtos;
+using CabManagementSystemWeb.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CabManagementSystemWeb.Controllers;
@@ -22,6 +23,10 @@ public class LoginController : ControllerBase
             string token = await _authenticationService.Login(loginDto);
 
             return token;
+        }
+        catch (NotFoundException exception)
+        {
+            return BadRequest(exception.Message);
         }
         catch (ArgumentException exception)
         {

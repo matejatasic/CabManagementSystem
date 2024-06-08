@@ -18,11 +18,11 @@ public class JwtProviderService : IJwtProviderService
         _jwtOptions = jwtOptions.Value;
     }
 
-    public string Generate(User user)
+    public string Generate(string userId, string email)
     {
         Claim[] claims = new Claim[] {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email)
+            new Claim(JwtRegisteredClaimNames.Sub, userId),
+            new Claim(JwtRegisteredClaimNames.Email, email)
         };
 
         SigningCredentials signingCredentials = new SigningCredentials(

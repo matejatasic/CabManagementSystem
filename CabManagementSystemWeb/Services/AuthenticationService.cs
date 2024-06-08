@@ -3,6 +3,7 @@ using CabManagementSystemWeb.Contracts;
 using CabManagementSystemWeb.Data;
 using CabManagementSystemWeb.Dtos;
 using CabManagementSystemWeb.Entities;
+using CabManagementSystemWeb.Exceptions;
 
 namespace CabManagementSystemWeb.Services;
 
@@ -42,11 +43,7 @@ public class AuthenticationService : IAuthenticationService
         await _usersService.Create(userCreateDto);
 
         return await Login(
-            new LoginDto()
-            {
-                Username = request.Username,
-                Password = request.Password
-            }
+            request.ConvertToLoginDto()
         );
     }
 
@@ -57,7 +54,7 @@ public class AuthenticationService : IAuthenticationService
 
         if (!userExists)
         {
-            throw new ArgumentException($"User with the username {request.Username} does not exist");
+            throw new NotFoundException($"User with the username {request.Username} does not exist");
         }
 
         bool passwordsMatch = _hashService.Verify(
@@ -70,7 +67,7 @@ public class AuthenticationService : IAuthenticationService
             throw new ArgumentException("Your password is incorrect");
         }
 
-        string token = _jwtProviderService.Generate(user.ConvertToEntity());
+        string token = _jwtProviderService.Generate(user.Id.ToString(), user.Email);
 
         return token;
     }

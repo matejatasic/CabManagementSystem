@@ -4,5 +4,5 @@ namespace CabManagementSystemWeb.Contracts;
 
 public interface IJwtProviderService
 {
-    string Generate(User user);
+    string Generate(string userId, string email);
 }
