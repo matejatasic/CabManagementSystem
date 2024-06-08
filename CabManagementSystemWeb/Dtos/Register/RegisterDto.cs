@@ -9,4 +9,13 @@ public class RegisterDto
     public string LastName { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
+
+    public virtual LoginDto ConvertToLoginDto()
+    {
+        return new LoginDto()
+        {
+            Username = Username,
+            Password = Password
+        };
+    }
 }

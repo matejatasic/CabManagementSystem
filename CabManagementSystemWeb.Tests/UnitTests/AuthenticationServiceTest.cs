@@ -84,4 +84,33 @@ public class AuthenticationServiceTest
 
         await Assert.ThrowsAsync<ArgumentException>(act);
     }
+
+    [Fact]
+    public async void TestRegisterReturningTokenWhenRegisterSuccessfully()
+    {
+        Mock<RegisterDto> registerDto = new Mock<RegisterDto>();
+        UserCreateDto userCreateDto = _fixture.Create<UserCreateDto>();
+        LoginDto loginDto = _fixture.Create<LoginDto>();
+        UserDetailDto userDetailDto = _fixture.Create<UserDetailDto>();
+
+        _usersServiceMock
+            .Setup(u => u.Create(userCreateDto))
+            .ReturnsAsync(_fixture.Create<UserDetailDto>());
+        registerDto
+            .Setup(r => r.ConvertToLoginDto())
+            .Returns(loginDto);
+        _usersRepositoryMock
+            .Setup(u => u.GetBy("username", loginDto.Username))
+            .ReturnsAsync(userDetailDto);
+        _hashServiceMock
+            .Setup(h => h.Verify(loginDto.Password, userDetailDto.Password))
+            .Returns(true);
+        _jwtProviderServiceMock
+            .Setup(j => j.Generate(userDetailDto.Id.ToString(), userDetailDto.Email))
+            .Returns("some token");
+
+        string result = await _authenticationService.Register(registerDto.Object);
+
+        Assert.NotNull(result);
+    }
 }
