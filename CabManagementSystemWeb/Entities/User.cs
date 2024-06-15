@@ -4,9 +4,10 @@ namespace CabManagementSystemWeb.Entities;
 
 using CabManagementSystemWeb.Data;
 using CabManagementSystemWeb.Dtos;
+using Microsoft.AspNetCore.Identity;
 
 [Table("Users")]
-public class User: IEntity
+public class User: IdentityUser, IEntity
 {
     public int Id { get; set; }
     public required string Username { get; set; }
@@ -16,6 +17,8 @@ public class User: IEntity
     public string LastName { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
+    public Role? Role { get; set; }
+    public required int RoleId { get; set; }
     public DateTime Created { get; set; }
     public DateTime? Updated { get; set; } = null;
 
@@ -28,7 +31,8 @@ public class User: IEntity
             Password = Password,
             Email = Email,
             FirstName =  FirstName,
-            LastName = LastName
+            LastName = LastName,
+            RoleId = RoleId
         };
     }
 }

@@ -4,7 +4,6 @@ using System.Text.Json;
 using AutoFixture;
 
 using CabManagementSystemWeb.Dtos;
-using CabManagementSystemWeb.Entities;
 
 namespace CabManagementSystemWeb.Tests.Controllers;
 
@@ -13,11 +12,13 @@ public class CarsControllerTest : BaseIntegrationTest
     private string _carRoute = "/cars";
     private string _employeeRoute = "/employees";
     private string _branchRoute = "/branches";
+    private string _roleRoute = "/roles";
     private string _userRoute = "/users";
 
     private string _carRouteUrl;
     private string _employeeRouteUrl;
     private string _branchRouteUrl;
+    private string _roleRouteUrl;
     private string _userRouteUrl;
 
     public CarsControllerTest() : base()
@@ -25,6 +26,7 @@ public class CarsControllerTest : BaseIntegrationTest
         _carRouteUrl = _routePrefix + _carRoute;
         _employeeRouteUrl = _routePrefix + _employeeRoute;
         _branchRouteUrl = _routePrefix + _branchRoute;
+        _roleRouteUrl = _routePrefix + _roleRoute;
         _userRouteUrl = _routePrefix + _userRoute;
     }
 
@@ -117,9 +119,10 @@ public class CarsControllerTest : BaseIntegrationTest
 
     private async Task<HttpResponseMessage> CreateNeededEntities()
     {
-        var (branchPostContent, userPostContent, employeePostContent, carPostContent) = GetPostContent();
+        var (branchPostContent, rolePostContent, userPostContent, employeePostContent, carPostContent) = GetPostContent();
 
         await _client.PostAsync($"{_branchRouteUrl}", branchPostContent);
+        await _client.PostAsync($"{_roleRouteUrl}", rolePostContent);
         await _client.PostAsync($"{_userRouteUrl}", userPostContent);
         await _client.PostAsync($"{_employeeRouteUrl}", employeePostContent);
         var response = await _client.PostAsync($"{_carRouteUrl}", carPostContent);
@@ -127,11 +130,14 @@ public class CarsControllerTest : BaseIntegrationTest
         return response;
     }
 
-    private Tuple<JsonContent, JsonContent, JsonContent, JsonContent> GetPostContent()
+    private Tuple<JsonContent, JsonContent, JsonContent, JsonContent, JsonContent> GetPostContent()
     {
         BranchCreateDto branchCreateDto = _fixture.Build<BranchCreateDto>()
             .Without(b => b.ManagerId).Create();
-        UserCreateDto userCreateDto = _fixture.Build<UserCreateDto>().Create();
+        RoleCreateDto roleCreateDto = _fixture.Build<RoleCreateDto>().Create();
+        UserCreateDto userCreateDto = _fixture.Build<UserCreateDto>()
+            .With(u => u.RoleId, 1)
+            .Create();
         EmployeeCreateDto employeeCreateDto = _fixture.Build<EmployeeCreateDto>()
             .With(e => e.BranchId, 1)
             .With(e => e.UserId, 1)
@@ -143,9 +149,10 @@ public class CarsControllerTest : BaseIntegrationTest
 
         JsonContent carPostContent = JsonContent.Create(carCreateDto);
         JsonContent branchPostContent = JsonContent.Create(branchCreateDto);
+        JsonContent rolePostContent = JsonContent.Create(roleCreateDto);
         JsonContent userPostContent = JsonContent.Create(userCreateDto);
         JsonContent employeePostContent = JsonContent.Create(employeeCreateDto);
 
-        return new Tuple<JsonContent, JsonContent, JsonContent, JsonContent>(branchPostContent, userPostContent, employeePostContent, carPostContent);
+        return new Tuple<JsonContent, JsonContent, JsonContent, JsonContent, JsonContent>(branchPostContent, rolePostContent, userPostContent, employeePostContent, carPostContent);
     }
 }

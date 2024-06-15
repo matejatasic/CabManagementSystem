@@ -17,7 +17,6 @@ public class UsersController : ControllerBase
         _usersService = usersService;
     }
 
-    [Authorize]
     [HttpGet("")]
     public async Task<ActionResult<IEnumerable<UserDetailDto>>> GetAll()
     {

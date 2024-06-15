@@ -10,7 +10,6 @@ public class CarsService : ICarsService
 {
     private readonly IRepository<Car, CarCreateDto, CarDetailDto> _repository;
     private readonly IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> _employeesRepository;
-    private readonly IHashService _hashService;
 
     public CarsService(
         IRepository<Car, CarCreateDto, CarDetailDto> repository,

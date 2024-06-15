@@ -10,6 +10,7 @@ public class UserUpdateDto : IEntityUpdateDto<User>
     public string Email { get; set; } = string.Empty;
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
+    public int RoleId { get; set; }
 
     public User ConvertToEntity(int id)
     {
@@ -20,7 +21,8 @@ public class UserUpdateDto : IEntityUpdateDto<User>
             Password = Password,
             Email = Email,
             FirstName = FirstName,
-            LastName = LastName
+            LastName = LastName,
+            RoleId = RoleId
         };
     }
 }

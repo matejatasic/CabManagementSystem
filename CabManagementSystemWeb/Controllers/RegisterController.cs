@@ -1,5 +1,6 @@
 using AuthenticationApi.Services;
 using CabManagementSystemWeb.Dtos;
+using CabManagementSystemWeb.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CabManagementSystemWeb.Controllers;
@@ -23,11 +24,14 @@ public class RegisterController : ControllerBase
 
             return token;
         }
+        catch (NotFoundException exception) {
+            return BadRequest(exception.Message);
+        }
         catch(ArgumentException exception)
         {
             return BadRequest(exception.Message);
         }
-        catch(Exception)
+        catch(Exception exception)
         {
             return StatusCode(500, "There was an unknown error, please try again");
         }

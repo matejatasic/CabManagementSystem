@@ -10,11 +10,14 @@ namespace CabManagementSystemWeb.Tests.Controllers;
 public class UsersControllerTest : BaseIntegrationTest
 {
     private string _userRoute = "/users";
+    private string _roleRoute = "/roles";
     private string _userRouteUrl;
+    private string _roleRouteUrl;
 
     public UsersControllerTest() : base()
     {
         _userRouteUrl = _routePrefix + _userRoute;
+        _roleRouteUrl = _routePrefix + _roleRoute;
     }
 
     [Fact]
@@ -22,11 +25,8 @@ public class UsersControllerTest : BaseIntegrationTest
     {
         await InitializeClient();
 
-        UserCreateDto userCreateDto = _fixture.Build<UserCreateDto>()
-            .Create();
-        JsonContent userPostContent = JsonContent.Create(userCreateDto);
+        var response = await CreateNeededEntities();
 
-        var response = await _client.PostAsync($"{_userRouteUrl}", userPostContent);
         var content = await response.Content.ReadAsStringAsync();
 
         UserDetailDto deserializedContent = JsonSerializer.Deserialize<UserDetailDto>(content, _jsonSerializerOptions);
@@ -74,7 +74,8 @@ public class UsersControllerTest : BaseIntegrationTest
         await CreateNeededEntities();
         string updatedUsername = "UpdatedUsername";
         UserUpdateDto userUpdateDto = _fixture.Build<UserUpdateDto>()
-            .With(e => e.Username, updatedUsername)
+            .With(u => u.Username, updatedUsername)
+            .With(u => u.RoleId, 1)
             .Create();
         JsonContent userPutContent = JsonContent.Create(userUpdateDto);
 
@@ -106,19 +107,27 @@ public class UsersControllerTest : BaseIntegrationTest
         Assert.Empty(getAllDeserializedContent);
     }
 
-    private async Task CreateNeededEntities()
+    private async Task<HttpResponseMessage> CreateNeededEntities()
     {
-        JsonContent userPostContent = GetPostContent();
+        var (userPostContent, rolePostContent) = GetPostContent();
 
-        await _client.PostAsync($"{_userRouteUrl}", userPostContent);
+        await _client.PostAsync($"{_roleRouteUrl}", rolePostContent);
+        var response = await _client.PostAsync($"{_userRouteUrl}", userPostContent);
+
+        return response;
     }
 
-    private JsonContent GetPostContent()
+    private Tuple<JsonContent, JsonContent> GetPostContent()
     {
         UserCreateDto userCreateDto = _fixture.Build<UserCreateDto>()
+            .With(u => u.RoleId, 1)
             .Create();
-        JsonContent userPostContent = JsonContent.Create(userCreateDto);
+        RoleCreateDto roleCreateDto = _fixture.Build<RoleCreateDto>()
+            .Create();
 
-        return userPostContent;
+        JsonContent userPostContent = JsonContent.Create(userCreateDto);
+        JsonContent rolePostContent = JsonContent.Create(roleCreateDto);
+
+        return new Tuple<JsonContent, JsonContent>(userPostContent, rolePostContent);
     }
 }

@@ -12,6 +12,7 @@ public class UserCreateDto : IEntityCreateDto<User>
     public string LastName { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
+    public required int RoleId { get; set; }
 
     public User ConvertToEntity()
     {
@@ -24,6 +25,7 @@ public class UserCreateDto : IEntityCreateDto<User>
             LastName = LastName,
             Address = Address,
             PhoneNumber = PhoneNumber,
+            RoleId = RoleId
         };
     }
 }

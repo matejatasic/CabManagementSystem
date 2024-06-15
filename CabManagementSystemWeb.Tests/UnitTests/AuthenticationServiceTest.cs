@@ -15,6 +15,7 @@ public class AuthenticationServiceTest
     private readonly IAuthenticationService _authenticationService;
 
     private Mock<IRepository<User, UserCreateDto, UserDetailDto>> _usersRepositoryMock;
+    private Mock<IRepository<Role, RoleCreateDto, RoleDetailDto>> _rolesRepositoryMock;
     private Mock<IUsersService> _usersServiceMock;
     private Mock<IHashService> _hashServiceMock;
     private Mock<IJwtProviderService> _jwtProviderServiceMock;
@@ -27,12 +28,14 @@ public class AuthenticationServiceTest
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
         _usersRepositoryMock = new Mock<IRepository<User, UserCreateDto, UserDetailDto>>();
+        _rolesRepositoryMock = new Mock<IRepository<Role, RoleCreateDto, RoleDetailDto>>();
         _usersServiceMock = new Mock<IUsersService>();
         _hashServiceMock = new Mock<IHashService>();
         _jwtProviderServiceMock = new Mock<IJwtProviderService>();
 
         _authenticationService = new AuthenticationService(
             _usersRepositoryMock.Object,
+            _rolesRepositoryMock.Object,
             _usersServiceMock.Object,
             _hashServiceMock.Object,
             _jwtProviderServiceMock.Object
@@ -90,12 +93,16 @@ public class AuthenticationServiceTest
     {
         Mock<RegisterDto> registerDto = new Mock<RegisterDto>();
         UserCreateDto userCreateDto = _fixture.Create<UserCreateDto>();
+        RoleDetailDto roleDetailDto = _fixture.Create<RoleDetailDto>();
         LoginDto loginDto = _fixture.Create<LoginDto>();
         UserDetailDto userDetailDto = _fixture.Create<UserDetailDto>();
 
         _usersServiceMock
             .Setup(u => u.Create(userCreateDto))
             .ReturnsAsync(_fixture.Create<UserDetailDto>());
+        _rolesRepositoryMock
+            .Setup(r => r.GetBy("name", "User"))
+            .ReturnsAsync(roleDetailDto);
         registerDto
             .Setup(r => r.ConvertToLoginDto())
             .Returns(loginDto);

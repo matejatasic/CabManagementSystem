@@ -11,6 +11,7 @@ public class UserDetailDto : IEntityDetailDto<User>
     public required string Email { get; set; }
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
+    public required int RoleId { get; set; }
 
     public User ConvertToEntity()
     {
@@ -21,7 +22,8 @@ public class UserDetailDto : IEntityDetailDto<User>
             Password = Password,
             Email = Email,
             FirstName = FirstName,
-            LastName = LastName
+            LastName = LastName,
+            RoleId = RoleId
         };
     }
 }

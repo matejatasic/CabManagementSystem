@@ -10,18 +10,21 @@ namespace CabManagementSystemWeb.Services;
 public class AuthenticationService : IAuthenticationService
 {
     IRepository<User, UserCreateDto, UserDetailDto> _usersRepository;
+    IRepository<Role, RoleCreateDto, RoleDetailDto> _rolesRepository;
     IUsersService _usersService;
     IHashService _hashService;
     IJwtProviderService _jwtProviderService;
 
     public AuthenticationService(
         IRepository<User, UserCreateDto, UserDetailDto> usersRepository,
+        IRepository<Role, RoleCreateDto, RoleDetailDto> rolesRepository,
         IUsersService usersService,
         IHashService hashService,
         IJwtProviderService jwtProviderService
     )
     {
         _usersRepository = usersRepository;
+        _rolesRepository = rolesRepository;
         _usersService = usersService;
         _hashService = hashService;
         _jwtProviderService = jwtProviderService;
@@ -29,6 +32,12 @@ public class AuthenticationService : IAuthenticationService
 
     public async Task<string> Register(RegisterDto request)
     {
+        RoleDetailDto? userRole = await _rolesRepository.GetBy("name", "User");
+
+        if (userRole == null) {
+            throw new NotFoundException("User role does not exist");
+        }
+
         UserCreateDto userCreateDto = new UserCreateDto()
         {
             Username = request.Username,
@@ -37,7 +46,8 @@ public class AuthenticationService : IAuthenticationService
             FirstName = request.FirstName,
             LastName = request.LastName,
             Address = request.Address,
-            PhoneNumber = request.PhoneNumber
+            PhoneNumber = request.PhoneNumber,
+            RoleId = userRole.Id
         };
 
         await _usersService.Create(userCreateDto);

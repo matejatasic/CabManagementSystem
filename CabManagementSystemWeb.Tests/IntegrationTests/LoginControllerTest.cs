@@ -9,15 +9,18 @@ namespace CabManagementSystemWeb.Tests.Controllers;
 public class LoginControllerTest : BaseIntegrationTest
 {
     private string _loginRoute = "/login";
+    private string _roleRoute = "/roles";
     private string _userRoute = "/users";
 
 
     private string _loginRouteUrl;
+    private string _roleRouteUrl;
     private string _userRouteUrl;
 
     public LoginControllerTest() : base()
     {
         _loginRouteUrl = _routePrefix + _loginRoute;
+        _roleRouteUrl = _routePrefix + _roleRoute;
         _userRouteUrl = _routePrefix + _userRoute;
     }
 
@@ -26,7 +29,7 @@ public class LoginControllerTest : BaseIntegrationTest
     {
         await InitializeClient();
 
-        UserCreateDto userCreateDto = await CreateUser();
+        UserCreateDto userCreateDto = await CreateNeededEntities();
 
         LoginDto loginDto = _fixture.Build<LoginDto>().Create();
         loginDto.Username = userCreateDto.Username;
@@ -58,7 +61,7 @@ public class LoginControllerTest : BaseIntegrationTest
     {
         await InitializeClient();
 
-        UserCreateDto userCreateDto = await CreateUser();
+        UserCreateDto userCreateDto = await CreateNeededEntities();
 
         LoginDto loginDto = _fixture.Build<LoginDto>().Create();
         loginDto.Username = userCreateDto.Username;
@@ -70,11 +73,18 @@ public class LoginControllerTest : BaseIntegrationTest
         Assert.Equal(response.StatusCode, HttpStatusCode.BadRequest);
     }
 
-    private async Task<UserCreateDto> CreateUser()
+    private async Task<UserCreateDto> CreateNeededEntities()
     {
-        UserCreateDto userCreateDto = _fixture.Build<UserCreateDto>().Create();
+        UserCreateDto userCreateDto = _fixture.Build<UserCreateDto>()
+            .With(u => u.RoleId, 1)
+            .Create();
+        RoleCreateDto roleCreateDto = _fixture.Build<RoleCreateDto>().Create();
+
         JsonContent userPostContent = JsonContent.Create(userCreateDto);
-        await _client.PostAsync($"{_userRouteUrl}", userPostContent);
+        JsonContent rolePostContent = JsonContent.Create(roleCreateDto);
+
+        var response1 = await _client.PostAsync($"{_roleRouteUrl}", rolePostContent);
+        var response2 =  await _client.PostAsync($"{_userRouteUrl}", userPostContent);
 
         return userCreateDto;
     }
