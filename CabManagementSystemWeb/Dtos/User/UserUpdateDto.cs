@@ -17,7 +17,7 @@ public class UserUpdateDto : IEntityUpdateDto<User>
         return new User()
         {
             Id = id,
-            Username = Username,
+            UserName = Username,
             Password = Password,
             Email = Email,
             FirstName = FirstName,

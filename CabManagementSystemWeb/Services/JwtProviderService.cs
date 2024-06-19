@@ -1,6 +1,5 @@
 using Microsoft.IdentityModel.Tokens;
 using CabManagementSystemWeb.Contracts;
-using CabManagementSystemWeb.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -18,11 +17,12 @@ public class JwtProviderService : IJwtProviderService
         _jwtOptions = jwtOptions.Value;
     }
 
-    public string Generate(string userId, string email)
+    public string Generate(string userId, string email, string role)
     {
         Claim[] claims = new Claim[] {
             new Claim(JwtRegisteredClaimNames.Sub, userId),
-            new Claim(JwtRegisteredClaimNames.Email, email)
+            new Claim(JwtRegisteredClaimNames.Email, email),
+            new Claim(ClaimTypes.Role, role)
         };
 
         SigningCredentials signingCredentials = new SigningCredentials(

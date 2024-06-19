@@ -36,7 +36,7 @@ public class UsersRepository : IRepository<User, UserCreateDto, UserDetailDto>
 
         if (property == "username")
         {
-            query = users.Where(u => u.Username == value);
+            query = users.Where(u => u.UserName == value);
         }
         else if (property == "email")
         {

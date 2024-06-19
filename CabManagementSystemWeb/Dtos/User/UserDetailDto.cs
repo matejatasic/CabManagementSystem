@@ -18,7 +18,7 @@ public class UserDetailDto : IEntityDetailDto<User>
         return new User()
         {
             Id = Id,
-            Username = Username,
+            UserName = Username,
             Password = Password,
             Email = Email,
             FirstName = FirstName,

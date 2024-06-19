@@ -18,7 +18,7 @@ public class UserCreateDto : IEntityCreateDto<User>
     {
         return new User()
         {
-            Username = Username,
+            UserName = Username,
             Password = Password,
             Email = Email,
             FirstName = FirstName,

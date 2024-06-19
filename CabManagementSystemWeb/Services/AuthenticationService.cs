@@ -77,7 +77,9 @@ public class AuthenticationService : IAuthenticationService
             throw new ArgumentException("Your password is incorrect");
         }
 
-        string token = _jwtProviderService.Generate(user.Id.ToString(), user.Email);
+        RoleDetailDto roleDetailDto = await _rolesRepository.GetById(user.RoleId);
+
+        string token = _jwtProviderService.Generate(user.Id.ToString(), user.Email, roleDetailDto.Name);
 
         return token;
     }

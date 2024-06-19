@@ -7,16 +7,12 @@ using CabManagementSystemWeb.Dtos;
 using Microsoft.AspNetCore.Identity;
 
 [Table("Users")]
-public class User: IdentityUser, IEntity
+public class User: IdentityUser<int>, IEntity
 {
-    public int Id { get; set; }
-    public required string Username { get; set; }
     public required string Password { get; set; }
-    public required string Email { get; set; }
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
-    public string PhoneNumber { get; set; } = string.Empty;
     public Role? Role { get; set; }
     public required int RoleId { get; set; }
     public DateTime Created { get; set; }
@@ -27,7 +23,7 @@ public class User: IdentityUser, IEntity
         return new UserDetailDto()
         {
             Id = Id,
-            Username = Username,
+            Username = UserName,
             Password = Password,
             Email = Email,
             FirstName =  FirstName,

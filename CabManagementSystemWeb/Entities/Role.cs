@@ -6,10 +6,8 @@ using CabManagementSystemWeb.Dtos;
 using Microsoft.AspNetCore.Identity;
 
 [Table("Roles")]
-public class Role: IdentityRole, IEntity
+public class Role: IdentityRole<int>, IEntity
 {
-    public int Id { get; set; }
-    public required string Name { get; set; }
     public DateTime Created { get; set; }
     public DateTime? Updated { get; set; } = null;
 
