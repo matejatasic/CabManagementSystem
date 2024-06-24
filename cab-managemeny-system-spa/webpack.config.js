@@ -1,10 +1,10 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { DefinePlugin } = require("webpack");
+const { DefinePlugin, ProvidePlugin } = require("webpack");
 
 const envPath = path.resolve(__dirname, ".env");
-console.log(require("dotenv"))
 const envVariables = require("dotenv").config({ path: envPath }).parsed ?? {};
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 module.exports = {
   entry: "./src/index.tsx",
@@ -45,8 +45,25 @@ module.exports = {
     new DefinePlugin({
       "process.env": JSON.stringify(envVariables)
     }),
+    new NodePolyfillPlugin(),
+    new ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
+    })
   ],
   resolve: {
     extensions: [".js", ".jsx", ".ts", ".tsx", ".scss"],
+    fallback: {
+      "child_process": false,
+      "worker_threads": false,
+      "uglify-js": false,
+      "@swc/core": false,
+      "esbuild": false,
+      "module": false,
+      "inspector": false,
+    }
+  },
+  stats: {
+    warningsFilter: (warning) => !/Critical dependency/.test(warning),
   },
 };
