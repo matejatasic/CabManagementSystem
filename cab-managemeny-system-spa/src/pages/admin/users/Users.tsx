@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 
 import ContentCard from "../common/content-card/ContentCard";
 import TableContent from "../common/table-content/TableContent";
-import User from "../../../modules/user/User";
+import User from "../../../modules/user/models/User";
 import PageProps from "../../common/props/PageProps";
-import IUserRepository from "../../../modules/user/user-repository/IUserRepository";
+import IUserRepository from "../../../modules/user/repositories/IUserRepository";
 
 export default function Users(props: PageProps<IUserRepository>) {
     const { repository } = props;

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import ContentCard from "../common/content-card/ContentCard";
 import TableContent from "../common/table-content/TableContent";
 import BranchesProps from "./BranchesProps";
-import User from "../../../modules/user/User";
+import User from "../../../modules/user/models/User";
 import Branch from "../../../modules/branch/Branch";
 import Employee from "../../../modules/employee/Employee";
 

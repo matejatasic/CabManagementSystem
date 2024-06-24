@@ -4,7 +4,7 @@ import ContentCard from "../common/content-card/ContentCard";
 import TableContent from "../common/table-content/TableContent";
 import Employee from "../../../modules/employee/Employee";
 import EmployeesProps from "./EmployeesProps";
-import User from "../../../modules/user/User";
+import User from "../../../modules/user/models/User";
 import Branch from "../../../modules/branch/Branch";
 
 export default function Employees(props: EmployeesProps) {

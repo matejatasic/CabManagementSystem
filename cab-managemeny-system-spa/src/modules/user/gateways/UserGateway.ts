@@ -1,5 +1,5 @@
 import IApiGateway from "../../common/IApiGateway";
-import UserResponseData from "../UserResponseDataType";
+import UserResponseData from "../models/UserResponseDataType";
 import IUserGateway from "./IUserGateway";
 
 export default class UserGateway implements IUserGateway {

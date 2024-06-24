@@ -5,7 +5,7 @@ import TableContent from "../common/table-content/TableContent";
 import Cab from "../../../modules/cab/Cab";
 import CarsProps from "./CarsProps";
 import Employee from "../../../modules/employee/Employee";
-import User from "../../../modules/user/User";
+import User from "../../../modules/user/models/User";
 
 export default function Cars(props: CarsProps) {
     const { repository, employeeRepository, userRepository } = props;

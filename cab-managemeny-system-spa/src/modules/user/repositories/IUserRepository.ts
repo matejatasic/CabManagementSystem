@@ -1,4 +1,4 @@
-import UserResponseData from "../UserResponseDataType";
+import UserResponseData from "../models/UserResponseDataType";
 
 export default interface IUserRepository {
     getAll(): Promise<UserResponseData[]>;

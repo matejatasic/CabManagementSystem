@@ -1,5 +1,5 @@
-import UserResponseData from "../UserResponseDataType";
-import IUserGateway from "../user-gateway/IUserGateway";
+import UserResponseData from "../models/UserResponseDataType";
+import IUserGateway from "../gateways/IUserGateway";
 import IUserRepository from "./IUserRepository";
 
 export default class UserRepository implements IUserRepository {
