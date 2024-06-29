@@ -19,8 +19,8 @@ export default function PublicRoutes() {
       <Routes>
         <Route path="/" element={<Home />}/>
         <Route path="rent-cab" element={<RentCab repository={new CabRepository(new CabGateway(new ApiGateway()))} />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login authenticationRepository={new AuthenticationRepository(new AuthenticationGateway(new ApiGateway()))} />} />
+        <Route path="/register" element={<Register repository={new AuthenticationRepository(new AuthenticationGateway(new ApiGateway()))} />} />
+        <Route path="/login" element={<Login repository={new AuthenticationRepository(new AuthenticationGateway(new ApiGateway()))} />} />
         <Route path="/bookings" element={<Bookings repository={new BookingRepository(new BookingGateway(new ApiGateway()))} />} />
         <Route path="/change-account-details" element={<ChangeAccountDetails />} />
       </Routes>

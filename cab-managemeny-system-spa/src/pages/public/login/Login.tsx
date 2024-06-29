@@ -7,12 +7,12 @@ import User from "../../../modules/user/models/User";
 import LoginProps from "./LoginProps";
 
 export default function Login(props: LoginProps) {
-    const { authenticationRepository } = props;
+    const { repository } = props;
 
     const [user, setUser] = useState<User>(new User());
 
     async function handleSubmit() {
-        authenticationRepository.login(user)
+        repository.login(user)
         .then(data => {
             console.log(data);
         })

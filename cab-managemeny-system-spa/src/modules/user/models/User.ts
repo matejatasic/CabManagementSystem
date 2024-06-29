@@ -1,3 +1,4 @@
+import { Exception } from "sass";
 import ValidationError from "../../common/ValidationError";
 
 export default class User {
@@ -30,25 +31,57 @@ export default class User {
         this.phone = phone;
     }
 
-    public setUsername(username: string): User {
-        if (username.length < 3) {
+    public getParameters(): Array<string | number> {
+        const instanceParameters = this.getInstance();
+        const parameters = [];
+
+        for (let propertyName of Object.getOwnPropertyNames(instanceParameters)) {
+            parameters.push(instanceParameters[propertyName]);
+        }
+
+        return parameters;
+    }
+
+    public getInstance(): Record<string, string | number> {
+        return {
+            id: this.id,
+            username: this.username,
+            password: this.password,
+            email: this.email,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            address: this.address,
+            phone: this.phone
+        };
+    }
+
+    public setUsername(value: string): User {
+        if (value.length === 0) {
+            throw new ValidationError("Username is required");
+        }
+
+        if (value.length < 3) {
             throw new ValidationError("The username needs to be at least 3 characters long");
         }
 
-        this.username = username;
+        this.username = value;
 
-        return new User(this.id, this.username);
+        return new User(...this.getParameters() as any);
     }
 
-    public setPassword(password: string): User {
-        if (password.length < 8) {
+    public setPassword(value: string): User {
+        if (value.length === 0) {
+            throw new ValidationError("Password is required");
+        }
+
+        if (value.length < 8) {
             throw new ValidationError("The password needs to be at least 8 characters long");
         }
 
-        const hasNumbers = /[0-9]/.test(password);
-        const hasLowerLetters = /[a-z]/.test(password);
-        const hasUpperLetters = /[A-Z]/.test(password);
-        const hasSpecialCharacters = /[^0-9a-zA-Z]/.test(password);
+        const hasNumbers = /[0-9]/.test(value);
+        const hasLowerLetters = /[a-z]/.test(value);
+        const hasUpperLetters = /[A-Z]/.test(value);
+        const hasSpecialCharacters = /[^0-9a-zA-Z]/.test(value);
 
         if(
             !hasNumbers
@@ -59,9 +92,79 @@ export default class User {
             throw new ValidationError("The password needs have at least 1 lowercase letter, 1 uppercase letter and 1 special character");
         }
 
-        this.password = password;
+        this.password = value;
 
-        return new User(this.id, this.username, this.password);
+        return new User(...this.getParameters() as any);
+    }
+
+    public setEmail(value: string): User {
+        if (value.length === 0) {
+            throw new ValidationError("Email is required");
+        }
+
+        const isValidEmail =
+            /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(value);
+
+        if (!isValidEmail) {
+            throw new ValidationError("Email not valid");
+        }
+
+        return new User(...this.getParameters() as any);
+    }
+
+    public setConfirmPassword(value: string): User {
+        if (value !== this.password) {
+            throw new ValidationError("Password and confirm password do not match");
+        }
+
+        return new User(...this.getParameters() as any);
+    }
+
+    public setFirstName(value: string): User {
+        const isValidFirstName = /^[a-z ,.'-]+$/.test(value);
+
+        if (!isValidFirstName) {
+            throw new ValidationError("Not a valid first name");
+        }
+
+        this.firstName = value;
+
+        return new User(...this.getParameters() as any);
+    }
+
+    public setLastName(value: string): User {
+        const isValidLastName = /^[a-z ,.'-]+$/.test(value);
+
+        if (!isValidLastName) {
+            throw new ValidationError("Not a valid last name");
+        }
+
+        this.lastName = value;
+
+        return new User(...this.getParameters() as any);
+    }
+
+    public setAddress(value: string): User {
+        if (value.length === 0) {
+            throw new ValidationError("Address cannot be empty");
+        }
+
+        this.address = value;
+
+        return new User(...this.getParameters() as any);
+    }
+
+    public setPhone(value: string): User {
+        const isValidPhoneNumber =
+            /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(value);
+
+        if (!isValidPhoneNumber) {
+            throw new ValidationError("Not a valid phone number");
+        }
+
+        this.phone = value;
+
+        return new User(...this.getParameters() as any);
     }
 
     get fullName(): string {

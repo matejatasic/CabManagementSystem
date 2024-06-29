@@ -1,7 +1,7 @@
 import IAuthenticationRepository from "../../../modules/user/repositories/IAuthenticationRepository"
 
-type LoginProps = {
+type RegisterProps = {
     repository: IAuthenticationRepository;
 }
 
-export default LoginProps;
+export default RegisterProps;
