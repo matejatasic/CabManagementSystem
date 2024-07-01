@@ -17,12 +17,10 @@ public class RegisterController : ControllerBase
     }
 
     [HttpPost("")]
-    public async Task<ActionResult<string>> Register(RegisterDto registerDto)
+    public async Task<ActionResult<AuthenticationResponseDto>> Register(RegisterDto registerDto)
     {
         try {
-            string token = await _authenticationService.Register(registerDto);
-
-            return token;
+            return await _authenticationService.Register(registerDto);
         }
         catch (NotFoundException exception) {
             return BadRequest(exception.Message);

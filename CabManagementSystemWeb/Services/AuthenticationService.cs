@@ -30,7 +30,7 @@ public class AuthenticationService : IAuthenticationService
         _jwtProviderService = jwtProviderService;
     }
 
-    public async Task<string> Register(RegisterDto request)
+    public async Task<AuthenticationResponseDto> Register(RegisterDto request)
     {
         RoleDetailDto? userRole = await _rolesRepository.GetBy("name", "User");
 
@@ -57,7 +57,7 @@ public class AuthenticationService : IAuthenticationService
         );
     }
 
-    public async Task<string> Login(LoginDto request)
+    public async Task<AuthenticationResponseDto> Login(LoginDto request)
     {
         UserDetailDto? user = await _usersRepository.GetBy("username", request.Username);
         bool userExists = user != null;
@@ -81,6 +81,12 @@ public class AuthenticationService : IAuthenticationService
 
         string token = _jwtProviderService.Generate(user.Id.ToString(), user.Email, roleDetailDto.Name);
 
-        return token;
+        return new AuthenticationResponseDto()
+        {
+            UserId = user.Id,
+            Name = user.Username,
+            Token = token,
+            Role = roleDetailDto.Name
+        };
     }
 }

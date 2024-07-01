@@ -17,12 +17,10 @@ public class LoginController : ControllerBase
     }
 
     [HttpPost("")]
-    public async Task<ActionResult<string>> Login(LoginDto loginDto)
+    public async Task<ActionResult<AuthenticationResponseDto>> Login(LoginDto loginDto)
     {
         try {
-            string token = await _authenticationService.Login(loginDto);
-
-            return token;
+            return await _authenticationService.Login(loginDto);
         }
         catch (NotFoundException exception)
         {
