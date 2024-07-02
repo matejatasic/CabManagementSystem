@@ -84,7 +84,7 @@ public class AuthenticationService : IAuthenticationService
         return new AuthenticationResponseDto()
         {
             UserId = user.Id,
-            Name = user.Username,
+            Username = user.Username,
             Token = token,
             Role = roleDetailDto.Name
         };
