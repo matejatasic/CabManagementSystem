@@ -1,4 +1,5 @@
 import IApiGateway from "../../common/IApiGateway";
+import AuthenticationResponseData from "../types/AuthenticationResponseDataType";
 import LoginViewModel from "../view-models/LoginViewModel";
 import RegisterViewModel from "../view-models/RegisterViewModel";
 import IAuthenticationGateway from "./IAuthenticationGateway";
@@ -12,13 +13,13 @@ export default class AuthenticationGateway implements IAuthenticationGateway {
         this.apiGateway = apiGateway;
     }
 
-    public async login(loginViewModel: LoginViewModel): Promise<string> {
+    public async login(loginViewModel: LoginViewModel): Promise<AuthenticationResponseData> {
         const result = await this.apiGateway.post(this.loginRoute, loginViewModel);
 
         return result.json();
     }
 
-    public async register(registerViewModel: RegisterViewModel): Promise<string> {
+    public async register(registerViewModel: RegisterViewModel): Promise<AuthenticationResponseData> {
         const result = await this.apiGateway.post(this.registerRoute, registerViewModel);
 
         return result.json();

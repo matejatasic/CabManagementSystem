@@ -1,5 +1,6 @@
 import IAuthenticationGateway from "../gateways/IAuthenticationGateway";
 import User from "../models/User";
+import AuthenticationResponseData from "../types/AuthenticationResponseDataType";
 import LoginViewModel from "../view-models/LoginViewModel";
 import RegisterViewModel from "../view-models/RegisterViewModel";
 import IAuthenticationRepository from "./IAuthenticationRepository";
@@ -11,7 +12,7 @@ export default class AuthenticationRepository implements IAuthenticationReposito
         this.authenticationGateway = authenticationGateway;
     }
 
-    public async login(user: User): Promise<string> {
+    public async login(user: User): Promise<AuthenticationResponseData> {
         const loginViewModel = this.getLoginViewModel(user);
         const result = await this.authenticationGateway.login(loginViewModel);
 
@@ -22,7 +23,7 @@ export default class AuthenticationRepository implements IAuthenticationReposito
         return new LoginViewModel(user.username, user.password);
     }
 
-    public async register(user: User): Promise<string> {
+    public async register(user: User): Promise<AuthenticationResponseData> {
         const registerViewModel = this.getRegisterViewModel(user);
         const result = await this.authenticationGateway.register(registerViewModel);
 

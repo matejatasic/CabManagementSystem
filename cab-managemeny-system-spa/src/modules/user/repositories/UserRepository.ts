@@ -1,4 +1,4 @@
-import UserResponseData from "../models/UserResponseDataType";
+import UserResponseData from "../types/UserResponseDataType";
 import IUserGateway from "../gateways/IUserGateway";
 import IUserRepository from "./IUserRepository";
 

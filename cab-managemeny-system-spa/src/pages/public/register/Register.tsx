@@ -9,7 +9,7 @@ import ValidationError from "../../../modules/common/ValidationError";
 import RegisterProps from "./RegisterProps";
 
 export default function Register(props: RegisterProps) {
-    const { repository } = props;
+    const { repository, sessionRepository } = props;
 
     const [user, setUser] = useState<User>(new User());
     const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
@@ -19,7 +19,12 @@ export default function Register(props: RegisterProps) {
 
         repository.register(user)
         .then(data => {
-            console.log(data);
+            sessionRepository.setUserSession(
+                data.userId,
+                data.username,
+                data.token,
+                data.role
+            )
         })
         .catch(error => {
             console.error(error.message);

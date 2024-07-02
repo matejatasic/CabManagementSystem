@@ -13,14 +13,32 @@ import BookingRepository from "../../modules/booking/booking-repository/BookingR
 import BookingGateway from "../../modules/booking/booking-gateway/BookingGateway";
 import AuthenticationRepository from "../../modules/user/repositories/AuthenticationRepository";
 import AuthenticationGateway from "../../modules/user/gateways/AuthenticationGateway";
+import SessionRepository from "../../modules/user/repositories/SessionRepository";
+import StorageGateway from "../../modules/common/StorageGateway";
 
 export default function PublicRoutes() {
     return (
       <Routes>
         <Route path="/" element={<Home />}/>
         <Route path="rent-cab" element={<RentCab repository={new CabRepository(new CabGateway(new ApiGateway()))} />} />
-        <Route path="/register" element={<Register repository={new AuthenticationRepository(new AuthenticationGateway(new ApiGateway()))} />} />
-        <Route path="/login" element={<Login repository={new AuthenticationRepository(new AuthenticationGateway(new ApiGateway()))} />} />
+        <Route
+          path="/register"
+          element={
+            <Register
+              repository={new AuthenticationRepository(new AuthenticationGateway(new ApiGateway()))}
+              sessionRepository={new SessionRepository(new StorageGateway())}
+            />
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <Login
+              repository={new AuthenticationRepository(new AuthenticationGateway(new ApiGateway()))}
+              sessionRepository={new SessionRepository(new StorageGateway())}
+            />
+          }
+        />
         <Route path="/bookings" element={<Bookings repository={new BookingRepository(new BookingGateway(new ApiGateway()))} />} />
         <Route path="/change-account-details" element={<ChangeAccountDetails />} />
       </Routes>

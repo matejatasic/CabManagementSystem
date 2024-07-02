@@ -7,14 +7,19 @@ import User from "../../../modules/user/models/User";
 import LoginProps from "./LoginProps";
 
 export default function Login(props: LoginProps) {
-    const { repository } = props;
+    const { repository, sessionRepository } = props;
 
     const [user, setUser] = useState<User>(new User());
 
     async function handleSubmit() {
         repository.login(user)
         .then(data => {
-            console.log(data);
+            sessionRepository.setUserSession(
+                data.userId,
+                data.username,
+                data.token,
+                data.role
+            )
         })
         .catch(error => {
             console.error(error.message);
@@ -37,7 +42,6 @@ export default function Login(props: LoginProps) {
         catch(error) {
         }
     }
-    console.log(user);
 
     return (
         <div id="login-background">

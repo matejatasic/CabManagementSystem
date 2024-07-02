@@ -1,4 +1,3 @@
-import { Exception } from "sass";
 import ValidationError from "../../common/ValidationError";
 
 export default class User {
