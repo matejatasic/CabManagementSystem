@@ -1,25 +1,29 @@
 import { useState } from "react";
+
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 import "./Login.scss"
 import ContentCard from "../common/content-card/ContentCard";
 import User from "../../../modules/user/models/User";
 import LoginProps from "./LoginProps";
+import { login } from "../../common/store/slices/user.slice";
 
 export default function Login(props: LoginProps) {
-    const { repository, sessionRepository } = props;
+    const { repository } = props;
+    const dispatch = useDispatch();
 
     const [user, setUser] = useState<User>(new User());
 
     async function handleSubmit() {
         repository.login(user)
         .then(data => {
-            sessionRepository.setUserSession(
-                data.userId,
-                data.username,
-                data.token,
-                data.role
-            )
+            dispatch(login({
+                userId: data.userId,
+                username: data.username,
+                token: data.token,
+                role: data.role
+            }));
         })
         .catch(error => {
             console.error(error.message);

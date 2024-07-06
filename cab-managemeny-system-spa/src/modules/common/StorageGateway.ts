@@ -1,8 +1,8 @@
 import IStorageGateway from "./IStorageGateway";
 
 export default class StorageGateway implements IStorageGateway {
-    get(propertyName: string): string | number {
-        return sessionStorage.get(propertyName);
+    get(propertyName: string): string | number | null {
+        return sessionStorage.getItem(propertyName);
     }
 
     set(propertyName: string, value: string): void {

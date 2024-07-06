@@ -26,7 +26,6 @@ export default function PublicRoutes() {
           element={
             <Register
               repository={new AuthenticationRepository(new AuthenticationGateway(new ApiGateway()))}
-              sessionRepository={new SessionRepository(new StorageGateway())}
             />
           }
         />
@@ -35,7 +34,6 @@ export default function PublicRoutes() {
           element={
             <Login
               repository={new AuthenticationRepository(new AuthenticationGateway(new ApiGateway()))}
-              sessionRepository={new SessionRepository(new StorageGateway())}
             />
           }
         />

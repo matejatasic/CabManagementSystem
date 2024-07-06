@@ -34,7 +34,7 @@ module.exports = {
       {
         test : /\.(jpg|png)$/,
         type: 'asset/resource',
-      }
+      },
     ],
   },
   plugins: [
@@ -49,18 +49,19 @@ module.exports = {
     new ProvidePlugin({
       process: 'process/browser',
       Buffer: ['buffer', 'Buffer'],
-    })
+    }),
   ],
   resolve: {
-    extensions: [".js", ".jsx", ".ts", ".tsx", ".scss"],
+    extensions: [".js", ".jsx", ".ts", ".tsx", ".scss", ".mjs"],
     fallback: {
       "child_process": false,
       "worker_threads": false,
       "uglify-js": false,
       "@swc/core": false,
       "esbuild": false,
-      "module": false,
+      "module": require.resolve("module"),
       "inspector": false,
+      "process/browser": require.resolve('process/browser')
     }
   },
   stats: {

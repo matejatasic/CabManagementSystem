@@ -1,15 +1,18 @@
 import { FormEvent, useState } from "react";
 
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import ContentCard from "../common/content-card/ContentCard";
 import "./Register.scss"
 import User from "../../../modules/user/models/User";
 import ValidationError from "../../../modules/common/ValidationError";
 import RegisterProps from "./RegisterProps";
+import { login } from "../../common/store/slices/user.slice";
 
 export default function Register(props: RegisterProps) {
-    const { repository, sessionRepository } = props;
+    const { repository } = props;
+    const dispatch = useDispatch();
 
     const [user, setUser] = useState<User>(new User());
     const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
@@ -19,12 +22,12 @@ export default function Register(props: RegisterProps) {
 
         repository.register(user)
         .then(data => {
-            sessionRepository.setUserSession(
-                data.userId,
-                data.username,
-                data.token,
-                data.role
-            )
+            dispatch(login({
+                userId: data.userId,
+                username: data.username,
+                token: data.token,
+                role: data.role
+            }));
         })
         .catch(error => {
             console.error(error.message);

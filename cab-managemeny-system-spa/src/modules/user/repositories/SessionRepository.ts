@@ -1,4 +1,5 @@
 import IStorageGateway from "../../common/IStorageGateway";
+import UserSession from "../types/UserSession";
 import ISessionRepository from "./ISessionRepository";
 
 export default class SessionRepository implements ISessionRepository {
@@ -13,7 +14,31 @@ export default class SessionRepository implements ISessionRepository {
     }
 
     getToken(): string {
+        const token = this.storageGateway.get(this.TOKEN_PROPERTY_NAME);
+
+        if (!token) {
+            return "";
+        }
+
         return this.storageGateway.get(this.TOKEN_PROPERTY_NAME) as string;
+    }
+
+    getUserSession(): UserSession | null {
+        const userId = this.storageGateway.get(this.USER_ID_PROPERTY_NAME) as number;
+        const username = this.storageGateway.get(this.USERNAME_PROPERTY_NAME) as string;
+        const token = this.storageGateway.get(this.TOKEN_PROPERTY_NAME) as string;
+        const role = this.storageGateway.get(this.ROLE_PROPERTY_NAME) as string;
+
+        if (!userId || !username || !token || !role) {
+            return null;
+        }
+
+        return {
+            userId,
+            username,
+            token,
+            role
+        }
     }
 
     setUserSession(
