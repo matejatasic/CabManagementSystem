@@ -22,7 +22,7 @@ public class JwtProviderService : IJwtProviderService
         Claim[] claims = new Claim[] {
             new Claim(JwtRegisteredClaimNames.Sub, userId),
             new Claim(JwtRegisteredClaimNames.Email, email),
-            new Claim(ClaimTypes.Role, role)
+            new Claim("role", role)
         };
 
         SigningCredentials signingCredentials = new SigningCredentials(
