@@ -1,7 +1,7 @@
 import { Action, Dispatch, Middleware, MiddlewareAPI } from "@reduxjs/toolkit";
 import StorageGateway from "../../../../modules/common/StorageGateway";
 import SessionRepository from "../../../../modules/user/repositories/SessionRepository";
-import { login } from "../slices/user.slice"
+import { login, logout } from "../slices/user.slice"
 import RootState from "../state.type";
 import LoginPayloadAction from "../slices/login-payload-action.type";
 
@@ -17,6 +17,9 @@ const authenticationMiddleware: Middleware<{}, RootState> = (api: MiddlewareAPI<
             loginPayload.token,
             loginPayload.role
         );
+    }
+    else if(logout.match(action)) {
+        sessionRepository.removeUserSession();
     }
 
     return next(action);

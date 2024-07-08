@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import "./Login.scss"
 import ContentCard from "../common/content-card/ContentCard";
@@ -12,6 +12,7 @@ import { login } from "../../common/store/slices/user.slice";
 export default function Login(props: LoginProps) {
     const { repository } = props;
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [user, setUser] = useState<User>(new User());
 
@@ -24,6 +25,7 @@ export default function Login(props: LoginProps) {
                 token: data.token,
                 role: data.role
             }));
+            navigate("/");
         })
         .catch(error => {
             console.error(error.message);
