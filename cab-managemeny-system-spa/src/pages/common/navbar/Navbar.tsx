@@ -1,6 +1,13 @@
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
+import RootState from "../store/state.type";
+import NavbarAuthenticationButtons from "./NavbarAuthenticationButtons";
+import NavbarUserInformation from "./NavbarUserInformation";
+
 export default function Navbar() {
+    const user = useSelector((state: RootState) => state.user)
+
     return (
         <nav className="navbar navbar-expand-lg bg-body-tertiary">
             <div className="container-fluid">
@@ -18,14 +25,15 @@ export default function Navbar() {
                         </li>
                     </ul>
                     <div>
-                        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li className="nav-item">
-                                <Link to="/login" className="nav-link">Login</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link to="/register" className="nav-link">Register</Link>
-                            </li>
-                        </ul>
+                        {
+                            user.token !== "" ?
+                            (
+                                <NavbarUserInformation username={user.username} />
+                            ) :
+                            (
+                                <NavbarAuthenticationButtons />
+                            )
+                        }
                     </div>
                 </div>
             </div>
