@@ -4,10 +4,11 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 import "./Login.scss"
-import ContentCard from "../common/content-card/ContentCard";
+import ContentCard from "../common/components/content-card/ContentCard";
 import User from "../../../modules/user/models/User";
 import LoginProps from "./LoginProps";
 import { login } from "../../common/store/slices/user.slice";
+import CustomerRoutesEnum from "../common/enums/CustomerRoutesEnum";
 
 export default function Login(props: LoginProps) {
     const { repository } = props;
@@ -72,7 +73,7 @@ export default function Login(props: LoginProps) {
                         </div>
 
                         <div className="my-3">
-                            <Link to="/register">Don't have an account? Click Here</Link>
+                            <Link to={CustomerRoutesEnum.Register}>Don't have an account? Click Here</Link>
                         </div>
                         <button className="btn btn-primary" onClick={() => handleSubmit()}>Login</button>
                     </>

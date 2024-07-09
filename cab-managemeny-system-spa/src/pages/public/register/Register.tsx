@@ -3,12 +3,13 @@ import { FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-import ContentCard from "../common/content-card/ContentCard";
+import ContentCard from "../common/components/content-card/ContentCard";
 import "./Register.scss"
 import User from "../../../modules/user/models/User";
 import ValidationError from "../../../modules/common/ValidationError";
 import RegisterProps from "./RegisterProps";
 import { login } from "../../common/store/slices/user.slice";
+import CustomerRoutesEnum from "../common/enums/CustomerRoutesEnum";
 
 export default function Register(props: RegisterProps) {
     const { repository } = props;
@@ -193,7 +194,7 @@ export default function Register(props: RegisterProps) {
                         </div>
 
                         <div className="my-3">
-                            <Link to="/login">Already have an account? Click Here</Link>
+                            <Link to={CustomerRoutesEnum.Login}>Already have an account? Click Here</Link>
                         </div>
                         <button disabled={isRegisterButtonDisabled()} className="btn btn-primary">Register</button>
                     </form>

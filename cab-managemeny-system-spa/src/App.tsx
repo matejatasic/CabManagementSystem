@@ -1,10 +1,10 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Provider } from "react-redux";
 
 import "./App.scss";
 import Navbar from "./pages/common/navbar/Navbar";
-import PublicRoutes from "./pages/public/PublicRoutes";
+import CustomerRoutes from "./pages/public/CustomerRoutes";
 import AdminRoutes from "./pages/admin/AdminRoutes";
-import { Provider } from "react-redux";
 import store from "./pages/common/store";
 
 function App() {
@@ -13,7 +13,7 @@ function App() {
       <BrowserRouter>
         <Navbar />
         <Routes>
-          <Route path="/*" element={<PublicRoutes />}/>
+          <Route path="/*" element={<CustomerRoutes />}/>
           <Route path="/admin/*" element={<AdminRoutes />} />
         </Routes>
       </BrowserRouter>

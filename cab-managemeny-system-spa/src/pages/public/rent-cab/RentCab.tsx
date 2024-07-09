@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Hero from "../../common/hero/Hero";
 import image from "../../../assets/images/rent-cab-hero.jpg";
 import Footer from "../../common/footer/Footer";
-import ContentCard from "../common/content-card/ContentCard";
+import ContentCard from "../common/components/content-card/ContentCard";
 import Cab from "../../../modules/cab/Cab";
 import CabCard from "../../../modules/cab/cab-card/CabCard";
 import PageProps from "../../common/props/PageProps";
