@@ -11,6 +11,8 @@ public class Route : IEntity
     public required string FromAddress { get; set; }
     public required string ToAddress { get; set; }
     public float? TravelCost {get; set; }
+    public User? Traveler { get; set; }
+    public required int TravelerId { get; set; }
     public Employee? Driver { get; set; }
     public required int DriverId { get; set; }
     public DateTime Created { get; set; }
@@ -24,6 +26,7 @@ public class Route : IEntity
             FromAddress = FromAddress,
             ToAddress = ToAddress,
             TravelCost = TravelCost,
+            TravelerId = TravelerId,
             DriverId = DriverId
         };
     }

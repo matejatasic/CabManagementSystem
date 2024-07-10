@@ -7,6 +7,7 @@ public class RouteDetailDto : IEntityDetailDto<Route>
     public int Id { get; set; }
     public required string FromAddress { get; set; }
     public required string ToAddress { get; set; }
+    public required int TravelerId { get; set; }
     public float? TravelCost {get; set; }
     public required int DriverId { get; set; }
 
@@ -18,6 +19,7 @@ public class RouteDetailDto : IEntityDetailDto<Route>
             FromAddress = FromAddress,
             ToAddress = ToAddress,
             TravelCost = TravelCost,
+            TravelerId = TravelerId,
             DriverId = DriverId
         };
     }
