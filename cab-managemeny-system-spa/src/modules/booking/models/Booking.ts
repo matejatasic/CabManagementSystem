@@ -85,7 +85,6 @@ export default class Booking {
     }
 
     public validate(): ValidationError | void {
-        throw new ValidationError("Some general error");
         if (this.fromAddress.length === 0) {
             throw new ValidationError("From Address cannot be empty", Booking.FROM_ADDRESS);
         }
@@ -95,7 +94,7 @@ export default class Booking {
         else if (this.travelerId < 1) {
             throw new ValidationError("Traveler id must be set", Booking.TRAVELER_ID);
         }
-        else {
+        else if (this.driverId < 1) {
             throw new ValidationError("Driver id must be set", Booking.DRIVER_ID);
         }
     }

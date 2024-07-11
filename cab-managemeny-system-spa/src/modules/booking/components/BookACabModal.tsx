@@ -36,10 +36,10 @@ export default function BookACabModal(props: BookingACabModalProps) {
                     let fieldName = "general";
 
                     if (error.fieldName) {
-                        fieldName = error.fieldName
+                        fieldName = error.fieldName;
                     }
 
-                    setValidationErrors({...validationErrors, [fieldName]: error.message})
+                    setValidationErrors({...validationErrors, [fieldName]: error.message});
                 }
             });
     }

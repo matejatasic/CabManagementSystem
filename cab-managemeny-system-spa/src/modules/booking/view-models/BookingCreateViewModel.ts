@@ -15,20 +15,4 @@ export default class BookingCreateViewModel {
         this.travelerId = travelerId;
         this.driverId = driverId;
     }
-
-    // public getFromAddress(): string {
-    //     return this.fromAddress;
-    // }
-
-    // public getToAddress(): string {
-    //     return this.toAddress;
-    // }
-
-    // public getTravelerId(): number {
-    //     return this.travelerId;
-    // }
-
-    // public getDriverId(): number {
-    //     return this.driverId;
-    // }
 }

@@ -10,6 +10,15 @@ export default class User {
     public address: string;
     public phone: string;
 
+    public static USERNAME = "username";
+    public static PASSWORD = "password";
+    public static CONFIRM_PASSWORD = "confirmPassword";
+    public static EMAIL = "email";
+    public static FIRST_NAME = "firstName";
+    public static LAST_NAME = "lastName";
+    public static ADDRESS = "address";
+    public static PHONE = "phone";
+
     constructor(
         id: number = 0,
         username: string = "",
@@ -28,30 +37,6 @@ export default class User {
         this.lastName = lastName;
         this.address = address;
         this.phone = phone;
-    }
-
-    public getParameters(): Array<string | number> {
-        const instanceParameters = this.getInstance();
-        const parameters = [];
-
-        for (let propertyName of Object.getOwnPropertyNames(instanceParameters)) {
-            parameters.push(instanceParameters[propertyName]);
-        }
-
-        return parameters;
-    }
-
-    public getInstance(): Record<string, string | number> {
-        return {
-            id: this.id,
-            username: this.username,
-            password: this.password,
-            email: this.email,
-            firstName: this.firstName,
-            lastName: this.lastName,
-            address: this.address,
-            phone: this.phone
-        };
     }
 
     public setUsername(value: string): User {
@@ -108,6 +93,8 @@ export default class User {
             throw new ValidationError("Email not valid");
         }
 
+        this.email = value;
+
         return new User(...this.getParameters() as any);
     }
 
@@ -145,7 +132,7 @@ export default class User {
 
     public setAddress(value: string): User {
         if (value.length === 0) {
-            throw new ValidationError("Address cannot be empty");
+            throw new ValidationError("Address is required");
         }
 
         this.address = value;
@@ -166,7 +153,55 @@ export default class User {
         return new User(...this.getParameters() as any);
     }
 
+    public getParameters(): Array<string | number> {
+        const instanceParameters = this.getInstance();
+        const parameters = [];
+
+        for (let propertyName of Object.getOwnPropertyNames(instanceParameters)) {
+            parameters.push(instanceParameters[propertyName]);
+        }
+
+        return parameters;
+    }
+
+    public getInstance(): Record<string, string | number> {
+        return {
+            id: this.id,
+            username: this.username,
+            password: this.password,
+            email: this.email,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            address: this.address,
+            phone: this.phone
+        };
+    }
+
     get fullName(): string {
         return `${this.firstName} ${this.lastName}`;
+    }
+
+    public validate(): ValidationError | void {
+        if (this.email.length === 0) {
+            throw new ValidationError("Email is required", User.EMAIL);
+        }
+        else if (this.username.length === 0) {
+            throw new ValidationError("Username is required", User.USERNAME);
+        }
+        else if (this.password.length === 0) {
+            throw new ValidationError("Password is required", User.PASSWORD);
+        }
+        else if(this.address.length === 0) {
+            throw new ValidationError("Address is required", User.ADDRESS);
+        }
+    }
+
+    public loginValidate(): ValidationError | void {
+        if (this.username.length === 0) {
+            throw new ValidationError("Username is required", User.USERNAME);
+        }
+        else if (this.password.length === 0) {
+            throw new ValidationError("Password is required", User.PASSWORD);
+        }
     }
 }

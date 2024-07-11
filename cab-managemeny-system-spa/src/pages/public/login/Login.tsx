@@ -16,6 +16,7 @@ export default function Login(props: LoginProps) {
     const navigate = useNavigate();
 
     const [user, setUser] = useState<User>(new User());
+    const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
     async function handleSubmit() {
         repository.login(user)
@@ -29,7 +30,13 @@ export default function Login(props: LoginProps) {
             navigate("/");
         })
         .catch(error => {
-            console.error(error.message);
+            let fieldName = "general";
+
+            if (error.fieldName) {
+                fieldName = error.fieldName;
+            }
+
+            setValidationErrors({...validationErrors, [fieldName]: error.message});
         });
 
     }
@@ -37,6 +44,7 @@ export default function Login(props: LoginProps) {
     function changeUsername(value: string) {
         try{
             setUser(user.setUsername(value))
+            setValidationErrors({...validationErrors, [User.USERNAME]: ""})
         }
         catch(error) {
         }
@@ -45,6 +53,7 @@ export default function Login(props: LoginProps) {
     function changePassword(value: string) {
         try{
             setUser(user.setPassword(value));
+            setValidationErrors({...validationErrors, [User.PASSWORD]: ""})
         }
         catch(error) {
         }
@@ -62,6 +71,11 @@ export default function Login(props: LoginProps) {
                                 className="form-control"
                                 onChange={(e) => changeUsername(e.target.value)}
                             />
+                            {
+                                validationErrors[User.USERNAME] ?
+                                <p className="text-danger mt-2">{validationErrors[User.USERNAME]}</p>
+                                : null
+                            }
                         </div>
                         <div className="mb-3">
                             <label className="form-label">Password</label>
@@ -70,8 +84,17 @@ export default function Login(props: LoginProps) {
                                 className="form-control"
                                 onChange={(e) => changePassword(e.target.value)}
                             />
+                            {
+                                validationErrors[User.PASSWORD] ?
+                                <p className="text-danger mt-2">{validationErrors[User.PASSWORD]}</p>
+                                : null
+                            }
                         </div>
-
+                        {
+                            validationErrors["general"] ?
+                            <p className="text-danger mt-4">{validationErrors["general"]}</p>
+                            : null
+                        }
                         <div className="my-3">
                             <Link to={CustomerRoutesEnum.Register}>Don't have an account? Click Here</Link>
                         </div>

@@ -31,7 +31,16 @@ export default function Register(props: RegisterProps) {
             }));
         })
         .catch(error => {
-            console.error(error.message);
+            if (error instanceof ValidationError) {
+                let fieldName = "general";
+
+                if (error.fieldName) {
+                    fieldName = error.fieldName;
+                }
+
+                console.log({...validationErrors, [fieldName]: error.message})
+                setValidationErrors({...validationErrors, [fieldName]: error.message});
+            }
         });
 
     }
@@ -41,28 +50,28 @@ export default function Register(props: RegisterProps) {
             let updatedUser: User;
 
             switch (propertyName) {
-                case "email":
+                case User.EMAIL:
                     updatedUser = user.setEmail(value);
                     break;
-                case "username":
+                case User.USERNAME:
                     updatedUser = user.setUsername(value);
                     break;
-                case "password":
+                case User.PASSWORD:
                     updatedUser = user.setPassword(value);
                     break;
-                case "confirmPassword":
+                case User.CONFIRM_PASSWORD:
                     updatedUser = user.setConfirmPassword(value);
                     break;
-                case "firstName":
+                case User.FIRST_NAME:
                     updatedUser = user.setFirstName(value);
                     break;
-                case "lastName":
+                case User.LAST_NAME:
                     updatedUser = user.setLastName(value);
                     break;
-                case "address":
+                case User.ADDRESS:
                     updatedUser = user.setAddress(value);
                     break;
-                case "phone":
+                case User.PHONE:
                     updatedUser = user.setPhone(value);
                     break;
                 default:
@@ -93,11 +102,11 @@ export default function Register(props: RegisterProps) {
                             <input
                                 type="email"
                                 className="form-control"
-                                onChange={(e) => changeValue("email", e.target.value)}
+                                onChange={(e) => changeValue(User.EMAIL, e.target.value)}
                             />
                             {
-                                validationErrors["email"] ?
-                                <p className="text-danger mt-2">{validationErrors["email"]}</p>
+                                validationErrors[User.EMAIL] ?
+                                <p className="text-danger mt-2">{validationErrors[User.EMAIL]}</p>
                                 : null
                             }
                         </div>
@@ -106,11 +115,11 @@ export default function Register(props: RegisterProps) {
                             <input
                                 type="text"
                                 className="form-control"
-                                onChange={(e) => changeValue("username", e.target.value)}
+                                onChange={(e) => changeValue(User.USERNAME, e.target.value)}
                             />
                             {
-                                validationErrors["username"] ?
-                                <p className="text-danger mt-2">{validationErrors["username"]}</p>
+                                validationErrors[User.USERNAME] ?
+                                <p className="text-danger mt-2">{validationErrors[User.USERNAME]}</p>
                                 : null
                             }
                         </div>
@@ -119,11 +128,11 @@ export default function Register(props: RegisterProps) {
                             <input
                                 type="password"
                                 className="form-control"
-                                onChange={(e) => changeValue("password", e.target.value)}
+                                onChange={(e) => changeValue(User.PASSWORD, e.target.value)}
                             />
                             {
-                                validationErrors["password"] ?
-                                <p className="text-danger mt-2">{validationErrors["password"]}</p>
+                                validationErrors[User.PASSWORD] ?
+                                <p className="text-danger mt-2">{validationErrors[User.PASSWORD]}</p>
                                 : null
                             }
                         </div>
@@ -132,11 +141,11 @@ export default function Register(props: RegisterProps) {
                             <input
                                 type="password"
                                 className="form-control"
-                                onChange={(e) => changeValue("confirmPassword", e.target.value)}
+                                onChange={(e) => changeValue(User.CONFIRM_PASSWORD, e.target.value)}
                             />
                             {
-                                validationErrors["confirmPassword"] ?
-                                <p className="text-danger mt-2">{validationErrors["confirmPassword"]}</p>
+                                validationErrors[User.CONFIRM_PASSWORD] ?
+                                <p className="text-danger mt-2">{validationErrors[User.CONFIRM_PASSWORD]}</p>
                                 : null
                             }
                         </div>
@@ -145,11 +154,11 @@ export default function Register(props: RegisterProps) {
                             <input
                                 type="text"
                                 className="form-control"
-                                onChange={(e) => changeValue("firstName", e.target.value)}
+                                onChange={(e) => changeValue(User.FIRST_NAME, e.target.value)}
                             />
                             {
-                                validationErrors["firstName"] ?
-                                <p className="text-danger mt-2">{validationErrors["firstName"]}</p>
+                                validationErrors[User.FIRST_NAME] ?
+                                <p className="text-danger mt-2">{validationErrors[User.FIRST_NAME]}</p>
                                 : null
                             }
                         </div>
@@ -158,11 +167,11 @@ export default function Register(props: RegisterProps) {
                             <input
                                 type="text"
                                 className="form-control"
-                                onChange={(e) => changeValue("username", e.target.value)}
+                                onChange={(e) => changeValue(User.LAST_NAME, e.target.value)}
                             />
                             {
-                                validationErrors["lastName"] ?
-                                <p className="text-danger mt-2">{validationErrors["lastName"]}</p>
+                                validationErrors[User.LAST_NAME] ?
+                                <p className="text-danger mt-2">{validationErrors[User.LAST_NAME]}</p>
                                 : null
                             }
                         </div>
@@ -171,11 +180,11 @@ export default function Register(props: RegisterProps) {
                             <input
                                 type="text"
                                 className="form-control"
-                                onChange={(e) => changeValue("address", e.target.value)}
+                                onChange={(e) => changeValue(User.ADDRESS, e.target.value)}
                             />
                             {
-                                validationErrors["address"] ?
-                                <p className="text-danger mt-2">{validationErrors["address"]}</p>
+                                validationErrors[User.ADDRESS] ?
+                                <p className="text-danger mt-2">{validationErrors[User.ADDRESS]}</p>
                                 : null
                             }
                         </div>
@@ -184,15 +193,19 @@ export default function Register(props: RegisterProps) {
                             <input
                                 type="text"
                                 className="form-control"
-                                onChange={(e) => changeValue("phone", e.target.value)}
+                                onChange={(e) => changeValue(User.PHONE, e.target.value)}
                             />
                             {
-                                validationErrors["phone"] ?
-                                <p className="text-danger mt-2">{validationErrors["phone"]}</p>
+                                validationErrors[User.PHONE] ?
+                                <p className="text-danger mt-2">{validationErrors[User.PHONE]}</p>
                                 : null
                             }
                         </div>
-
+                        {
+                            validationErrors["general"] ?
+                            <p className="text-danger mt-4">{validationErrors["general"]}</p>
+                            : null
+                        }
                         <div className="my-3">
                             <Link to={CustomerRoutesEnum.Login}>Already have an account? Click Here</Link>
                         </div>

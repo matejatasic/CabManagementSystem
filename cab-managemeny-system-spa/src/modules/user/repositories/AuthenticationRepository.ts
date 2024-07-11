@@ -13,6 +13,8 @@ export default class AuthenticationRepository implements IAuthenticationReposito
     }
 
     public async login(user: User): Promise<AuthenticationResponseData> {
+        user.loginValidate()
+
         const loginViewModel = this.getLoginViewModel(user);
         const result = await this.authenticationGateway.login(loginViewModel);
 
@@ -24,6 +26,8 @@ export default class AuthenticationRepository implements IAuthenticationReposito
     }
 
     public async register(user: User): Promise<AuthenticationResponseData> {
+        user.validate();
+
         const registerViewModel = this.getRegisterViewModel(user);
         const result = await this.authenticationGateway.register(registerViewModel);
 
