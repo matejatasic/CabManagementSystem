@@ -45,7 +45,7 @@ export default class Booking {
             throw new ValidationError("To Address cannot be empty");
         }
 
-        this.fromAddress = value;
+        this.toAddress = value;
 
         return new Booking(...this.getParameters() as any);
     }
