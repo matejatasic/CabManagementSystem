@@ -3,13 +3,13 @@ import { useSelector } from "react-redux";
 
 import RentCab from "./rent-cab/RentCab";
 import RootState from "../common/store/state.type";
-import CabRepository from "../../modules/cab/cab-repository/CabRepository";
-import CabGateway from "../../modules/cab/cab-gateway/CabGateway";
+import CabRepository from "../../modules/cab/repositories/CabRepository";
+import CabGateway from "../../modules/cab/gateways/CabGateway";
 import ApiGateway from "../../modules/common/ApiGateway";
 import ProtectedRoutesProps from "./ProtectedRouteProps";
 import Bookings from "./bookings/Bookings";
-import BookingRepository from "../../modules/booking/booking-repository/BookingRepository";
-import BookingGateway from "../../modules/booking/booking-gateway/BookingGateway";
+import BookingRepository from "../../modules/booking/repositories/BookingRepository";
+import BookingGateway from "../../modules/booking/gateways/BookingGateway";
 import ChangeAccountDetails from "./change-account-details/ChangeAccountDetails";
 import CustomerRoutesEnum from "./common/enums/CustomerRoutesEnum";
 
@@ -19,7 +19,8 @@ export default function ProtectedRoutes() {
             path: CustomerRoutesEnum.RentACab,
             component: RentCab,
             props: {
-                repository: new CabRepository(new CabGateway(new ApiGateway()))
+                repository: new CabRepository(new CabGateway(new ApiGateway())),
+                bookingRepository: new BookingRepository(new BookingGateway(new ApiGateway()))
             }
 
         },

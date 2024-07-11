@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import ContentCard from "../common/content-card/ContentCard";
 import TableContent from "../common/table-content/TableContent";
-import Cab from "../../../modules/cab/Cab";
+import Cab from "../../../modules/cab/models/Cab";
 import CarsProps from "./CarsProps";
 import Employee from "../../../modules/employee/Employee";
 import User from "../../../modules/user/models/User";

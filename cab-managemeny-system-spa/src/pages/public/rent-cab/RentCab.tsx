@@ -4,14 +4,21 @@ import Hero from "../../common/hero/Hero";
 import image from "../../../assets/images/rent-cab-hero.jpg";
 import Footer from "../../common/footer/Footer";
 import ContentCard from "../common/components/content-card/ContentCard";
-import Cab from "../../../modules/cab/Cab";
-import CabCard from "../../../modules/cab/cab-card/CabCard";
-import PageProps from "../../common/props/PageProps";
-import ICabRepository from "../../../modules/cab/cab-repository/ICabRepository";
+import Cab from "../../../modules/cab/models/Cab";
+import CabCard from "../../../modules/cab/components/CabCard";
+import RentCabProps from "./RentCabProps";
+import Booking from "../../../modules/booking/models/Booking";
+import { useSelector } from "react-redux";
+import RootState from "../../common/store/state.type";
+import BookACabModal from "../../../modules/booking/components/BookACabModal";
 
-export default function RentCab(props: PageProps<ICabRepository>) {
-    const { repository } = props;
+export default function RentCab(props: RentCabProps) {
+    const { repository, bookingRepository } = props;
+
+    const user = useSelector((state: RootState) => state.user);
+    const [shouldShowModal, setShouldShowModal] = useState<boolean>(false);
     const [cabs, setCabs] = useState<Cab[]>();
+    const [booking, setBooking] = useState<Booking>(new Booking(0, "", "", 0, user.userId));
 
     useEffect(() => {
         repository.getAll()
@@ -30,6 +37,16 @@ export default function RentCab(props: PageProps<ICabRepository>) {
                 console.log(error);
             });
     }, []);
+
+    const handleCabCardOnClick = (driverId: number): void => {
+        setBooking(booking.setDriverId(driverId))
+        setShouldShowModal(true);
+    };
+
+    const handleModalClose = () => {
+        setBooking(booking.setDriverId(0))
+        setShouldShowModal(false);
+    }
 
     return (
         <div>
@@ -51,14 +68,26 @@ export default function RentCab(props: PageProps<ICabRepository>) {
                         </div>
                         <div className="row">
                             {cabs?.map(cab => (
-                                <div className="col-12 col-md-4 col-lg-3">
-                                    <CabCard name={cab.name} numberOfSeats={cab.numberOfSeats} />
+                                <div key={cab.id} className="col-12 col-md-4 col-lg-3">
+                                    <CabCard
+                                        name={cab.name}
+                                        numberOfSeats={cab.numberOfSeats}
+                                        driverId={cab.driverId}
+                                        onClick={handleCabCardOnClick}
+                                    />
                                 </div>
                             ))}
                         </div>
                     </>
                 </ContentCard>
             </main>
+            <BookACabModal
+                shouldShowModal={shouldShowModal}
+                handleModalClose={handleModalClose}
+                booking={booking}
+                setBooking={setBooking}
+                bookingRepository={bookingRepository}
+            />
             <Footer />
         </div>
     );

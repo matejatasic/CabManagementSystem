@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import PageProps from "../../common/props/PageProps";
 import ContentCard from "../common/content-card/ContentCard";
 import TableContent from "../common/table-content/TableContent";
-import Booking from "../../../modules/booking/Booking";
-import IBookingRepository from "../../../modules/booking/booking-repository/IBookingRepository";
+import Booking from "../../../modules/booking/models/Booking";
+import IBookingRepository from "../../../modules/booking/repositories/IBookingRepository";
 
 export default function Bookings(props: PageProps<IBookingRepository>) {
     const { repository } = props;

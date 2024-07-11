@@ -2,7 +2,9 @@ type BookingResponseData = {
     id: number,
     fromAddress: string,
     toAddress: string,
-    travelCost: number
+    travelerId: number,
+    travelCost: number,
+    driverId: number
 };
 
 export default BookingResponseData;

@@ -26,7 +26,7 @@ export default function NavbarUserInformation(props: NavbarUserInformationProps)
 
     return (
         <Nav>
-            <NavDropdown title={username} id="basic-nav-dropdown">
+            <NavDropdown title={username} className="text-secondary">
                 <NavDropdown.Item onClick={() => handleNavigateToBookings()}>Bookings</NavDropdown.Item>
                 <NavDropdown.Item onClick={() => handleNavigateToChangeProfileSettings()}>Change profile settings</NavDropdown.Item>
                 <NavDropdown.Divider />

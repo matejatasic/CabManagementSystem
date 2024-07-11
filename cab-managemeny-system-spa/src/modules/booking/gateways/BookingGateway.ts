@@ -1,5 +1,6 @@
 import IApiGateway from "../../common/IApiGateway";
-import BookingResponseData from "../BookingResponseDataType";
+import BookingResponseData from "../types/BookingResponseDataType";
+import BookingCreateViewModel from "../view-models/BookingCreateViewModel";
 import IBookingGateway from "./IBookingGateway";
 
 export default class BookingGateway implements IBookingGateway {
@@ -14,5 +15,11 @@ export default class BookingGateway implements IBookingGateway {
         const result = await this.apiGateway.get(this.route);
 
         return result.json();
+    }
+
+    async create(createViewDto: BookingCreateViewModel): Promise<BookingResponseData> {
+        const result = await this.apiGateway.post(this.route, createViewDto);
+
+        return result;
     }
 }

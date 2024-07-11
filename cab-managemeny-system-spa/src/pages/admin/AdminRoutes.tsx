@@ -6,8 +6,8 @@ import Dashboard from "./common/dashboard/Dashboard";
 import Employees from "./employees/Employees";
 import Cars from "./cars/Cars";
 import Bookings from "./bookings/Bookings";
-import BookingRepository from "../../modules/booking/booking-repository/BookingRepository";
-import BookingGateway from "../../modules/booking/booking-gateway/BookingGateway";
+import BookingRepository from "../../modules/booking/repositories/BookingRepository";
+import BookingGateway from "../../modules/booking/gateways/BookingGateway";
 import ApiGateway from "../../modules/common/ApiGateway";
 import UserRepository from "../../modules/user/repositories/UserRepository";
 import UserGateway from "../../modules/user/gateways/UserGateway";
@@ -16,8 +16,8 @@ import EmployeeGateway from "../../modules/employee/employee-gateway/EmployeeGat
 import BranchRepository from "../../modules/branch/branch-repository/BranchRepository";
 import BranchGateway from "../../modules/branch/branch-gateway/BranchGateway";
 import Branches from "./branches/Branches";
-import CabRepository from "../../modules/cab/cab-repository/CabRepository";
-import CabGateway from "../../modules/cab/cab-gateway/CabGateway";
+import CabRepository from "../../modules/cab/repositories/CabRepository";
+import CabGateway from "../../modules/cab/gateways/CabGateway";
 
 export default function AdminRoutes() {
     return (

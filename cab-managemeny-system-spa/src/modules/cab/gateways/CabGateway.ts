@@ -1,5 +1,5 @@
 import IApiGateway from "../../common/IApiGateway";
-import CabResponseData from "../CabResponseDataType";
+import CabResponseData from "../types/CabResponseDataType";
 import ICabGateway from "./ICabGateway";
 
 export default class CabGateway implements ICabGateway {

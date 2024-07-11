@@ -1,5 +1,5 @@
-import CabResponseData from "../CabResponseDataType";
-import ICabGateway from "../cab-gateway/ICabGateway";
+import CabResponseData from "../types/CabResponseDataType";
+import ICabGateway from "../gateways/ICabGateway";
 import ICabRepository from "./ICabRepository";
 
 export default class CabRepository implements ICabRepository {
