@@ -5,7 +5,7 @@ namespace CabManagementSystemWeb.Dtos;
 
 public class RoleUpdateDto : IEntityUpdateDto<Role>
 {
-    public required string Name { get; set; }
+    public string? Name { get; set; }
 
     public Role ConvertToEntity(int id)
     {

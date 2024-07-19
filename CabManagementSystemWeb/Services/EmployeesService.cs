@@ -8,14 +8,14 @@ namespace CabManagementSystemWeb.Services;
 
 public class EmployeesService : IEmployeesService
 {
-    private readonly IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> _repository;
-    private readonly IRepository<Branch, BranchCreateDto, BranchDetailDto> _branchesRepository;
-    private readonly IRepository<User, UserCreateDto, UserDetailDto> _usersRepository;
+    private readonly IRepository<Employee> _repository;
+    private readonly IRepository<Branch> _branchesRepository;
+    private readonly IRepository<User> _usersRepository;
 
     public EmployeesService(
-        IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> repository,
-        IRepository<Branch, BranchCreateDto, BranchDetailDto> branchesRepository,
-        IRepository<User, UserCreateDto, UserDetailDto> usersRepository
+        IRepository<Employee> repository,
+        IRepository<Branch> branchesRepository,
+        IRepository<User> usersRepository
     )
     {
         _repository = repository;
@@ -25,19 +25,21 @@ public class EmployeesService : IEmployeesService
 
     public async Task<IEnumerable<EmployeeDetailDto>> GetAll()
     {
-        return await _repository.GetAll();
+        List<Employee> employees = await _repository.GetAll();
+
+        return employees.Select(e => e.ConvertToDetailDto()).ToList();
     }
 
     public async Task<EmployeeDetailDto?> GetById(int id)
     {
-        EmployeeDetailDto? employeeDetailDto = await _repository.GetById(id);
+        Employee? employee = await _repository.GetById(id);
 
-        if (employeeDetailDto == null)
+        if (employee == null)
         {
             throw new NotFoundException();
         }
 
-        return employeeDetailDto;
+        return employee.ConvertToDetailDto();
     }
 
     public async Task<EmployeeDetailDto> Create(EmployeeCreateDto employeeCreateDto)
@@ -54,54 +56,74 @@ public class EmployeesService : IEmployeesService
             throw new NotFoundException($"The user with the id {employeeCreateDto.UserId} does not exist");
         }
 
-        return await _repository.Create(employeeCreateDto);
+        Employee employee = employeeCreateDto.ConvertToEntity();
+        employee.Created = DateTime.UtcNow;
+        Employee newEmployee = await _repository.Create(employee);
+
+        return newEmployee.ConvertToDetailDto();
     }
 
     public async Task<EmployeeDetailDto> Update(int id, EmployeeUpdateDto employeeUpdateDto)
     {
-        EmployeeDetailDto? employeeDetailDto = await _repository.GetById(id);
+        Employee? employee = await _repository.GetById(id);
 
-        if (employeeDetailDto == null)
+        if (employee == null)
         {
             throw new NotFoundException($"The employee with id {id} does not exist");
         }
 
-        if (employeeUpdateDto.BranchId != null && await GetBranchById(employeeDetailDto.BranchId) == null)
+        if (employeeUpdateDto.BranchId != null && await GetBranchById(employee.BranchId) == null)
         {
             throw new NotFoundException($"The branch with id {employeeUpdateDto.BranchId} does not exist");
         }
 
-        if (employeeUpdateDto.UserId != null && await GetUserById(employeeDetailDto.UserId) == null)
+        if (employeeUpdateDto.UserId != null && await GetUserById(employee.UserId) == null)
         {
             throw new NotFoundException($"The user with the id {employeeUpdateDto.UserId} does not exist");
         }
 
-        employeeDetailDto = await _repository.Update(employeeUpdateDto.ConvertToEntity(id));
+        employee = ChangeUpdatedValues(employee, employeeUpdateDto);
+        employee.Updated = DateTime.UtcNow;
+        employee = await _repository.Update(employee);
 
-        return employeeDetailDto;
+        return employee.ConvertToDetailDto();
     }
 
-    private async Task<BranchDetailDto?> GetBranchById(int id)
+    private Employee ChangeUpdatedValues(Employee employee, EmployeeUpdateDto employeeUpdateDto)
+    {
+        if (employeeUpdateDto.UserId != null)
+        {
+            employee.UserId = (int)employeeUpdateDto.UserId;
+        }
+        if (employeeUpdateDto.BranchId != null)
+        {
+            employee.BranchId = (int)employeeUpdateDto.BranchId;
+        }
+
+        return employee;
+    }
+
+    private async Task<Branch?> GetBranchById(int id)
     {
         return await _branchesRepository.GetById(id);
     }
 
-    private async Task<UserDetailDto?> GetUserById(int id)
+    private async Task<User?> GetUserById(int id)
     {
         return await _usersRepository.GetById(id);
     }
 
     public async Task<EmployeeDetailDto> Delete(int id)
     {
-        EmployeeDetailDto? employeeDetailDto = await _repository.GetById(id);
+        Employee? employee = await _repository.GetById(id);
 
-        if (employeeDetailDto == null)
+        if (employee == null)
         {
             throw new NotFoundException($"The employee with id {id} does not exist");
         }
 
-        await _repository.Delete(employeeDetailDto.ConvertToEntity());
+        await _repository.Delete(employee);
 
-        return employeeDetailDto;
+        return employee.ConvertToDetailDto();
     }
 }

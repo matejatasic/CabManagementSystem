@@ -1,11 +1,10 @@
 using CabManagementSystemWeb.Data;
-using CabManagementSystemWeb.Dtos;
 using CabManagementSystemWeb.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CabManagementSystemWeb.Repositories;
 
-public class BranchesRepository : IRepository<Branch, BranchCreateDto, BranchDetailDto>
+public class BranchesRepository : IRepository<Branch>
 {
     private readonly ApplicationDbContext _dbContext;
 
@@ -14,52 +13,47 @@ public class BranchesRepository : IRepository<Branch, BranchCreateDto, BranchDet
         _dbContext = dbContext;
     }
 
-    public async Task<List<BranchDetailDto>> GetAll()
+    public async Task<List<Branch>> GetAll()
     {
         List<Branch> branches = await _dbContext.Branches.ToListAsync();
 
-        return branches.Select(b => b.ConvertToDetailDto()).ToList();
+        return branches;
     }
 
-    public async Task<BranchDetailDto?> GetById(int id)
+    public async Task<Branch?> GetById(int id)
     {
         Branch? branch = await _dbContext.Branches.FindAsync(id);
         _dbContext.ChangeTracker.Clear();
 
-        return branch?.ConvertToDetailDto();
+        return branch;
     }
 
-    public async Task<BranchDetailDto?> GetBy(string property, object value)
+    public async Task<Branch?> GetBy(string property, object value)
     {
         return null;
     }
 
-    public async Task<BranchDetailDto> Create(BranchCreateDto branchDto)
+    public async Task<Branch> Create(Branch branch)
     {
-        Branch branch = branchDto.ConvertToEntity();
-
-        branch.Created = DateTime.UtcNow;
         _dbContext.Branches.Add(branch);
         await _dbContext.SaveChangesAsync();
 
-        return branch.ConvertToDetailDto();
+        return branch;
     }
 
-    public async Task<BranchDetailDto> Update(Branch branch)
+    public async Task<Branch> Update(Branch branch)
     {
-        branch.Updated = DateTime.UtcNow;
-
         _dbContext.Branches.Update(branch);
         await _dbContext.SaveChangesAsync();
 
-        return branch.ConvertToDetailDto();
+        return branch;
     }
 
-    public async Task<BranchDetailDto> Delete(Branch branch)
+    public async Task<Branch> Delete(Branch branch)
     {
         _dbContext.Branches.Remove(branch);
         await _dbContext.SaveChangesAsync();
 
-        return branch.ConvertToDetailDto();
+        return branch;
     }
 }

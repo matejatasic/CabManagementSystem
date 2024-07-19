@@ -8,12 +8,12 @@ namespace CabManagementSystemWeb.Services;
 
 public class BranchesService : IBranchesService
 {
-    private readonly IRepository<Branch, BranchCreateDto, BranchDetailDto> _repository;
-    private readonly IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> _employeesRepository;
+    private readonly IRepository<Branch> _repository;
+    private readonly IRepository<Employee> _employeesRepository;
 
     public BranchesService(
-        IRepository<Branch, BranchCreateDto, BranchDetailDto> repository,
-        IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> employeesRepository
+        IRepository<Branch> repository,
+        IRepository<Employee> employeesRepository
     )
     {
         _repository = repository;
@@ -22,19 +22,20 @@ public class BranchesService : IBranchesService
 
     public async Task<IEnumerable<BranchDetailDto>> GetAll()
     {
-        return await _repository.GetAll();
+        List<Branch> branches = await _repository.GetAll();
+        return branches.Select(b => b.ConvertToDetailDto()).ToList();
     }
 
     public async Task<BranchDetailDto?> GetById(int id)
     {
-        BranchDetailDto? branchDetailDto = await _repository.GetById(id);
+        Branch? branch = await _repository.GetById(id);
 
-        if (branchDetailDto == null)
+        if (branch == null)
         {
             throw new NotFoundException();
         }
 
-        return branchDetailDto;
+        return branch.ConvertToDetailDto();
     }
 
     public async Task<BranchDetailDto> Create(BranchCreateDto branchCreateDto)
@@ -47,14 +48,18 @@ public class BranchesService : IBranchesService
             throw new NotFoundException($"The employee with the id {branchCreateDto.ManagerId} does not exist");
         }
 
-        return await _repository.Create(branchCreateDto);
+        Branch branch = branchCreateDto.ConvertToEntity();
+        branch.Created = DateTime.UtcNow;
+        Branch newBranch = await _repository.Create(branch);
+
+        return newBranch.ConvertToDetailDto();
     }
 
     public async Task<BranchDetailDto> Update(int id, BranchUpdateDto branchUpdateDto)
     {
-        BranchDetailDto? branchDetailDto = await _repository.GetById(id);
+        Branch? branch = await _repository.GetById(id);
 
-        if (branchDetailDto == null)
+        if (branch == null)
         {
             throw new NotFoundException($"The branch with id {id} does not exist");
         }
@@ -67,27 +72,44 @@ public class BranchesService : IBranchesService
             throw new NotFoundException($"The employee with the id {branchUpdateDto.ManagerId} does not exist");
         }
 
-        branchDetailDto = await _repository.Update(branchUpdateDto.ConvertToEntity(id));
+        branch = ChangeUpdatedValues(branch, branchUpdateDto);
+        branch.Updated = DateTime.UtcNow;
+        branch = await _repository.Update(branch);
 
-        return branchDetailDto;
+        return branch.ConvertToDetailDto();
     }
 
-    private async Task<EmployeeDetailDto?> GetEmployeeById(int id)
+    private Branch ChangeUpdatedValues(Branch branch, BranchUpdateDto branchUpdateDto)
+    {
+        if (branchUpdateDto.Name != null)
+        {
+            branch.Name = branchUpdateDto.Name;
+        }
+
+        if (branchUpdateDto.ManagerId != null)
+        {
+            branch.ManagerId = branchUpdateDto.ManagerId;
+        }
+
+        return branch;
+    }
+
+    private async Task<Employee?> GetEmployeeById(int id)
     {
         return await _employeesRepository.GetById(id);
     }
 
     public async Task<BranchDetailDto> Delete(int id)
     {
-        BranchDetailDto? branchDetailDto = await _repository.GetById(id);
+        Branch? branch = await _repository.GetById(id);
 
-        if (branchDetailDto == null)
+        if (branch == null)
         {
             throw new NotFoundException($"The branch with id {id} does not exist");
         }
 
-        await _repository.Delete(branchDetailDto.ConvertToEntity());
+        await _repository.Delete(branch);
 
-        return branchDetailDto;
+        return branch.ConvertToDetailDto();
     }
 }

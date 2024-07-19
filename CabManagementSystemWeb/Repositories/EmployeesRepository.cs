@@ -1,11 +1,10 @@
 using CabManagementSystemWeb.Data;
-using CabManagementSystemWeb.Dtos;
 using CabManagementSystemWeb.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CabManagementSystemWeb.Repositories;
 
-public class EmployeesRepository : IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto>
+public class EmployeesRepository : IRepository<Employee>
 {
     private readonly ApplicationDbContext _dbContext;
 
@@ -14,51 +13,47 @@ public class EmployeesRepository : IRepository<Employee, EmployeeCreateDto, Empl
         _dbContext = dbContext;
     }
 
-    public async Task<List<EmployeeDetailDto>> GetAll()
+    public async Task<List<Employee>> GetAll()
     {
         List<Employee> employees = await _dbContext.Employees.ToListAsync();
 
-        return employees.Select(e => e.ConvertToDetailDto()).ToList();
+        return employees;
     }
 
-    public async Task<EmployeeDetailDto?> GetById(int id)
+    public async Task<Employee?> GetById(int id)
     {
         Employee? employees = await _dbContext.Employees.FindAsync(id);
         _dbContext.ChangeTracker.Clear();
 
-        return employees?.ConvertToDetailDto();
+        return employees;
     }
 
-    public async Task<EmployeeDetailDto?> GetBy(string property, object value)
+    public async Task<Employee?> GetBy(string property, object value)
     {
         return null;
     }
 
-    public async Task<EmployeeDetailDto> Create(EmployeeCreateDto employeeDto)
+    public async Task<Employee> Create(Employee employee)
     {
-        Employee employee = employeeDto.ConvertToEntity();
-
-        employee.Created = DateTime.UtcNow;
         _dbContext.Add(employee);
         await _dbContext.SaveChangesAsync();
 
-        return employee.ConvertToDetailDto();
+        return employee;
     }
 
-    public async Task<EmployeeDetailDto> Update(Employee employee)
+    public async Task<Employee> Update(Employee employee)
     {
-        employee.Updated = DateTime.UtcNow;
         _dbContext.Employees.Update(employee);
         await _dbContext.SaveChangesAsync();
 
-        return employee.ConvertToDetailDto();
+        return employee;
     }
 
-    public async Task<EmployeeDetailDto> Delete(Employee employee)
+    public async Task<Employee> Delete(Employee employee)
     {
         _dbContext.Employees.Remove(employee);
         await _dbContext.SaveChangesAsync();
 
-        return employee.ConvertToDetailDto();
+        return employee;
     }
 }

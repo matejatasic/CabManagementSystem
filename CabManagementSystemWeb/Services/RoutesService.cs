@@ -8,34 +8,38 @@ namespace CabManagementSystemWeb.Services;
 
 public class RoutesService : IRoutesService
 {
-    private readonly IRepository<Route,RouteCreateDto, RouteDetailDto> _repository;
-    private readonly IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> _employeesRepository;
-    private readonly IHashService _hashService;
+    private readonly IRepository<Route> _repository;
+    private readonly IRepository<Employee> _employeesRepository;
+    private readonly IRepository<User> _usersRepository;
 
     public RoutesService(
-        IRepository<Route,RouteCreateDto, RouteDetailDto> repository,
-        IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> employeesRepository
+        IRepository<Route> repository,
+        IRepository<Employee> employeesRepository,
+        IRepository<User> usersRepository
     )
     {
         _repository = repository;
         _employeesRepository = employeesRepository;
+        _usersRepository = usersRepository;
     }
 
     public async Task<IEnumerable<RouteDetailDto>> GetAll()
     {
-        return await _repository.GetAll();
+        List<Route> route = await _repository.GetAll();
+
+        return route.Select(r => r.ConvertToDetailDto()).ToList();
     }
 
     public async Task<RouteDetailDto?> GetById(int id)
     {
-        RouteDetailDto? routeDetailDto = await _repository.GetById(id);
+        Route? route = await _repository.GetById(id);
 
-        if (routeDetailDto == null)
+        if (route == null)
         {
             throw new NotFoundException();
         }
 
-        return routeDetailDto;
+        return route.ConvertToDetailDto();
     }
 
     public async Task<RouteDetailDto> Create(RouteCreateDto routeCreateDto)
@@ -45,44 +49,95 @@ public class RoutesService : IRoutesService
             throw new NotFoundException($"The driver with the id {routeCreateDto.DriverId} does not exist");
         }
 
-        return await _repository.Create(routeCreateDto);
+        if (await GetTravelerById(routeCreateDto.TravelerId) == null)
+        {
+            throw new NotFoundException($"The traveler with the id {routeCreateDto.TravelerId} does not exist");
+        }
+
+        Route route = routeCreateDto.ConvertToEntity();
+        route.Created = DateTime.UtcNow;
+        Route newRoute = await _repository.Create(route);
+
+        return newRoute.ConvertToDetailDto();
     }
 
     public async Task<RouteDetailDto> Update(int id, RouteUpdateDto routeUpdateDto)
     {
-        RouteDetailDto? routeDetailDto = await _repository.GetById(id);
+        Route? route = await _repository.GetById(id);
 
-        if (routeDetailDto == null)
+        if (route == null)
         {
             throw new NotFoundException($"The route with id {id} does not exist");
         }
 
-        if (await GetDriverById(routeDetailDto.DriverId) == null)
+        if (await GetDriverById(route.DriverId) == null)
         {
             throw new NotFoundException($"The driver with id {routeUpdateDto.DriverId} does not exist");
         }
 
-        routeDetailDto = await _repository.Update(routeUpdateDto.ConvertToEntity(id));
+        if (await GetTravelerById(route.TravelerId) == null)
+        {
+            throw new NotFoundException($"The traveler with the id {routeUpdateDto.TravelerId} does not exist");
+        }
 
-        return routeDetailDto;
+        route = ChangeUpdatedValues(route, routeUpdateDto);
+        route.Updated = DateTime.UtcNow;
+        route = await _repository.Update(route);
+
+        return route.ConvertToDetailDto();
     }
 
-    private async Task<EmployeeDetailDto?> GetDriverById(int id)
+    private Route ChangeUpdatedValues(Route route, RouteUpdateDto routeUpdateDto)
+    {
+        if (routeUpdateDto.FromAddress != null)
+        {
+            route.FromAddress = routeUpdateDto.FromAddress;
+        }
+
+        if (routeUpdateDto.ToAddress != null)
+        {
+            route.ToAddress = routeUpdateDto.ToAddress;
+        }
+
+        if (routeUpdateDto.TravelCost != null)
+        {
+            route.TravelCost = routeUpdateDto.TravelCost;
+        }
+
+        if (routeUpdateDto.TravelerId != null)
+        {
+            route.TravelerId = (int)routeUpdateDto.TravelerId;
+        }
+
+        if (routeUpdateDto.DriverId != null)
+        {
+            route.DriverId = (int)routeUpdateDto.DriverId;
+        }
+
+        return route;
+    }
+
+    private async Task<Employee?> GetDriverById(int id)
     {
         return await _employeesRepository.GetById(id);
     }
 
+    private async Task<User?> GetTravelerById(int id)
+    {
+        return await _usersRepository.GetById(id);
+    }
+
     public async Task<RouteDetailDto> Delete(int id)
     {
-        RouteDetailDto? routeDetailDto = await _repository.GetById(id);
+        Route? route = await _repository.GetById(id);
 
-        if (routeDetailDto == null)
+        if (route == null)
         {
             throw new NotFoundException($"The route with id {id} does not exist");
         }
 
-        await _repository.Delete(routeDetailDto.ConvertToEntity());
+        await _repository.Delete(route);
 
-        return routeDetailDto;
+        return route.ConvertToDetailDto();
     }
 }

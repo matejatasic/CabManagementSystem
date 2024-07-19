@@ -46,12 +46,12 @@ builder.Services.AddIdentity<User, Role>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddScoped<IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto>, EmployeesRepository>();
-builder.Services.AddScoped<IRepository<Branch, BranchCreateDto, BranchDetailDto>, BranchesRepository>();
-builder.Services.AddScoped<IRepository<Car, CarCreateDto, CarDetailDto>, CarsRepository>();
-builder.Services.AddScoped<IRepository<Route, RouteCreateDto, RouteDetailDto>, RoutesRepository>();
-builder.Services.AddScoped<IRepository<User, UserCreateDto, UserDetailDto>, UsersRepository>();
-builder.Services.AddScoped<IRepository<Role, RoleCreateDto, RoleDetailDto>, RolesRepository>();
+builder.Services.AddScoped<IRepository<Employee>, EmployeesRepository>();
+builder.Services.AddScoped<IRepository<Branch>, BranchesRepository>();
+builder.Services.AddScoped<IRepository<Car>, CarsRepository>();
+builder.Services.AddScoped<IRepository<Route>, RoutesRepository>();
+builder.Services.AddScoped<IRepository<User>, UsersRepository>();
+builder.Services.AddScoped<IRepository<Role>, RolesRepository>();
 
 builder.Services.AddScoped<IEmployeesService, EmployeesService>();
 builder.Services.AddScoped<IBranchesService, BranchesService>();

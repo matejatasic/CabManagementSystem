@@ -15,8 +15,8 @@ public class UsersServiceTest
     private readonly int _id = 1;
 
     private readonly IUsersService _usersService;
-    private readonly Mock<IRepository<User, UserCreateDto, UserDetailDto>> _usersRepositoryMock;
-    private readonly Mock<IRepository<Role, RoleCreateDto, RoleDetailDto>> _rolesRepositoryMock;
+    private readonly Mock<IRepository<User>> _usersRepositoryMock;
+    private readonly Mock<IRepository<Role>> _rolesRepositoryMock;
     private readonly Mock<IHashService> _hashServiceMock;
 
     private readonly IFixture _fixture;
@@ -27,8 +27,8 @@ public class UsersServiceTest
         _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList().ForEach(b => _fixture.Behaviors.Remove(b));
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-        _usersRepositoryMock = new Mock<IRepository<User, UserCreateDto, UserDetailDto>>();
-        _rolesRepositoryMock = new Mock<IRepository<Role, RoleCreateDto, RoleDetailDto>>();
+        _usersRepositoryMock = new Mock<IRepository<User>>();
+        _rolesRepositoryMock = new Mock<IRepository<Role>>();
         _hashServiceMock = new Mock<IHashService>();
         _usersService = new UsersService(
             _usersRepositoryMock.Object,
@@ -39,8 +39,8 @@ public class UsersServiceTest
     [Fact]
     public async void TestGetAllReturningAppropriateResult()
     {
-        UserDetailDto userDetailDto = _fixture.Create<UserDetailDto>();
-        var expectedResult = new List<UserDetailDto>() {userDetailDto};
+        User User = _fixture.Create<User>();
+        var expectedResult = new List<User>() {User};
 
         _usersRepositoryMock.Setup(e => e.GetAll()).ReturnsAsync(expectedResult);
 
@@ -52,7 +52,7 @@ public class UsersServiceTest
     [Fact]
     public async void TestGetByIdReturningAppropriateResultWhenSuccessfullyRetrievedUser()
     {
-        var expectedResult = _fixture.Create<UserDetailDto>();
+        var expectedResult = _fixture.Create<User>();
         expectedResult.Id = _id;
 
         _usersRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(expectedResult);
@@ -73,15 +73,15 @@ public class UsersServiceTest
     [Fact]
     public async void TestCreateReturningAppropriateResultWhenSuccessfullyCreatedUser()
     {
-        var expectedResult = _fixture.Create<UserDetailDto>();
+        var expectedResult = _fixture.Create<User>();
         UserCreateDto userCreateDto = _fixture.Build<UserCreateDto>()
             .Create();
         expectedResult.Id = _id;
-        RoleDetailDto roleCreateDto = _fixture.Build<RoleDetailDto>()
+        Role role = _fixture.Build<Role>()
             .Create();
 
-        _rolesRepositoryMock.Setup(r => r.GetById(userCreateDto.RoleId)).ReturnsAsync(roleCreateDto);
-        _usersRepositoryMock.Setup(e => e.Create(It.IsAny<UserCreateDto>())).ReturnsAsync(expectedResult);
+        _rolesRepositoryMock.Setup(r => r.GetById(userCreateDto.RoleId)).ReturnsAsync(role);
+        _usersRepositoryMock.Setup(e => e.Create(It.IsAny<User>())).ReturnsAsync(expectedResult);
 
         var result = await _usersService.Create(userCreateDto);
 
@@ -93,11 +93,11 @@ public class UsersServiceTest
     {
         UserCreateDto userCreateDto = _fixture.Build<UserCreateDto>()
             .Create();
-        UserDetailDto userDetailDto = _fixture.Build<UserDetailDto>()
+        User User = _fixture.Build<User>()
             .Create();
         _usersRepositoryMock
             .Setup(u => u.GetBy("username", userCreateDto.Username))
-            .ReturnsAsync(userDetailDto);
+            .ReturnsAsync(User);
         Func<Task> act = () => _usersService.Create(userCreateDto);
 
         await Assert.ThrowsAsync<ArgumentException>(act);
@@ -108,11 +108,11 @@ public class UsersServiceTest
     {
         UserCreateDto userCreateDto = _fixture.Build<UserCreateDto>()
             .Create();
-        UserDetailDto userDetailDto = _fixture.Build<UserDetailDto>()
+        User User = _fixture.Build<User>()
             .Create();
         _usersRepositoryMock
             .Setup(u => u.GetBy("email", userCreateDto.Email))
-            .ReturnsAsync(userDetailDto);
+            .ReturnsAsync(User);
         Func<Task> act = () => _usersService.Create(userCreateDto);
 
         await Assert.ThrowsAsync<ArgumentException>(act);
@@ -131,13 +131,13 @@ public class UsersServiceTest
     [Fact]
     public async void TestUpdateReturningAppropriateResultWhenSuccessfullyUpdatedUser()
     {
-        var expectedResult = _fixture.Create<UserDetailDto>();
+        var expectedResult = _fixture.Create<User>();
         UserUpdateDto userUpdateDto = _fixture.Create<UserUpdateDto>();
         expectedResult.Id = _id;
-        RoleDetailDto roleCreateDto = _fixture.Build<RoleDetailDto>()
+        Role role = _fixture.Build<Role>()
             .Create();
 
-        _rolesRepositoryMock.Setup(r => r.GetById(userUpdateDto.RoleId)).ReturnsAsync(roleCreateDto);
+        _rolesRepositoryMock.Setup(r => r.GetById((int)userUpdateDto.RoleId)).ReturnsAsync(role);
 
         _usersRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(expectedResult);
         _usersRepositoryMock.Setup(e => e.Update(It.IsAny<User>())).ReturnsAsync(expectedResult);
@@ -161,8 +161,8 @@ public class UsersServiceTest
     {
         UserUpdateDto userUpdateDto = _fixture.Build<UserUpdateDto>()
             .Create();
-        UserDetailDto userDetailDto = _fixture.Build<UserDetailDto>().Create();
-        _usersRepositoryMock.Setup(u => u.GetById(1)).ReturnsAsync(userDetailDto);
+        User User = _fixture.Build<User>().Create();
+        _usersRepositoryMock.Setup(u => u.GetById(1)).ReturnsAsync(User);
         Func<Task> act = () => _usersService.Update(1, userUpdateDto);
 
         var exception = await Assert.ThrowsAsync<NotFoundException>(act);
@@ -172,11 +172,11 @@ public class UsersServiceTest
     [Fact]
     public async void TestDeleteReturningAppropriateResultWhenDeleteSuccessful()
     {
-        UserDetailDto userDetailDto = _fixture.Create<UserDetailDto>();
-        userDetailDto.Id = _id;
+        User User = _fixture.Create<User>();
+        User.Id = _id;
 
-        _usersRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(userDetailDto);
-        _usersRepositoryMock.Setup(e => e.Delete(It.IsAny<User>())).ReturnsAsync(userDetailDto);
+        _usersRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(User);
+        _usersRepositoryMock.Setup(e => e.Delete(It.IsAny<User>())).ReturnsAsync(User);
 
         var result = await _usersService.Delete(It.IsAny<int>());
         Assert.Equal(_id, result.Id);

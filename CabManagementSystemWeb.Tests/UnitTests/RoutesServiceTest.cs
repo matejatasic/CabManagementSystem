@@ -16,8 +16,9 @@ public class RoutesServiceTest
 
     private readonly IRoutesService _routesService;
 
-    private readonly Mock<IRepository<Route, RouteCreateDto, RouteDetailDto>> _routesRepositoryMock;
-    private readonly Mock<IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto>> _employeesRepositoryMock;
+    private readonly Mock<IRepository<Route>> _routesRepositoryMock;
+    private readonly Mock<IRepository<Employee>> _employeesRepositoryMock;
+    private readonly Mock<IRepository<User>> _usersRepositoryMock;
 
     private readonly IFixture _fixture;
 
@@ -27,16 +28,21 @@ public class RoutesServiceTest
         _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList().ForEach(b => _fixture.Behaviors.Remove(b));
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-        _routesRepositoryMock = new Mock<IRepository<Route, RouteCreateDto, RouteDetailDto>>();
-        _employeesRepositoryMock = new Mock<IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto>>();
-        _routesService = new RoutesService(_routesRepositoryMock.Object, _employeesRepositoryMock.Object);
+        _routesRepositoryMock = new Mock<IRepository<Route>>();
+        _employeesRepositoryMock = new Mock<IRepository<Employee>>();
+        _usersRepositoryMock = new Mock<IRepository<User>>();
+        _routesService = new RoutesService(
+            _routesRepositoryMock.Object,
+            _employeesRepositoryMock.Object,
+            _usersRepositoryMock.Object
+        );
     }
 
     [Fact]
     public async void TestGetAllReturningAppropriateResult()
     {
-        RouteDetailDto routeDetailDto = _fixture.Create<RouteDetailDto>();
-        var expectedResult = new List<RouteDetailDto>() {routeDetailDto};
+        Route route = _fixture.Create<Route>();
+        var expectedResult = new List<Route>() {route};
 
         _routesRepositoryMock.Setup(r => r.GetAll()).ReturnsAsync(expectedResult);
 
@@ -48,7 +54,7 @@ public class RoutesServiceTest
     [Fact]
     public async void TestGetByIdReturningAppropriateResultWhenSuccessfullyRetrievedRoute()
     {
-        var expectedResult = _fixture.Create<RouteDetailDto>();
+        var expectedResult = _fixture.Create<Route>();
         expectedResult.Id = _id;
 
         _routesRepositoryMock.Setup(r => r.GetById(It.IsAny<int>())).ReturnsAsync(expectedResult);
@@ -69,14 +75,16 @@ public class RoutesServiceTest
     [Fact]
     public async void TestCreateReturningAppropriateResultWhenSuccessfullyCreatedRoute()
     {
-        var expectedResult = _fixture.Create<RouteDetailDto>();
-        var expectedEmployeeResult = _fixture.Create<EmployeeDetailDto>();
+        var expectedResult = _fixture.Create<Route>();
+        var expectedEmployeeResult = _fixture.Create<Employee>();
+        var expectedUserResult = _fixture.Create<User>();
         RouteCreateDto routeCreateDto = _fixture.Build<RouteCreateDto>()
             .Create();
         expectedResult.Id = _id;
 
         _employeesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(expectedEmployeeResult);
-        _routesRepositoryMock.Setup(r => r.Create(It.IsAny<RouteCreateDto>())).ReturnsAsync(expectedResult);
+        _usersRepositoryMock.Setup(u => u.GetById(It.IsAny<int>())).ReturnsAsync(expectedUserResult);
+        _routesRepositoryMock.Setup(r => r.Create(It.IsAny<Route>())).ReturnsAsync(expectedResult);
 
         var result = await _routesService.Create(routeCreateDto);
 
@@ -94,15 +102,30 @@ public class RoutesServiceTest
     }
 
     [Fact]
+    public async void TestCreateThrowingExceptionWhenTravelerNotFound()
+    {
+        RouteCreateDto routeCreateDto = _fixture.Create<RouteCreateDto>();
+        Employee employee = _fixture.Create<Employee>();
+
+        _employeesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(employee);
+
+        Func<Task> act = () => _routesService.Create(routeCreateDto);
+
+        await Assert.ThrowsAsync<NotFoundException>(act);
+    }
+
+    [Fact]
     public async void TestUpdateReturningAppropriateResultWhenSuccessfullyUpdatedRoute()
     {
-        var expectedResult = _fixture.Create<RouteDetailDto>();
-        EmployeeDetailDto employeeDetailDto = _fixture.Create<EmployeeDetailDto>();
+        var expectedResult = _fixture.Create<Route>();
+        Employee employee = _fixture.Create<Employee>();
+        User user = _fixture.Create<User>();
         RouteUpdateDto routeUpdateDto = _fixture.Create<RouteUpdateDto>();
         expectedResult.Id = _id;
 
         _routesRepositoryMock.Setup(r => r.GetById(It.IsAny<int>())).ReturnsAsync(expectedResult);
-        _employeesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(employeeDetailDto);
+        _employeesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(employee);
+        _usersRepositoryMock.Setup(u => u.GetById(It.IsAny<int>())).ReturnsAsync(user);
         _routesRepositoryMock.Setup(r => r.Update(It.IsAny<Route>())).ReturnsAsync(expectedResult);
 
         var result = await _routesService.Update(It.IsAny<int>(), routeUpdateDto);
@@ -120,12 +143,25 @@ public class RoutesServiceTest
     }
 
     [Fact]
+    public async void TestUpdateThrowingExceptionWhenTravelerNotFound()
+    {
+        RouteUpdateDto routeUpdateDto = _fixture.Create<RouteUpdateDto>();
+        Employee employee = _fixture.Create<Employee>();
+
+        _employeesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(employee);
+
+        Func<Task> act = () => _routesService.Update(It.IsAny<int>(), routeUpdateDto);
+
+        await Assert.ThrowsAsync<NotFoundException>(act);
+    }
+
+    [Fact]
     public async void TestUpdateThrowingExceptionWhenBranchNotFound()
     {
-        RouteDetailDto routeDetailDto = _fixture.Create<RouteDetailDto>();
+        Route route = _fixture.Create<Route>();
         RouteUpdateDto routeUpdateDto = _fixture.Create<RouteUpdateDto>();
 
-        _routesRepositoryMock.Setup(r => r.GetById(It.IsAny<int>())).ReturnsAsync(routeDetailDto);
+        _routesRepositoryMock.Setup(r => r.GetById(It.IsAny<int>())).ReturnsAsync(route);
         Func<Task> act = () => _routesService.Update(It.IsAny<int>(), routeUpdateDto);
 
         await Assert.ThrowsAsync<NotFoundException>(act);
@@ -134,11 +170,11 @@ public class RoutesServiceTest
     [Fact]
     public async void TestDeleteReturningAppropriateResultWhenDeleteSuccessful()
     {
-        RouteDetailDto routeDetailDto = _fixture.Create<RouteDetailDto>();
-        routeDetailDto.Id = _id;
+        Route route = _fixture.Create<Route>();
+        route.Id = _id;
 
-        _routesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(routeDetailDto);
-        _routesRepositoryMock.Setup(e => e.Delete(It.IsAny<Route>())).ReturnsAsync(routeDetailDto);
+        _routesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(route);
+        _routesRepositoryMock.Setup(e => e.Delete(It.IsAny<Route>())).ReturnsAsync(route);
 
         var result = await _routesService.Delete(It.IsAny<int>());
         Assert.Equal(_id, result.Id);

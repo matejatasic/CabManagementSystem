@@ -16,8 +16,8 @@ public class CarsServiceTest
 
     private readonly ICarsService _carsService;
 
-    private readonly Mock<IRepository<Car, CarCreateDto, CarDetailDto>> _carsRepositoryMock;
-    private readonly Mock<IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto>> _employeesRepositoryMock;
+    private readonly Mock<IRepository<Car>> _carsRepositoryMock;
+    private readonly Mock<IRepository<Employee>> _employeesRepositoryMock;
 
     private readonly IFixture _fixture;
 
@@ -27,16 +27,16 @@ public class CarsServiceTest
         _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList().ForEach(b => _fixture.Behaviors.Remove(b));
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-        _carsRepositoryMock = new Mock<IRepository<Car, CarCreateDto, CarDetailDto>>();
-        _employeesRepositoryMock = new Mock<IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto>>();
+        _carsRepositoryMock = new Mock<IRepository<Car>>();
+        _employeesRepositoryMock = new Mock<IRepository<Employee>>();
         _carsService = new CarsService(_carsRepositoryMock.Object, _employeesRepositoryMock.Object);
     }
 
     [Fact]
     public async void TestGetAllReturningAppropriateResult()
     {
-        CarDetailDto carDetailDto = _fixture.Create<CarDetailDto>();
-        var expectedResult = new List<CarDetailDto>() {carDetailDto};
+        Car car = _fixture.Create<Car>();
+        var expectedResult = new List<Car>() {car};
 
         _carsRepositoryMock.Setup(c => c.GetAll()).ReturnsAsync(expectedResult);
 
@@ -48,7 +48,7 @@ public class CarsServiceTest
     [Fact]
     public async void TestGetByIdReturningAppropriateResultWhenSuccessfullyRetrievedCar()
     {
-        var expectedResult = _fixture.Create<CarDetailDto>();
+        var expectedResult = _fixture.Create<Car>();
         expectedResult.Id = _id;
 
         _carsRepositoryMock.Setup(c => c.GetById(It.IsAny<int>())).ReturnsAsync(expectedResult);
@@ -69,14 +69,14 @@ public class CarsServiceTest
     [Fact]
     public async void TestCreateReturningAppropriateResultWhenSuccessfullyCreatedCar()
     {
-        var expectedResult = _fixture.Create<CarDetailDto>();
-        var expectedEmployeeResult = _fixture.Create<EmployeeDetailDto>();
+        var expectedResult = _fixture.Create<Car>();
+        var expectedEmployeeResult = _fixture.Create<Employee>();
         CarCreateDto carCreateDto = _fixture.Build<CarCreateDto>()
             .Create();
         expectedResult.Id = _id;
 
         _employeesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(expectedEmployeeResult);
-        _carsRepositoryMock.Setup(c => c.Create(It.IsAny<CarCreateDto>())).ReturnsAsync(expectedResult);
+        _carsRepositoryMock.Setup(c => c.Create(It.IsAny<Car>())).ReturnsAsync(expectedResult);
 
         var result = await _carsService.Create(carCreateDto);
 
@@ -96,13 +96,13 @@ public class CarsServiceTest
     [Fact]
     public async void TestUpdateReturningAppropriateResultWhenSuccessfullyUpdatedCar()
     {
-        var expectedResult = _fixture.Create<CarDetailDto>();
-        EmployeeDetailDto employeeDetailDto = _fixture.Create<EmployeeDetailDto>();
+        var expectedResult = _fixture.Create<Car>();
+        Employee employee = _fixture.Create<Employee>();
         CarUpdateDto carUpdateDto = _fixture.Create<CarUpdateDto>();
         expectedResult.Id = _id;
 
         _carsRepositoryMock.Setup(c => c.GetById(It.IsAny<int>())).ReturnsAsync(expectedResult);
-        _employeesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(employeeDetailDto);
+        _employeesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(employee);
         _carsRepositoryMock.Setup(c => c.Update(It.IsAny<Car>())).ReturnsAsync(expectedResult);
 
         var result = await _carsService.Update(It.IsAny<int>(), carUpdateDto);
@@ -122,10 +122,10 @@ public class CarsServiceTest
     [Fact]
     public async void TestUpdateThrowingExceptionWhenBranchNotFound()
     {
-        CarDetailDto carDetailDto = _fixture.Create<CarDetailDto>();
+        Car car = _fixture.Create<Car>();
         CarUpdateDto carUpdateDto = _fixture.Create<CarUpdateDto>();
 
-        _carsRepositoryMock.Setup(c => c.GetById(It.IsAny<int>())).ReturnsAsync(carDetailDto);
+        _carsRepositoryMock.Setup(c => c.GetById(It.IsAny<int>())).ReturnsAsync(car);
         Func<Task> act = () => _carsService.Update(It.IsAny<int>(), carUpdateDto);
 
         await Assert.ThrowsAsync<NotFoundException>(act);
@@ -134,11 +134,11 @@ public class CarsServiceTest
     [Fact]
     public async void TestDeleteReturningAppropriateResultWhenDeleteSuccessful()
     {
-        CarDetailDto carDetailDto = _fixture.Create<CarDetailDto>();
-        carDetailDto.Id = _id;
+        Car car = _fixture.Create<Car>();
+        car.Id = _id;
 
-        _carsRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(carDetailDto);
-        _carsRepositoryMock.Setup(e => e.Delete(It.IsAny<Car>())).ReturnsAsync(carDetailDto);
+        _carsRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(car);
+        _carsRepositoryMock.Setup(e => e.Delete(It.IsAny<Car>())).ReturnsAsync(car);
 
         var result = await _carsService.Delete(It.IsAny<int>());
         Assert.Equal(_id, result.Id);

@@ -16,7 +16,7 @@ public class RolesServiceTest
 
     private readonly IRolesService _rolesService;
 
-    private readonly Mock<IRepository<Role, RoleCreateDto, RoleDetailDto>> _rolesRepositoryMock;
+    private readonly Mock<IRepository<Role>> _rolesRepositoryMock;
 
     private readonly IFixture _fixture;
 
@@ -26,15 +26,15 @@ public class RolesServiceTest
         _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList().ForEach(b => _fixture.Behaviors.Remove(b));
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-        _rolesRepositoryMock = new Mock<IRepository<Role, RoleCreateDto, RoleDetailDto>>();
+        _rolesRepositoryMock = new Mock<IRepository<Role>>();
         _rolesService = new RolesService(_rolesRepositoryMock.Object);
     }
 
     [Fact]
     public async void TestGetAllReturningAppropriateResult()
     {
-        RoleDetailDto roleDetailDto = _fixture.Create<RoleDetailDto>();
-        var expectedResult = new List<RoleDetailDto>() {roleDetailDto};
+        Role role = _fixture.Create<Role>();
+        var expectedResult = new List<Role>() {role};
 
         _rolesRepositoryMock.Setup(e => e.GetAll()).ReturnsAsync(expectedResult);
 
@@ -46,7 +46,7 @@ public class RolesServiceTest
     [Fact]
     public async void TestGetByIdReturningAppropriateResultWhenSuccessfullyRetrievedRole()
     {
-        var expectedResult = _fixture.Create<RoleDetailDto>();
+        var expectedResult = _fixture.Create<Role>();
         expectedResult.Id = _id;
 
         _rolesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(expectedResult);
@@ -67,12 +67,12 @@ public class RolesServiceTest
     [Fact]
     public async void TestCreateReturningAppropriateResultWhenSuccessfullyCreatedRole()
     {
-        var expectedResult = _fixture.Create<RoleDetailDto>();
+        var expectedResult = _fixture.Create<Role>();
         RoleCreateDto roleCreateDto = _fixture.Build<RoleCreateDto>()
             .Create();
         expectedResult.Id = _id;
 
-        _rolesRepositoryMock.Setup(e => e.Create(It.IsAny<RoleCreateDto>())).ReturnsAsync(expectedResult);
+        _rolesRepositoryMock.Setup(e => e.Create(It.IsAny<Role>())).ReturnsAsync(expectedResult);
 
         var result = await _rolesService.Create(roleCreateDto);
 
@@ -82,7 +82,7 @@ public class RolesServiceTest
     [Fact]
     public async void TestUpdateReturningAppropriateResultWhenSuccessfullyUpdatedRole()
     {
-        var expectedResult = _fixture.Create<RoleDetailDto>();
+        var expectedResult = _fixture.Create<Role>();
         RoleUpdateDto roleUpdateDto = _fixture.Create<RoleUpdateDto>();
         expectedResult.Id = _id;
 
@@ -106,11 +106,11 @@ public class RolesServiceTest
     [Fact]
     public async void TestDeleteReturningAppropriateResultWhenDeleteSuccessful()
     {
-        RoleDetailDto roleDetailDto = _fixture.Create<RoleDetailDto>();
-        roleDetailDto.Id = _id;
+        Role role = _fixture.Create<Role>();
+        role.Id = _id;
 
-        _rolesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(roleDetailDto);
-        _rolesRepositoryMock.Setup(e => e.Delete(It.IsAny<Role>())).ReturnsAsync(roleDetailDto);
+        _rolesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(role);
+        _rolesRepositoryMock.Setup(e => e.Delete(It.IsAny<Role>())).ReturnsAsync(role);
 
         var result = await _rolesService.Delete(It.IsAny<int>());
         Assert.Equal(_id, result.Id);

@@ -9,13 +9,13 @@ using CabManagementSystemWeb.Services;
 using Moq;
 
 namespace CabManagementSystemWeb.Tests.Services;
-
+// Popravi testovi i ispisi testovi za frontend
 public class AuthenticationServiceTest
 {
     private readonly IAuthenticationService _authenticationService;
 
-    private Mock<IRepository<User, UserCreateDto, UserDetailDto>> _usersRepositoryMock;
-    private Mock<IRepository<Role, RoleCreateDto, RoleDetailDto>> _rolesRepositoryMock;
+    private Mock<IRepository<User>> _usersRepositoryMock;
+    private Mock<IRepository<Role>> _rolesRepositoryMock;
     private Mock<IUsersService> _usersServiceMock;
     private Mock<IHashService> _hashServiceMock;
     private Mock<IJwtProviderService> _jwtProviderServiceMock;
@@ -27,8 +27,8 @@ public class AuthenticationServiceTest
         _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList().ForEach(b => _fixture.Behaviors.Remove(b));
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-        _usersRepositoryMock = new Mock<IRepository<User, UserCreateDto, UserDetailDto>>();
-        _rolesRepositoryMock = new Mock<IRepository<Role, RoleCreateDto, RoleDetailDto>>();
+        _usersRepositoryMock = new Mock<IRepository<User>>();
+        _rolesRepositoryMock = new Mock<IRepository<Role>>();
         _usersServiceMock = new Mock<IUsersService>();
         _hashServiceMock = new Mock<IHashService>();
         _jwtProviderServiceMock = new Mock<IJwtProviderService>();
@@ -46,19 +46,23 @@ public class AuthenticationServiceTest
     public async void TestLoginReturningTokenWhenSuccessfullyLogin()
     {
         LoginDto loginDto = _fixture.Create<LoginDto>();
-        UserDetailDto userDetailDto = _fixture.Create<UserDetailDto>();
+        User user = _fixture.Create<User>();
+        Role role = _fixture.Create<Role>();
 
         _usersRepositoryMock
             .Setup(u => u.GetBy("username", loginDto.Username))
-            .ReturnsAsync(userDetailDto);
+            .ReturnsAsync(user);
+        _rolesRepositoryMock
+            .Setup(r => r.GetById(user.RoleId))
+        .ReturnsAsync(role);
         _hashServiceMock
-            .Setup(h => h.Verify(loginDto.Password, userDetailDto.Password))
+            .Setup(h => h.Verify(loginDto.Password, user.Password))
             .Returns(true);
         _jwtProviderServiceMock
-            .Setup(j => j.Generate(userDetailDto.Id.ToString(), userDetailDto.Email))
+            .Setup(j => j.Generate(user.Id.ToString(), user.Email, It.IsAny<string>()))
             .Returns("some token");
 
-        string result = await _authenticationService.Login(loginDto);
+        AuthenticationResponseDto result = await _authenticationService.Login(loginDto);
 
         Assert.NotNull(result);
     }
@@ -77,11 +81,11 @@ public class AuthenticationServiceTest
     public async void TestLoginThrowingErrorWhenPasswordsDoNotMatch()
     {
         LoginDto loginDto = _fixture.Create<LoginDto>();
-        UserDetailDto userDetailDto = _fixture.Create<UserDetailDto>();
+        User user = _fixture.Create<User>();
 
         _usersRepositoryMock
             .Setup(u => u.GetBy("username", loginDto.Username))
-            .ReturnsAsync(userDetailDto);
+            .ReturnsAsync(user);
 
         Func<Task> act = () => _authenticationService.Login(loginDto);
 
@@ -93,30 +97,33 @@ public class AuthenticationServiceTest
     {
         Mock<RegisterDto> registerDto = new Mock<RegisterDto>();
         UserCreateDto userCreateDto = _fixture.Create<UserCreateDto>();
-        RoleDetailDto roleDetailDto = _fixture.Create<RoleDetailDto>();
+        Role role = _fixture.Create<Role>();
         LoginDto loginDto = _fixture.Create<LoginDto>();
-        UserDetailDto userDetailDto = _fixture.Create<UserDetailDto>();
+        User user = _fixture.Create<User>();
 
         _usersServiceMock
             .Setup(u => u.Create(userCreateDto))
             .ReturnsAsync(_fixture.Create<UserDetailDto>());
         _rolesRepositoryMock
             .Setup(r => r.GetBy("name", "User"))
-            .ReturnsAsync(roleDetailDto);
+            .ReturnsAsync(role);
         registerDto
             .Setup(r => r.ConvertToLoginDto())
             .Returns(loginDto);
         _usersRepositoryMock
             .Setup(u => u.GetBy("username", loginDto.Username))
-            .ReturnsAsync(userDetailDto);
+            .ReturnsAsync(user);
         _hashServiceMock
-            .Setup(h => h.Verify(loginDto.Password, userDetailDto.Password))
+            .Setup(h => h.Verify(loginDto.Password, user.Password))
             .Returns(true);
+        _rolesRepositoryMock
+            .Setup(r => r.GetById(user.RoleId))
+            .ReturnsAsync(role);
         _jwtProviderServiceMock
-            .Setup(j => j.Generate(userDetailDto.Id.ToString(), userDetailDto.Email))
+            .Setup(j => j.Generate(user.Id.ToString(), user.Email, It.IsAny<string>()))
             .Returns("some token");
 
-        string result = await _authenticationService.Register(registerDto.Object);
+        AuthenticationResponseDto result = await _authenticationService.Register(registerDto.Object);
 
         Assert.NotNull(result);
     }

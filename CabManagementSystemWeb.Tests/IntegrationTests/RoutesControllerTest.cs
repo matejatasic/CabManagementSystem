@@ -21,6 +21,9 @@ public class RoutesControllerTest : BaseIntegrationTest
     private string _branchRouteUrl;
     private string _userRouteUrl;
 
+    private int driverId = 1;
+    private int travelerId = 1;
+
     public RoutesControllerTest() : base()
     {
         _routeRouteUrl = _routePrefix + _routeRoute;
@@ -38,7 +41,6 @@ public class RoutesControllerTest : BaseIntegrationTest
         var response = await CreateNeededEntities();
 
         var content = await response.Content.ReadAsStringAsync();
-
         RouteDetailDto deserializedContent = JsonSerializer.Deserialize<RouteDetailDto>(content, _jsonSerializerOptions);
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
@@ -86,7 +88,8 @@ public class RoutesControllerTest : BaseIntegrationTest
         string updatedFromAddress = "UpdatedFromAddress";
         RouteUpdateDto routeUpdateDto = _fixture.Build<RouteUpdateDto>()
             .With(r => r.FromAddress, updatedFromAddress)
-            .With(r => r.DriverId, 1)
+            .With(r => r.DriverId, driverId)
+            .With(r => r.TravelerId, travelerId)
             .Create();
         JsonContent routePutContent = JsonContent.Create(routeUpdateDto);
 
@@ -144,7 +147,8 @@ public class RoutesControllerTest : BaseIntegrationTest
             .With(e => e.UserId, 1)
             .Create();
         RouteCreateDto routeCreateDto = _fixture.Build<RouteCreateDto>()
-            .With(r => r.DriverId, 1)
+            .With(r => r.DriverId, driverId)
+            .With(r => r.TravelerId, travelerId)
             .Create();
 
         JsonContent routePostContent = JsonContent.Create(routeCreateDto);

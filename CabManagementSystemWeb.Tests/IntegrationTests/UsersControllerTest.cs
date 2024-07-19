@@ -84,7 +84,9 @@ public class UsersControllerTest : BaseIntegrationTest
         string getByIdContent = await getByIdResponse.Content.ReadAsStringAsync();
         UserDetailDto getByIdDeserializedContent = JsonSerializer
             .Deserialize<UserDetailDto>(getByIdContent, _jsonSerializerOptions);
+        Console.WriteLine("doso");
 
+        Console.WriteLine(await response.Content.ReadAsStringAsync());
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         Assert.Equal(updatedUsername, getByIdDeserializedContent.Username);
     }

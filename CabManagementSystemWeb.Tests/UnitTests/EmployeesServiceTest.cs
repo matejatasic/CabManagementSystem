@@ -16,9 +16,9 @@ public class EmployeesServiceTest
 
     private readonly IEmployeesService _employeesService;
 
-    private readonly Mock<IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto>> _employeesRepositoryMock;
-    private readonly Mock<IRepository<Branch, BranchCreateDto, BranchDetailDto>> _branchesRepositoryMock;
-    private readonly Mock<IRepository<User, UserCreateDto, UserDetailDto>> _usersRepositoryMock;
+    private readonly Mock<IRepository<Employee>> _employeesRepositoryMock;
+    private readonly Mock<IRepository<Branch>> _branchesRepositoryMock;
+    private readonly Mock<IRepository<User>> _usersRepositoryMock;
 
     private readonly IFixture _fixture;
 
@@ -28,9 +28,9 @@ public class EmployeesServiceTest
         _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList().ForEach(b => _fixture.Behaviors.Remove(b));
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-        _employeesRepositoryMock = new Mock<IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto>>();
-        _branchesRepositoryMock = new Mock<IRepository<Branch, BranchCreateDto, BranchDetailDto>>();
-        _usersRepositoryMock = new Mock<IRepository<User, UserCreateDto, UserDetailDto>>();
+        _employeesRepositoryMock = new Mock<IRepository<Employee>>();
+        _branchesRepositoryMock = new Mock<IRepository<Branch>>();
+        _usersRepositoryMock = new Mock<IRepository<User>>();
         _employeesService = new EmployeesService(
             _employeesRepositoryMock.Object,
             _branchesRepositoryMock.Object,
@@ -41,8 +41,8 @@ public class EmployeesServiceTest
     [Fact]
     public async void TestGetAllReturningAppropriateResult()
     {
-        EmployeeDetailDto employeeDetailDto = _fixture.Create<EmployeeDetailDto>();
-        var expectedResult = new List<EmployeeDetailDto>() {employeeDetailDto};
+        Employee employee = _fixture.Create<Employee>();
+        var expectedResult = new List<Employee>() {employee};
 
         _employeesRepositoryMock.Setup(e => e.GetAll()).ReturnsAsync(expectedResult);
 
@@ -54,7 +54,7 @@ public class EmployeesServiceTest
     [Fact]
     public async void TestGetByIdReturningAppropriateResultWhenSuccessfullyRetrievedEmployee()
     {
-        var expectedResult = _fixture.Create<EmployeeDetailDto>();
+        var expectedResult = _fixture.Create<Employee>();
         expectedResult.Id = _id;
 
         _employeesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(expectedResult);
@@ -75,15 +75,15 @@ public class EmployeesServiceTest
     [Fact]
     public async void TestCreateReturningAppropriateResultWhenSuccessfullyCreatedEmployee()
     {
-        var expectedResult = _fixture.Create<EmployeeDetailDto>();
-        var expectedBranchResult = _fixture.Create<BranchDetailDto>();
-        var expectedUserResult = _fixture.Create<UserDetailDto>();
+        var expectedResult = _fixture.Create<Employee>();
+        var expectedBranchResult = _fixture.Create<Branch>();
+        var expectedUserResult = _fixture.Create<User>();
         EmployeeCreateDto employeeCreateDto = _fixture.Build<EmployeeCreateDto>()
             .Create();
         expectedResult.Id = _id;
 
         _branchesRepositoryMock.Setup(b => b.GetById(It.IsAny<int>())).ReturnsAsync(expectedBranchResult);
-        _employeesRepositoryMock.Setup(e => e.Create(It.IsAny<EmployeeCreateDto>())).ReturnsAsync(expectedResult);
+        _employeesRepositoryMock.Setup(e => e.Create(It.IsAny<Employee>())).ReturnsAsync(expectedResult);
         _usersRepositoryMock.Setup(u => u.GetById(It.IsAny<int>())).ReturnsAsync(expectedUserResult);
 
         var result = await _employeesService.Create(employeeCreateDto);
@@ -105,7 +105,7 @@ public class EmployeesServiceTest
     public async void TestCreateThrowingExceptionWhenUserNotFound()
     {
         EmployeeCreateDto employeeCreateDto = _fixture.Create<EmployeeCreateDto>();
-        var expectedBranchResult = _fixture.Create<BranchDetailDto>();
+        var expectedBranchResult = _fixture.Create<Branch>();
 
         _branchesRepositoryMock.Setup(b => b.GetById(It.IsAny<int>())).ReturnsAsync(expectedBranchResult);
 
@@ -117,14 +117,14 @@ public class EmployeesServiceTest
     [Fact]
     public async void TestUpdateReturningAppropriateResultWhenSuccessfullyUpdatedEmployee()
     {
-        var expectedResult = _fixture.Create<EmployeeDetailDto>();
-        var expectedUserResult = _fixture.Create<UserDetailDto>();
-        BranchDetailDto branchDetailDto = _fixture.Create<BranchDetailDto>();
+        var expectedResult = _fixture.Create<Employee>();
+        var expectedUserResult = _fixture.Create<User>();
+        Branch branch = _fixture.Create<Branch>();
         EmployeeUpdateDto employeeUpdateDto = _fixture.Create<EmployeeUpdateDto>();
         expectedResult.Id = _id;
 
         _employeesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(expectedResult);
-        _branchesRepositoryMock.Setup(b => b.GetById(It.IsAny<int>())).ReturnsAsync(branchDetailDto);
+        _branchesRepositoryMock.Setup(b => b.GetById(It.IsAny<int>())).ReturnsAsync(branch);
         _employeesRepositoryMock.Setup(e => e.Update(It.IsAny<Employee>())).ReturnsAsync(expectedResult);
         _usersRepositoryMock.Setup(u => u.GetById(It.IsAny<int>())).ReturnsAsync(expectedUserResult);
 
@@ -145,10 +145,10 @@ public class EmployeesServiceTest
     [Fact]
     public async void TestUpdateThrowingExceptionWhenBranchNotFound()
     {
-        EmployeeDetailDto employeeDetailDto = _fixture.Create<EmployeeDetailDto>();
+        Employee employee = _fixture.Create<Employee>();
         EmployeeUpdateDto employeeUpdateDto = _fixture.Create<EmployeeUpdateDto>();
 
-        _employeesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(employeeDetailDto);
+        _employeesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(employee);
         Func<Task> act = () => _employeesService.Update(It.IsAny<int>(), employeeUpdateDto);
 
         await Assert.ThrowsAsync<NotFoundException>(act);
@@ -157,13 +157,13 @@ public class EmployeesServiceTest
     [Fact]
     public async void TestUpdateThrowingExceptionWhenUserNotFound()
     {
-        EmployeeDetailDto employeeDetailDto = _fixture.Create<EmployeeDetailDto>();
+        Employee employee = _fixture.Create<Employee>();
         EmployeeUpdateDto employeeUpdateDto = _fixture.Create<EmployeeUpdateDto>();
-        var expectedBranchResult = _fixture.Create<BranchDetailDto>();
+        var expectedBranchResult = _fixture.Create<Branch>();
 
         _branchesRepositoryMock.Setup(b => b.GetById(It.IsAny<int>())).ReturnsAsync(expectedBranchResult);
 
-        _employeesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(employeeDetailDto);
+        _employeesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(employee);
         Func<Task> act = () => _employeesService.Update(It.IsAny<int>(), employeeUpdateDto);
 
         await Assert.ThrowsAsync<NotFoundException>(act);
@@ -172,11 +172,11 @@ public class EmployeesServiceTest
     [Fact]
     public async void TestDeleteReturningAppropriateResultWhenDeleteSuccessful()
     {
-        EmployeeDetailDto employeeDetailDto = _fixture.Create<EmployeeDetailDto>();
-        employeeDetailDto.Id = _id;
+        Employee employee = _fixture.Create<Employee>();
+        employee.Id = _id;
 
-        _employeesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(employeeDetailDto);
-        _employeesRepositoryMock.Setup(e => e.Delete(It.IsAny<Employee>())).ReturnsAsync(employeeDetailDto);
+        _employeesRepositoryMock.Setup(e => e.GetById(It.IsAny<int>())).ReturnsAsync(employee);
+        _employeesRepositoryMock.Setup(e => e.Delete(It.IsAny<Employee>())).ReturnsAsync(employee);
 
         var result = await _employeesService.Delete(It.IsAny<int>());
         Assert.Equal(_id, result.Id);

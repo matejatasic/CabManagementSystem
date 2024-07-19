@@ -8,12 +8,12 @@ namespace CabManagementSystemWeb.Services;
 
 public class CarsService : ICarsService
 {
-    private readonly IRepository<Car, CarCreateDto, CarDetailDto> _repository;
-    private readonly IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> _employeesRepository;
+    private readonly IRepository<Car> _repository;
+    private readonly IRepository<Employee> _employeesRepository;
 
     public CarsService(
-        IRepository<Car, CarCreateDto, CarDetailDto> repository,
-        IRepository<Employee, EmployeeCreateDto, EmployeeDetailDto> employeesRepository
+        IRepository<Car> repository,
+        IRepository<Employee> employeesRepository
     )
     {
         _repository = repository;
@@ -22,19 +22,21 @@ public class CarsService : ICarsService
 
     public async Task<IEnumerable<CarDetailDto>> GetAll()
     {
-        return await _repository.GetAll();
+        List<Car> cars = await _repository.GetAll();
+
+        return cars.Select(c => c.ConvertToDetailDto()).ToList();
     }
 
     public async Task<CarDetailDto?> GetById(int id)
     {
-        CarDetailDto? carDetailDto = await _repository.GetById(id);
+        Car? car = await _repository.GetById(id);
 
-        if (carDetailDto == null)
+        if (car == null)
         {
             throw new NotFoundException();
         }
 
-        return carDetailDto;
+        return car.ConvertToDetailDto();
     }
 
     public async Task<CarDetailDto> Create(CarCreateDto carCreateDto)
@@ -44,44 +46,85 @@ public class CarsService : ICarsService
             throw new NotFoundException($"The driver with the id {carCreateDto.DriverId} does not exist");
         }
 
-        return await _repository.Create(carCreateDto);
+        Car car = carCreateDto.ConvertToEntity();
+        car.Created = DateTime.UtcNow;
+        Car newCar = await _repository.Create(car);
+
+        return newCar.ConvertToDetailDto();
     }
 
     public async Task<CarDetailDto> Update(int id, CarUpdateDto carUpdateDto)
     {
-        CarDetailDto? carDetailDto = await _repository.GetById(id);
+        Car? car = await _repository.GetById(id);
 
-        if (carDetailDto == null)
+        if (car == null)
         {
             throw new NotFoundException($"The car with id {id} does not exist");
         }
 
-        if (await GetDriverById(carDetailDto.DriverId) == null)
+        if (await GetDriverById(car.DriverId) == null)
         {
             throw new NotFoundException($"The driver with id {carUpdateDto.DriverId} does not exist");
         }
 
-        carDetailDto = await _repository.Update(carUpdateDto.ConvertToEntity(id));
+        car = ChangeUpdatedValues(car, carUpdateDto);
+        car.Updated = DateTime.UtcNow;
+        car = await _repository.Update(car);
 
-        return carDetailDto;
+        return car.ConvertToDetailDto();
     }
 
-    private async Task<EmployeeDetailDto?> GetDriverById(int id)
+    private Car ChangeUpdatedValues(Car car, CarUpdateDto carUpdateDto)
+    {
+        if (carUpdateDto.Name != null)
+        {
+            car.Name = carUpdateDto.Name;
+        }
+
+        if (carUpdateDto.NumberOfSeats != null)
+        {
+            car.NumberOfSeats = (int)carUpdateDto.NumberOfSeats;
+        }
+
+        if (carUpdateDto.FuelType != null)
+        {
+            car.FuelType = carUpdateDto.FuelType;
+        }
+
+        if (carUpdateDto.RegisteredUntil != null)
+        {
+            car.RegisteredUntil = carUpdateDto.RegisteredUntil;
+        }
+
+        if (carUpdateDto.RegistrationPlates != null)
+        {
+            car.RegistrationPlates = carUpdateDto.RegistrationPlates;
+        }
+
+        if (carUpdateDto.DriverId != null)
+        {
+            car.DriverId = (int)carUpdateDto.DriverId;
+        }
+
+        return car;
+    }
+
+    private async Task<Employee?> GetDriverById(int id)
     {
         return await _employeesRepository.GetById(id);
     }
 
     public async Task<CarDetailDto> Delete(int id)
     {
-        CarDetailDto? carDetailDto = await _repository.GetById(id);
+        Car? car = await _repository.GetById(id);
 
-        if (carDetailDto == null)
+        if (car == null)
         {
             throw new NotFoundException($"The car with id {id} does not exist");
         }
 
-        await _repository.Delete(carDetailDto.ConvertToEntity());
+        await _repository.Delete(car);
 
-        return carDetailDto;
+        return car.ConvertToDetailDto();
     }
 }

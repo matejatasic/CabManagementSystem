@@ -8,13 +8,13 @@ namespace CabManagementSystemWeb.Services;
 
 public class UsersService : IUsersService
 {
-    private readonly IRepository<User, UserCreateDto, UserDetailDto> _repository;
-    private readonly IRepository<Role, RoleCreateDto, RoleDetailDto> _rolesRepository;
+    private readonly IRepository<User> _repository;
+    private readonly IRepository<Role> _rolesRepository;
     private readonly IHashService _hashService;
 
     public UsersService(
-        IRepository<User, UserCreateDto, UserDetailDto> repository,
-        IRepository<Role, RoleCreateDto, RoleDetailDto> rolesRepository,
+        IRepository<User> repository,
+        IRepository<Role> rolesRepository,
         IHashService hashService
     )
     {
@@ -25,19 +25,21 @@ public class UsersService : IUsersService
 
     public async Task<IEnumerable<UserDetailDto>> GetAll()
     {
-        return await _repository.GetAll();
+        List<User> users = await _repository.GetAll();
+
+        return users.Select(u => u.ConvertToDetailDto()).ToList();
     }
 
     public async Task<UserDetailDto?> GetById(int id)
     {
-        UserDetailDto? userDetailDto = await _repository.GetById(id);
+        User? user = await _repository.GetById(id);
 
-        if (userDetailDto == null)
+        if (user == null)
         {
             throw new NotFoundException();
         }
 
-        return userDetailDto;
+        return user.ConvertToDetailDto();
     }
 
     public async Task<UserDetailDto> Create(UserCreateDto userCreateDto)
@@ -61,44 +63,86 @@ public class UsersService : IUsersService
             throw new NotFoundException($"The role with {userCreateDto.RoleId} does not exist");
         }
 
-        userCreateDto.Password = _hashService.HashPassword(userCreateDto.Password);
+        User user = userCreateDto.ConvertToEntity();
+        user.Password = _hashService.HashPassword(userCreateDto.Password);
+        user.Created = DateTime.UtcNow;
+        User newUser = await _repository.Create(user);
 
-        return await _repository.Create(userCreateDto);
+        return newUser.ConvertToDetailDto();
     }
 
     public async Task<UserDetailDto> Update(int id, UserUpdateDto userUpdateDto)
     {
-        UserDetailDto? userDetailDto = await _repository.GetById(id);
-        bool roleExists = await _rolesRepository.GetById(userUpdateDto.RoleId) != null;
+        User? user = await _repository.GetById(id);
 
-        if (userDetailDto == null)
+        if (user == null)
         {
             throw new NotFoundException($"The user with id {id} does not exist");
         }
 
-        if (!roleExists)
+        if (userUpdateDto.RoleId != null)
         {
-            throw new NotFoundException($"The role with {userUpdateDto.RoleId} does not exist");
+            bool roleExists = await _rolesRepository.GetById((int)userUpdateDto.RoleId) != null;
+
+            if (!roleExists)
+            {
+                throw new NotFoundException($"The role with {userUpdateDto.RoleId} does not exist");
+            }
         }
 
-        userUpdateDto.Password = _hashService.HashPassword(userUpdateDto.Password);
+        user = ChangeUpdatedValues(user, userUpdateDto);
+        user.Updated = DateTime.UtcNow;
+        user = await _repository.Update(user);
 
-        userDetailDto = await _repository.Update(userUpdateDto.ConvertToEntity(id));
+        return user.ConvertToDetailDto();
+    }
 
-        return userDetailDto;
+    private User ChangeUpdatedValues(User user, UserUpdateDto userUpdateDto)
+    {
+        if (userUpdateDto.Username != null)
+        {
+            user.UserName = userUpdateDto.Username;
+        }
+
+        if (userUpdateDto.Password != null)
+        {
+            user.Password = _hashService.HashPassword(userUpdateDto.Password);
+        }
+
+        if (userUpdateDto.Email != null)
+        {
+            user.Email = userUpdateDto.Email;
+        }
+
+        if (userUpdateDto.FirstName != null)
+        {
+            user.FirstName = userUpdateDto.FirstName;
+        }
+
+        if (userUpdateDto.LastName != null)
+        {
+            user.LastName = userUpdateDto.LastName;
+        }
+
+        if (userUpdateDto.RoleId != null)
+        {
+            user.RoleId = (int)userUpdateDto.RoleId;
+        }
+
+        return user;
     }
 
     public async Task<UserDetailDto> Delete(int id)
     {
-        UserDetailDto? userDetailDto = await _repository.GetById(id);
+        User? user = await _repository.GetById(id);
 
-        if (userDetailDto == null)
+        if (user == null)
         {
             throw new NotFoundException($"The user with id {id} does not exist");
         }
 
-        await _repository.Delete(userDetailDto.ConvertToEntity());
+        await _repository.Delete(user);
 
-        return userDetailDto;
+        return user.ConvertToDetailDto();
     }
 }

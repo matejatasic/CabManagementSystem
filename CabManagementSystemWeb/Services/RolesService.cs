@@ -8,10 +8,10 @@ namespace CabManagementSystemWeb.Services;
 
 public class RolesService : IRolesService
 {
-    private readonly IRepository<Role, RoleCreateDto, RoleDetailDto> _repository;
+    private readonly IRepository<Role> _repository;
 
     public RolesService(
-        IRepository<Role, RoleCreateDto, RoleDetailDto> repository
+        IRepository<Role> repository
     )
     {
         _repository = repository;
@@ -19,51 +19,68 @@ public class RolesService : IRolesService
 
     public async Task<IEnumerable<RoleDetailDto>> GetAll()
     {
-        return await _repository.GetAll();
+        List<Role> roles = await _repository.GetAll();
+        return roles.Select(r => r.ConvertToDetailDto());
     }
 
     public async Task<RoleDetailDto?> GetById(int id)
     {
-        RoleDetailDto? roleDetailDto = await _repository.GetById(id);
+        Role? role = await _repository.GetById(id);
 
-        if (roleDetailDto == null)
+        if (role == null)
         {
             throw new NotFoundException();
         }
 
-        return roleDetailDto;
+        return role.ConvertToDetailDto();
     }
 
     public async Task<RoleDetailDto> Create(RoleCreateDto roleCreateDto)
     {
-        return await _repository.Create(roleCreateDto);
+        Role role = roleCreateDto.ConvertToEntity();
+        role.Created = DateTime.UtcNow;
+        Role newRole = await _repository.Create(role);
+
+        return newRole.ConvertToDetailDto();
     }
 
     public async Task<RoleDetailDto> Update(int id, RoleUpdateDto roleUpdateDto)
     {
-        RoleDetailDto? roleDetailDto = await _repository.GetById(id);
+        Role? role = await _repository.GetById(id);
 
-        if (roleDetailDto == null)
+        if (role == null)
         {
             throw new NotFoundException($"The role with id {id} does not exist");
         }
 
-        roleDetailDto = await _repository.Update(roleUpdateDto.ConvertToEntity(id));
+        role = ChangeUpdatedValues(role, roleUpdateDto);
+        role.Updated = DateTime.UtcNow;
+        role = await _repository.Update(role);
 
-        return roleDetailDto;
+        return role.ConvertToDetailDto();
+    }
+
+    private Role ChangeUpdatedValues(Role role, RoleUpdateDto roleUpdateDto)
+    {
+        if (roleUpdateDto.Name != null)
+        {
+            role.Name = roleUpdateDto.Name;
+        }
+
+        return role;
     }
 
     public async Task<RoleDetailDto> Delete(int id)
     {
-        RoleDetailDto? roleDetailDto = await _repository.GetById(id);
+        Role? role = await _repository.GetById(id);
 
-        if (roleDetailDto == null)
+        if (role == null)
         {
             throw new NotFoundException($"The role with id {id} does not exist");
         }
 
-        await _repository.Delete(roleDetailDto.ConvertToEntity());
+        await _repository.Delete(role);
 
-        return roleDetailDto;
+        return role.ConvertToDetailDto();
     }
 }

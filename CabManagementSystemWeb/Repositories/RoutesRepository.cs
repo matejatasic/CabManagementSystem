@@ -1,11 +1,9 @@
 using CabManagementSystemWeb.Data;
-using CabManagementSystemWeb.Dtos;
-using CabManagementSystemWeb.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CabManagementSystemWeb.Repositories;
 
-public class RoutesRepository : IRepository<Route, RouteCreateDto, RouteDetailDto>
+public class RoutesRepository : IRepository<Route>
 {
     private readonly ApplicationDbContext _dbContext;
 
@@ -14,52 +12,47 @@ public class RoutesRepository : IRepository<Route, RouteCreateDto, RouteDetailDt
         _dbContext = dbContext;
     }
 
-    public async Task<List<RouteDetailDto>> GetAll()
+    public async Task<List<Route>> GetAll()
     {
         List<Route> routes = await _dbContext.Routes.ToListAsync();
 
-        return routes.Select(r => r.ConvertToDetailDto()).ToList();
+        return routes;
     }
 
-    public async Task<RouteDetailDto?> GetById(int id)
+    public async Task<Route?> GetById(int id)
     {
         Route? route = await _dbContext.Routes.FindAsync(id);
         _dbContext.ChangeTracker.Clear();
 
-        return route?.ConvertToDetailDto();
+        return route;
     }
 
-    public async Task<RouteDetailDto?> GetBy(string property, object value)
+    public async Task<Route?> GetBy(string property, object value)
     {
         return null;
     }
 
-    public async Task<RouteDetailDto> Create(RouteCreateDto routeDto)
+    public async Task<Route> Create(Route route)
     {
-        Route route = routeDto.ConvertToEntity();
-
-        route.Created = DateTime.UtcNow;
         _dbContext.Add(route);
         await _dbContext.SaveChangesAsync();
 
-        return route.ConvertToDetailDto();
+        return route;
     }
 
-    public async Task<RouteDetailDto> Update(Route route)
+    public async Task<Route> Update(Route route)
     {
-        route.Updated = DateTime.UtcNow;
-
         _dbContext.Routes.Update(route);
         await _dbContext.SaveChangesAsync();
 
-        return route.ConvertToDetailDto();
+        return route;
     }
 
-    public async Task<RouteDetailDto> Delete(Route route)
+    public async Task<Route> Delete(Route route)
     {
         _dbContext.Routes.Remove(route);
         await _dbContext.SaveChangesAsync();
 
-        return route.ConvertToDetailDto();
+        return route;
     }
 }

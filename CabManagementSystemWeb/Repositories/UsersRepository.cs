@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CabManagementSystemWeb.Repositories;
 
-public class UsersRepository : IRepository<User, UserCreateDto, UserDetailDto>
+public class UsersRepository : IRepository<User>
 {
     private readonly ApplicationDbContext _dbContext;
 
@@ -14,22 +14,22 @@ public class UsersRepository : IRepository<User, UserCreateDto, UserDetailDto>
         _dbContext = dbContext;
     }
 
-    public async Task<List<UserDetailDto>> GetAll()
+    public async Task<List<User>> GetAll()
     {
         List<User> users = await _dbContext.Users.ToListAsync();
 
-        return users.Select(u => u.ConvertToDetailDto()).ToList();
+        return users;
     }
 
-    public async Task<UserDetailDto?> GetById(int id)
+    public async Task<User?> GetById(int id)
     {
-        User? users = await _dbContext.Users.FindAsync(id);
+        User? user = await _dbContext.Users.FindAsync(id);
         _dbContext.ChangeTracker.Clear();
 
-        return users?.ConvertToDetailDto();
+        return user;
     }
 
-    public async Task<UserDetailDto?> GetBy(string property, object value)
+    public async Task<User?> GetBy(string property, object value)
     {
         DbSet<User> users = _dbContext.Users;
         IQueryable<User> query = users;
@@ -45,34 +45,30 @@ public class UsersRepository : IRepository<User, UserCreateDto, UserDetailDto>
 
         User? user = await query.FirstOrDefaultAsync();
 
-        return user?.ConvertToDetailDto();
+        return user;
     }
 
-    public async Task<UserDetailDto> Create(UserCreateDto userDto)
+    public async Task<User> Create(User user)
     {
-        User user = userDto.ConvertToEntity();
-
-        user.Created = DateTime.UtcNow;
         _dbContext.Add(user);
         await _dbContext.SaveChangesAsync();
 
-        return user.ConvertToDetailDto();
+        return user;
     }
 
-    public async Task<UserDetailDto> Update(User user)
+    public async Task<User> Update(User user)
     {
-        user.Updated = DateTime.UtcNow;
         _dbContext.Users.Update(user);
         await _dbContext.SaveChangesAsync();
 
-        return user.ConvertToDetailDto();
+        return user;
     }
 
-    public async Task<UserDetailDto> Delete(User user)
+    public async Task<User> Delete(User user)
     {
         _dbContext.Users.Remove(user);
         await _dbContext.SaveChangesAsync();
 
-        return user.ConvertToDetailDto();
+        return user;
     }
 }

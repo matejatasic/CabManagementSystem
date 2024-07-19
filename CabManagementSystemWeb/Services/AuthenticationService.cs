@@ -9,15 +9,15 @@ namespace CabManagementSystemWeb.Services;
 
 public class AuthenticationService : IAuthenticationService
 {
-    IRepository<User, UserCreateDto, UserDetailDto> _usersRepository;
-    IRepository<Role, RoleCreateDto, RoleDetailDto> _rolesRepository;
+    IRepository<User> _usersRepository;
+    IRepository<Role> _rolesRepository;
     IUsersService _usersService;
     IHashService _hashService;
     IJwtProviderService _jwtProviderService;
 
     public AuthenticationService(
-        IRepository<User, UserCreateDto, UserDetailDto> usersRepository,
-        IRepository<Role, RoleCreateDto, RoleDetailDto> rolesRepository,
+        IRepository<User> usersRepository,
+        IRepository<Role> rolesRepository,
         IUsersService usersService,
         IHashService hashService,
         IJwtProviderService jwtProviderService
@@ -32,7 +32,7 @@ public class AuthenticationService : IAuthenticationService
 
     public async Task<AuthenticationResponseDto> Register(RegisterDto request)
     {
-        RoleDetailDto? userRole = await _rolesRepository.GetBy("name", "User");
+        Role? userRole = await _rolesRepository.GetBy("name", "User");
 
         if (userRole == null) {
             throw new NotFoundException("User role does not exist");
@@ -59,7 +59,7 @@ public class AuthenticationService : IAuthenticationService
 
     public async Task<AuthenticationResponseDto> Login(LoginDto request)
     {
-        UserDetailDto? user = await _usersRepository.GetBy("username", request.Username);
+        User? user = await _usersRepository.GetBy("username", request.Username);
         bool userExists = user != null;
 
         if (!userExists)
@@ -77,16 +77,15 @@ public class AuthenticationService : IAuthenticationService
             throw new ArgumentException("Your password is incorrect");
         }
 
-        RoleDetailDto roleDetailDto = await _rolesRepository.GetById(user.RoleId);
-
-        string token = _jwtProviderService.Generate(user.Id.ToString(), user.Email, roleDetailDto.Name);
+        Role role = await _rolesRepository.GetById(user.RoleId);
+        string token = _jwtProviderService.Generate(user.Id.ToString(), user.Email, role.Name);
 
         return new AuthenticationResponseDto()
         {
             UserId = user.Id,
-            Username = user.Username,
+            Username = user.UserName,
             Token = token,
-            Role = roleDetailDto.Name
+            Role = role.Name
         };
     }
 }
