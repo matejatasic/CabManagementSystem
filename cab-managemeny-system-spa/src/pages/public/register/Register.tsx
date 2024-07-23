@@ -38,7 +38,6 @@ export default function Register(props: RegisterProps) {
                     fieldName = error.fieldName;
                 }
 
-                console.log({...validationErrors, [fieldName]: error.message})
                 setValidationErrors({...validationErrors, [fieldName]: error.message});
             }
         });
@@ -97,119 +96,131 @@ export default function Register(props: RegisterProps) {
             <main className="container d-flex justify-content-center align-items-center">
                 <ContentCard heading="Register">
                     <form onSubmit={(e) => handleSubmit(e)}>
-                        <div className="mb-3">
-                            <label className="form-label">Email</label>
+                        <div className="mb-3" data-testid="email">
+                            <label className="form-label" htmlFor="email">Email</label>
                             <input
                                 type="email"
                                 className="form-control"
+                                id="email"
                                 onChange={(e) => changeValue(User.EMAIL, e.target.value)}
                             />
                             {
                                 validationErrors[User.EMAIL] ?
-                                <p className="text-danger mt-2">{validationErrors[User.EMAIL]}</p>
+                                <p className="error text-danger mt-2">{validationErrors[User.EMAIL]}</p>
                                 : null
                             }
                         </div>
-                        <div className="mb-3">
-                            <label className="form-label">Username</label>
+                        <div className="mb-3" data-testid="username">
+                            <label className="form-label" htmlFor="username">Username</label>
                             <input
                                 type="text"
                                 className="form-control"
+                                id="username"
                                 onChange={(e) => changeValue(User.USERNAME, e.target.value)}
                             />
                             {
                                 validationErrors[User.USERNAME] ?
-                                <p className="text-danger mt-2">{validationErrors[User.USERNAME]}</p>
+                                <p className="error text-danger mt-2">{validationErrors[User.USERNAME]}</p>
                                 : null
                             }
                         </div>
-                        <div className="mb-3">
-                            <label className="form-label">Password</label>
+                        <div className="mb-3" data-testid="password">
+                            <label className="form-label" htmlFor="password">Password</label>
                             <input
                                 type="password"
                                 className="form-control"
+                                id="password"
                                 onChange={(e) => changeValue(User.PASSWORD, e.target.value)}
                             />
                             {
                                 validationErrors[User.PASSWORD] ?
-                                <p className="text-danger mt-2">{validationErrors[User.PASSWORD]}</p>
+                                <p className="error text-danger mt-2">{validationErrors[User.PASSWORD]}</p>
                                 : null
                             }
                         </div>
-                        <div className="mb-3">
-                            <label className="form-label">Confirm Password</label>
+                        <div className="mb-3" data-testid="confirm-password">
+                            <label className="form-label" htmlFor="confirm-password">Confirm Password</label>
                             <input
                                 type="password"
                                 className="form-control"
+                                id="confirm-password"
                                 onChange={(e) => changeValue(User.CONFIRM_PASSWORD, e.target.value)}
                             />
                             {
                                 validationErrors[User.CONFIRM_PASSWORD] ?
-                                <p className="text-danger mt-2">{validationErrors[User.CONFIRM_PASSWORD]}</p>
+                                <p className="error text-danger mt-2">{validationErrors[User.CONFIRM_PASSWORD]}</p>
                                 : null
                             }
                         </div>
-                        <div className="mb-3">
-                            <label className="form-label">First Name</label>
+                        <div className="mb-3" data-testid="first-name">
+                            <label className="form-label" htmlFor="first-name">First Name</label>
                             <input
                                 type="text"
                                 className="form-control"
+                                id="first-name"
                                 onChange={(e) => changeValue(User.FIRST_NAME, e.target.value)}
                             />
                             {
                                 validationErrors[User.FIRST_NAME] ?
-                                <p className="text-danger mt-2">{validationErrors[User.FIRST_NAME]}</p>
+                                <p className="error text-danger mt-2">{validationErrors[User.FIRST_NAME]}</p>
                                 : null
                             }
                         </div>
-                        <div className="mb-3">
-                            <label className="form-label">Last Name</label>
+                        <div className="mb-3" data-testid="last-name">
+                            <label className="form-label" htmlFor="last-name">Last Name</label>
                             <input
                                 type="text"
                                 className="form-control"
+                                id="last-name"
                                 onChange={(e) => changeValue(User.LAST_NAME, e.target.value)}
                             />
                             {
                                 validationErrors[User.LAST_NAME] ?
-                                <p className="text-danger mt-2">{validationErrors[User.LAST_NAME]}</p>
+                                <p className="error text-danger mt-2">{validationErrors[User.LAST_NAME]}</p>
                                 : null
                             }
                         </div>
-                        <div className="mb-3">
-                            <label className="form-label">Address</label>
+                        <div className="mb-3" data-testid="address">
+                            <label className="form-label" htmlFor="address">Address</label>
                             <input
                                 type="text"
                                 className="form-control"
+                                id="address"
                                 onChange={(e) => changeValue(User.ADDRESS, e.target.value)}
                             />
                             {
                                 validationErrors[User.ADDRESS] ?
-                                <p className="text-danger mt-2">{validationErrors[User.ADDRESS]}</p>
+                                <p className="error text-danger mt-2">{validationErrors[User.ADDRESS]}</p>
                                 : null
                             }
                         </div>
-                        <div className="mb-3">
-                            <label className="form-label">Phone</label>
+                        <div className="mb-3" data-testid="phone">
+                            <label className="form-label" htmlFor="phone">Phone</label>
                             <input
                                 type="text"
                                 className="form-control"
+                                id="phone"
                                 onChange={(e) => changeValue(User.PHONE, e.target.value)}
                             />
                             {
                                 validationErrors[User.PHONE] ?
-                                <p className="text-danger mt-2">{validationErrors[User.PHONE]}</p>
+                                <p className="error text-danger mt-2">{validationErrors[User.PHONE]}</p>
                                 : null
                             }
                         </div>
                         {
                             validationErrors["general"] ?
-                            <p className="text-danger mt-4">{validationErrors["general"]}</p>
+                            <p data-testid="general-error" className="error text-danger mt-4">{validationErrors["general"]}</p>
                             : null
                         }
                         <div className="my-3">
                             <Link to={CustomerRoutesEnum.Login}>Already have an account? Click Here</Link>
                         </div>
-                        <button disabled={isRegisterButtonDisabled()} className="btn btn-primary">Register</button>
+                        <button
+                            disabled={isRegisterButtonDisabled()}
+                            className="btn btn-primary"
+                            data-testid="submit-btn"
+                        >Register</button>
                     </form>
                 </ContentCard>
             </main>

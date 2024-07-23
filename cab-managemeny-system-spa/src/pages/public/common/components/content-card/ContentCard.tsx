@@ -6,7 +6,7 @@ export default function ContentCard(props: ContentCardProps) {
 
     return (
         <div id="content-card" className="mx-auto p-2">
-            <h2 id="content-card-heading" className="text-center">{ heading }</h2>
+            <h2 id="content-card-heading" data-testid="heading" className="text-center">{ heading }</h2>
             <hr />
             { children }
         </div>
