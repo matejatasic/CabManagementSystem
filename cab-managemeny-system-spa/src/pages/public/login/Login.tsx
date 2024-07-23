@@ -64,7 +64,7 @@ export default function Login(props: LoginProps) {
             <main className="container d-flex justify-content-center align-items-center">
                 <ContentCard heading="Login">
                     <>
-                        <div className="mb-3">
+                        <div className="mb-3" data-testid="username">
                             <label className="form-label">Username</label>
                             <input
                                 type="text"
@@ -73,11 +73,11 @@ export default function Login(props: LoginProps) {
                             />
                             {
                                 validationErrors[User.USERNAME] ?
-                                <p className="text-danger mt-2">{validationErrors[User.USERNAME]}</p>
+                                <p className="error text-danger mt-2">{validationErrors[User.USERNAME]}</p>
                                 : null
                             }
                         </div>
-                        <div className="mb-3">
+                        <div className="mb-3" data-testid="password">
                             <label className="form-label">Password</label>
                             <input
                                 type="password"
@@ -86,19 +86,19 @@ export default function Login(props: LoginProps) {
                             />
                             {
                                 validationErrors[User.PASSWORD] ?
-                                <p className="text-danger mt-2">{validationErrors[User.PASSWORD]}</p>
+                                <p className="error text-danger mt-2">{validationErrors[User.PASSWORD]}</p>
                                 : null
                             }
                         </div>
                         {
                             validationErrors["general"] ?
-                            <p className="text-danger mt-4">{validationErrors["general"]}</p>
+                            <p data-testid="general-error" className="error text-danger mt-4">{validationErrors["general"]}</p>
                             : null
                         }
                         <div className="my-3">
                             <Link to={CustomerRoutesEnum.Register}>Don't have an account? Click Here</Link>
                         </div>
-                        <button className="btn btn-primary" onClick={() => handleSubmit()}>Login</button>
+                        <button data-testid="submit-btn" className="btn btn-primary" onClick={() => handleSubmit()}>Login</button>
                     </>
                 </ContentCard>
             </main>
