@@ -44,7 +44,7 @@ describe("Login page", () => {
         expect(screen.getByTestId("password")).toBeInTheDocument();
     });
 
-    test("test validation errors appear on submit if required fields are blank", async () => {
+    test("validation errors appear on submit if required fields are blank", async () => {
         const mockGateway = {
             register: jest.fn(),
             login: jest.fn()
@@ -59,7 +59,7 @@ describe("Login page", () => {
         });
     });
 
-    test("test show general error if thrown", async () => {
+    test("show general error if thrown", async () => {
         const error = new ValidationError("General error");
         mockRepository.login.mockRejectedValue(error);
 

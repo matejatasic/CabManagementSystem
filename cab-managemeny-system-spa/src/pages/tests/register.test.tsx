@@ -50,7 +50,7 @@ describe("Register page", () => {
         expect(screen.getByTestId("phone")).toBeInTheDocument();
     });
 
-    test("test validation errors appear on invalid data", () => {
+    test("validation errors appear on invalid data", () => {
         renderComponent(store);
 
         const email = screen.getByTestId("email");
@@ -79,7 +79,7 @@ describe("Register page", () => {
 
     });
 
-    test("test validation errors appear on submit if required fields are blank", async () => {
+    test("validation errors appear on submit if required fields are blank", async () => {
         const mockGateway = {
             register: jest.fn(),
             login: jest.fn()
@@ -95,7 +95,7 @@ describe("Register page", () => {
         });
     });
 
-    test("test show general error if thrown", async () => {
+    test("show general error if thrown", async () => {
         const error = new ValidationError("General error");
         mockRepository.register.mockRejectedValue(error);
 

@@ -66,7 +66,7 @@ export default function RentCab(props: RentCabProps) {
                                 </div>
                             </div>
                         </div>
-                        <div className="row">
+                        <div className="row" data-testid="cabs-div">
                             {cabs?.map(cab => (
                                 <div key={cab.id} className="col-12 col-md-4 col-lg-3">
                                     <CabCard
@@ -81,13 +81,15 @@ export default function RentCab(props: RentCabProps) {
                     </>
                 </ContentCard>
             </main>
-            <BookACabModal
-                shouldShowModal={shouldShowModal}
-                handleModalClose={handleModalClose}
-                booking={booking}
-                setBooking={setBooking}
-                bookingRepository={bookingRepository}
-            />
+            <div data-testid="book-a-cab-modal">
+                <BookACabModal
+                    shouldShowModal={shouldShowModal}
+                    handleModalClose={handleModalClose}
+                    booking={booking}
+                    setBooking={setBooking}
+                    bookingRepository={bookingRepository}
+                />
+            </div>
             <Footer />
         </div>
     );
