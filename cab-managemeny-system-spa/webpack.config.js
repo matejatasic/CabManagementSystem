@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { DefinePlugin, ProvidePlugin } = require("webpack");
 
 const envPath = path.resolve(__dirname, ".env");
-const envVariables = require("dotenv").config({ path: envPath }).parsed ?? {};
+const envVariables = require("dotenv").config({ path: envPath }).parsed || {};
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 module.exports = {
